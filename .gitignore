@@ -1,0 +1,454 @@
+# Bird Monitoring System .gitignore
+
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# =============================================================================
+# Node.js
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# =============================================================================
+# Database
+# =============================================================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# PostgreSQL
+*.dump
+*.sql.gz
+
+# =============================================================================
+# Environment & Configuration
+# =============================================================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Configuration files with sensitive data
+config/production.json
+config/local.json
+config/secrets.json
+
+# API keys and credentials
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Station configuration files
+station_config.json
+station_auth.json
+
+# =============================================================================
+# Audio Files & Processing
+# =============================================================================
+# Audio recordings (except samples for testing)
+audio_recordings/
+recordings/
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.aac
+# Keep sample files for testing
+!samples/
+!test_audio/
+
+# BirdNet model files (large files)
+models/
+*.h5
+*.pb
+*.tflite
+*.onnx
+
+# Audio processing temporary files
+temp_audio/
+audio_cache/
+processing_queue/
+
+# =============================================================================
+# Logs & Monitoring
+# =============================================================================
+logs/
+*.log
+log/
+*.log.*
+log-*.txt
+
+# Error tracking
+error_logs/
+crash_reports/
+
+# System monitoring
+monitoring/
+metrics/
+
+# PM2 logs
+.pm2/
+
+# =============================================================================
+# Redis & Caching
+# =============================================================================
+dump.rdb
+*.rdb
+redis-data/
+cache/
+
+# =============================================================================
+# Development Tools
+# =============================================================================
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.vim
+.vimrc.local
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+
+# =============================================================================
+# Raspberry Pi Specific
+# =============================================================================
+# Hardware-specific configuration
+pi_config/
+hardware_config.json
+
+# GPIO and hardware testing
+gpio_test/
+hardware_test/
+
+# System status files
+system_status/
+hardware_status/
+
+# =============================================================================
+# Build & Distribution
+# =============================================================================
+# React build output
+build/
+dist/
+
+# Documentation builds
+docs/_build/
+docs/build/
+
+# Webpack
+.webpack/
+
+# =============================================================================
+# Testing
+# =============================================================================
+# Test results
+test-results/
+test_results/
+.coverage
+coverage.json
+
+# Screenshot testing
+screenshots/
+visual_regression/
+
+# Performance testing
+performance_results/
+load_test_results/
+
+# =============================================================================
+# Backup & Temporary Files
+# =============================================================================
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+
+# Temporary directories
+tmp/
+temp/
+temporary/
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Database backups
+db_backups/
+database_exports/
+
+# =============================================================================
+# Deployment & Docker
+# =============================================================================
+# Docker
+.dockerignore
+docker-compose.override.yml
+docker-compose.production.yml
+
+# Deployment scripts with sensitive data
+deploy_secrets/
+deployment_keys/
+
+# SSL certificates
+ssl/
+certificates/
+
+# =============================================================================
+# Documentation
+# =============================================================================
+# Generated documentation
+api_docs/
+generated_docs/
+
+# Temporary documentation files
+*.docx~
+*.doc~
+*.pptx~
+*.ppt~
+
+# =============================================================================
+# Project Specific
+# =============================================================================
+# Station authentication files
+station_keys/
+api_keys/
+
+# Export files
+exports/
+data_exports/
+
+# Analytics data
+analytics_cache/
+report_cache/
+
+# User uploads
+uploads/
+user_files/
+
+# Queue processing files
+queue_data/
+job_results/
+
+# Email templates with sensitive content
+email_templates/production/
+
+# =============================================================================
+# Multi-Directory Structure Specific
+# =============================================================================
+# Backend environment files
+backend/.env
+backend/.env.local
+backend/.env.*.local
+
+# Frontend build and environment
+frontend/build/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# React PWA generated files
+frontend/public/service-worker.js.map
+frontend/public/precache-manifest.*.js
+
+# Raspberry Pi configuration
+raspberry-pi/config.json
+raspberry-pi/station_config.py
+raspberry-pi/.env
+
+# Deployment secrets
+deployment/secrets/
+deployment/terraform/.terraform/
+deployment/terraform/terraform.tfstate*
+deployment/terraform/terraform.tfvars
+deployment/terraform/.terraform.lock.hcl
+deployment/kubernetes/secrets/
+
+# Docker overrides
+deployment/docker/docker-compose.override.yml
+deployment/docker/.env
+
+# Deployment scripts with credentials
+deployment/scripts/production.env
+deployment/scripts/secrets.sh
