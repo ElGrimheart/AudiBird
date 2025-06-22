@@ -1,0 +1,19 @@
+audio:
+    sample_rate: 48000
+    channels: 1
+    dtype: int16
+    
+segments:
+    duration: 30
+    overlap: 5
+    
+birdnet:
+    min_confidence: 0.25
+    high_confidence: 0.75
+    remove_low_confidence: true
+    
+paths:
+    segments_dir: "data/segments"
+    detections_dir: "data/detections"
+    logs_dir: "data/logs"
+    
