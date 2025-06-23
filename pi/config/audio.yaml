@@ -4,7 +4,7 @@ audio:
     dtype: int16
     
 segments:
-    duration: 30
+    duration: 10
     overlap: 5
     
 birdnet:
