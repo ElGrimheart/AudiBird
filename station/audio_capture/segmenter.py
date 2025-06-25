@@ -2,8 +2,7 @@
 import numpy as np
 
 class Segmenter:
-    """_summary_
-    Handles audio segmentation for incoming audio data.
+    """Handles audio segmentation for incoming audio data.
     
     Args:
         config (dict): Configuration parameters for audio segmentation.

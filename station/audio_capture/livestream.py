@@ -1,13 +1,16 @@
+"""Demo to test audio streaming.
+NOTE - to be superceded by Websockets or similar for streaming to frontend.
+"""
 import sounddevice as sd
 import numpy as np
 
 class LiveStream:
-    def __init__(self, sample_rate=48000, channels=1, dtype='int16'):
-        self.sample_rate = sample_rate
-        self.channels = channels
-        self.dtype = dtype
+    def __init__(self, config):
+        self.sample_rate = config.get("sample_rate", 48000)
+        self.channels = config.get("channels", 1)
+        self.dtype = config.get("dtype", "int16")
+        self.output_device = config.get("output_device", None)
         self.stream = None
-        print("LiveStream initialized.")
 
     def start(self):
         self.stream = sd.OutputStream(

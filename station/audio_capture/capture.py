@@ -1,42 +1,37 @@
-"""Captures audio from the microphone, segments it, and saves the segments to disk.
-Separate threads are used for capturing, saving and streaming the audio data.    
-"""
+"""Captures audio from the microphone, segments it and saves the segments to disk."""
 import sounddevice as sd
 import queue
 import threading
 from datetime import datetime
-from pathlib import Path
-
-from audio_capture.segmenter import Segmenter 
-from audio_capture.segment_saver import SegmentSaver
 
 class AudioCapture:
-    """Captures audio from the microphone, segments it, and saves the segments to disk.
+    """Captures audio from the microphone, segments it with the provided segmenter,
+    and saves the segments using the provided segment_saver.
     
-    Args:
-        config (dict): Configuration parameters for audio capture
-
     Methods:
-        start(device=None): Starts continuous audio capture from the microphone.
-        stop(): Stops the audio capture.
+        start(): Starts continuous audio capture from the microphone.
+        stop(): Stops the audio capture and processes any remaining segments in the queue.
+        _save_segments(): Background thread to save audio segments from the queue.
     """
      
-    def __init__ (self, config):
-        """Initializes the AudioCapture instance with configuration parameters.
+    def __init__ (self, config, segmenter, segment_saver, on_segment_ready=None):
+        """Initializes the AudioCapture with configuration parameters, a segmenter, and a segment_saver.
         
         Args:
             config (dict): Configuration parameters for audio capture.
+            segmenter (Segmenter): An instance of a segmenter to process audio data.
+            segment_saver (SegmentSaver): An instance of a segment_saver to save audio segments.
+            on_segment_ready (callable, optional): Callback function to notify when a segment is ready.
         
         Attributes:
-            sample_rate (int): Sample rate of the audio. Default is 48000 Hz.
-            channels (int): Number of audio channels. Default is 1 (mono).
-            dtype (str): Data type of the audio samples. Default is 'int16'.
-            segment_duration (int): Duration of each audio segment in seconds. Default is 60 seconds.
-            segment_overlap (int): Overlap between segments in seconds. Default is 5 seconds.
-            segments_dir (Path): Directory where audio segments will be saved. Default is 'pi/data/segments'.
-            segmenter (Segmenter): Instance of Segmenter to handle audio segmentation.
-            segment_saver (SegmentSaver): Instance of SegmentSaver to save audio segments.
-            segments_queue (queue.Queue): Queue to hold segments for saving.
+            sample_rate (int): Sample rate for audio capture. Defaults to 48000.
+            channels (int): Number of audio channels. Defaults to 1.
+            dtype (str): Data type for audio samples. Defaults to "int16".
+            segmenter (Segmenter): The segmenter instance to process audio data.
+            segment_saver (SegmentSaver): The segment_saver instance to save audio segments.
+            segments_queue (queue.Queue): Queue to hold audio segments for processing.
+            on_segment_ready (callable): Callback function to notify when a segment is ready.
+            listeners (list): List of listeners for live audio blocks.
             running (bool): Flag to indicate if the audio capture is running.
         """
         
@@ -44,17 +39,15 @@ class AudioCapture:
         self.sample_rate = config.get("sample_rate", 48000)
         self.channels = config.get("channels", 1)
         self.dtype = config.get("dtype", "int16")
-        self.segment_duration = config.get("segment_duration", 60)
-        self.segment_overlap = config.get("segment_overlap", 5)  
-        self.segments_dir = config.get("segments_dir", Path("pi\data\segments")).resolve()
         
-        # Setting up the Segmenter and Queue
-        self.segmenter= Segmenter(config) 
-        self.segment_saver = SegmentSaver(config)
+        self.segmenter = segmenter
+        self.segment_saver = segment_saver
         self.segments_queue = queue.Queue()
+       
+        self.on_segment_ready = on_segment_ready
+        self.listeners = []     
         
-        self.running = False
-                
+        self.running = False   
         
         """
         self.listeners = []  # List to hold listeners for live audio blocks
@@ -64,15 +57,17 @@ class AudioCapture:
     """
         
     def start(self, device=None):
-        """Start continuous audio capture from the microphone.
-
+        """Starts continuous audio capture from the microphone.
+        
         Args:
-            device (str, optional): The audio device to capture from. If None, the default device is used.
+            device (int, optional): The audio input device ID. If None, the default device is used.
+        
+        Attributes:
+            running (bool): Flag to indicate if the audio capture is currently running.
         """
         
         self.running = True
         print(f"Starting audio capture...")
-        print(f"Sample Rate: {self.sample_rate}, Channels: {self.channels}, Segment Duration: {self.segment_duration} seconds")
         print("Press Ctrl+C to stop capture.")
         
         
@@ -120,13 +115,22 @@ class AudioCapture:
             
     def _save_segments(self):    
         """Background thread to save audio segments from the queue.
-        This method runs in a separate thread to continuously save segments as they are captured.
+        This method continuously checks the segments queue for new segments and saves them using the segment_saver
+        until the running flag is set to False.
+        
+        Args:
+            None
+            
+        Attributes:
+            running (bool): Flag to indicate if the audio capture is currently running.         
         """
      
         while self.running:
             try:
                 segment, timestamp = self.segments_queue.get(timeout=1) #timeout to prevent blocking indefinitely
                 self.segment_saver.save(segment, timestamp)
+                if self.on_segment_ready:
+                    self.on_segment_ready(timestamp)  # Notify listeners that a segment is ready
                 self.segments_queue.task_done()
             except queue.Empty:
                 continue
@@ -135,7 +139,13 @@ class AudioCapture:
             
     
     def stop(self):
-        """Stops the audio capture and ensures that any remaining segments in the queue are processed before exiting.
+        """Stops the audio capture and processes any remaining segments in the queue.
+        
+        Args:
+            None
+            
+        Attributes:
+            running (bool): Flag to indicate if the audio capture is currently running.
         """
         self.running = False
         

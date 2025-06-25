@@ -1,0 +1,28 @@
+audio_capture:
+    sample_rate: 48000
+    channels: 1
+    dtype: int16
+    
+segments:
+    duration: 20
+    overlap: 5
+    sample_width: 2
+    
+birdnet:
+    min_confidence: 0.25
+    high_confidence: 0.75
+
+station:
+    station_id: "default_station"
+    lat: 54.607868
+    lon: -5.926437
+
+livestream:
+    output_device: "default"
+
+paths:
+    segments_dir: "station/data/segments"
+    detections_dir: "station/data/detections"
+    logs_dir: "station/data/logs"
+    detections_log: "station/data/detections/detections.csv"
+    

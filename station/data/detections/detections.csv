@@ -1,0 +1,18 @@
+filename,start_time,end_time,common_name,scientific_name,confidence,label
+2025-06-24_12-24-12,12.0,15.0,Eurasian Jackdaw,Corvus monedula,0.8413039445877075,Corvus monedula_Eurasian Jackdaw
+2025-06-24_12-24-12,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.741718053817749,Corvus monedula_Eurasian Jackdaw
+2025-06-24_12-24-12,18.0,21.0,Eurasian Jackdaw,Corvus monedula,0.8340663313865662,Corvus monedula_Eurasian Jackdaw
+2025-06-24_12-24-27,0.0,3.0,Eurasian Jackdaw,Corvus monedula,0.741718053817749,Corvus monedula_Eurasian Jackdaw
+2025-06-24_12-24-27,3.0,6.0,Eurasian Jackdaw,Corvus monedula,0.8925819396972656,Corvus monedula_Eurasian Jackdaw
+2025-06-24_12-24-27,6.0,9.0,Eurasian Jackdaw,Corvus monedula,0.4063747823238373,Corvus monedula_Eurasian Jackdaw
+2025-06-24_12-24-27,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.7779636979103088,Corvus monedula_Eurasian Jackdaw
+2025-06-24_12-25-58,3.0,6.0,Common House-Martin,Delichon urbicum,0.6144376993179321,Delichon urbicum_Common House-Martin
+2025-06-24_12-25-58,18.0,21.0,European Goldfinch,Carduelis carduelis,0.4151862859725952,Carduelis carduelis_European Goldfinch
+2025-06-24_12-26-13,3.0,6.0,European Goldfinch,Carduelis carduelis,0.44346773624420166,Carduelis carduelis_European Goldfinch
+2025-06-24_12-26-13,15.0,18.0,Eurasian Tree Sparrow,Passer montanus,0.46205437183380127,Passer montanus_Eurasian Tree Sparrow
+2025-06-24_12-26-28,0.0,3.0,Eurasian Tree Sparrow,Passer montanus,0.46205437183380127,Passer montanus_Eurasian Tree Sparrow
+2025-06-24_12-30-19,15.0,18.0,Eurasian Blackbird,Turdus merula,0.7995054721832275,Turdus merula_Eurasian Blackbird
+2025-06-25_11-11-33,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.7048149704933167,Corvus monedula_Eurasian Jackdaw
+2025-06-25_11-11-33,18.0,21.0,Eurasian Jackdaw,Corvus monedula,0.595759391784668,Corvus monedula_Eurasian Jackdaw
+2025-06-25_11-16-10,12.0,15.0,Eurasian Jackdaw,Corvus monedula,0.3491824269294739,Corvus monedula_Eurasian Jackdaw
+2025-06-25_11-16-10,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.5458423495292664,Corvus monedula_Eurasian Jackdaw

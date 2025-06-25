@@ -20,14 +20,15 @@ class SegmentSaver:
             config (dict): Configuration dictionary containing paths and audio settings.
             
         Attributes:
-            segments_dir (Path): Directory where audio segments will be saved.
-            sample_rate (int): Sample rate of the audio.
-            channels (int): Number of audio channels.
+            segments_dir (Path): Directory where audio segments will be saved. Default is "pi/data/segments".
+            sample_rate (int): Sample rate of the audio. Default is 48000 Hz.
+            channels (int): Number of audio channels. Default is 1 (mono).
+            sampwidth (int): Sample width in bytes. Default is 2 bytes (16-bit audio).
         """
-        self.segments_dir = config.get("segments_dir", Path("pi\data\segments")).resolve()
+        self.segments_dir = Path(config.get("segments_dir", "pi/data/segments")).resolve()
         self.sample_rate = config.get("sample_rate", 48000)
         self.channels = config.get("channels", 1)
-        self.sampwidth=2
+        self.sampwidth = config.get("sample_width", 2)  
 
 
     def save(self, segment, filename):
@@ -41,10 +42,14 @@ class SegmentSaver:
         filepath = self.segments_dir / f"{filename}.wav"
         print(f"Saving segment to {filepath}...")
         
-        with wave.open(str(filepath), 'wb') as wf:
-            wf.setnchannels(self.channels)
-            wf.setsampwidth(self.sampwidth)
-            wf.setframerate(self.sample_rate)
-            wf.writeframes(segment.tobytes())
+        try :
+            with wave.open(str(filepath), 'wb') as wf:
+                wf.setnchannels(self.channels)
+                wf.setsampwidth(self.sampwidth)
+                wf.setframerate(self.sample_rate)
+                wf.writeframes(segment.tobytes())
+        except Exception as e:
+            print(f"Error saving segment {filename}: {e}")
+            return
             
         print(f"Saved segment: {filepath}")
