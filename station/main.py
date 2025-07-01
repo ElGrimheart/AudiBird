@@ -7,50 +7,54 @@ from analysis import Analyser, DetectionLogger
 
 if __name__ == "__main__":
     
-    ## Loading configuration from YAML file and initializing components
-    config_path = Path(__file__).parent / "config" / "audio.yaml"
-    with open(config_path, "r") as f:
-        main_config = yaml.safe_load(f)
+    
+    def load_yaml_config(file_path):
+        """Load YAML configuration from a file."""
+        with open(file_path, "r") as file:
+            return yaml.safe_load(file)
+    
+    local_config = load_yaml_config('config/local_config.yaml')
+    remote_config = load_yaml_config('config/remote_config.yaml')
         
         
     audio_capture_config = {
-        "sample_rate": main_config["audio_capture"]["sample_rate"],
-        "channels": main_config["audio_capture"]["channels"],
-        "dtype": main_config["audio_capture"]["dtype"],        
+        "sample_rate": local_config["audio_capture"]["sample_rate"],
+        "channels": local_config["audio_capture"]["channels"],
+        "dtype": local_config["audio_capture"]["dtype"],        
     }
 
     segmenter_config = {
-        "sample_rate": main_config["audio_capture"]["sample_rate"],
-        "segment_duration": main_config["segments"]["duration"],
-        "segment_overlap": main_config["segments"]["overlap"]
+        "sample_rate": local_config["audio_capture"]["sample_rate"],
+        "segment_duration": remote_config["detection_config"]["segment_duration"],
+        "segment_overlap": remote_config["detection_config"]["segment_overlap"]
     }
 
     segment_saver_config = {
-        "segments_dir": main_config["paths"]["segments_dir"],
-        "sample_rate": main_config["audio_capture"]["sample_rate"],
-        "channels": main_config["audio_capture"]["channels"],
-        "sample_width": main_config["segments"]["sample_width"]
+        "segments_dir": local_config["paths"]["segments_dir"],
+        "sample_rate": local_config["audio_capture"]["sample_rate"],
+        "channels": local_config["audio_capture"]["channels"],
+        "sample_width": local_config["audio_capture"]["sample_width"]
     }
     
     livestream_config = {
-        "sample_rate": main_config["audio_capture"]["sample_rate"],
-        "channels": main_config["audio_capture"]["channels"],
-        "dtype": main_config["audio_capture"]["dtype"],
-        "output_device": main_config["livestream"]["output_device"]
+        "sample_rate": local_config["audio_capture"]["sample_rate"],
+        "channels": local_config["audio_capture"]["channels"],
+        "dtype": local_config["audio_capture"]["dtype"],
+        "output_device": local_config["livestream"]["output_device"]
     }
     
     analyser_config = {
-        "segments_dir": main_config["paths"]["segments_dir"],
-        "lat": main_config["station"]["lat"],
-        "lon": main_config["station"]["lon"],
-        "min_conf": main_config["birdnet"]["min_confidence"],
-        "detections_log": main_config["paths"]["detections_log"]
+        "segments_dir": local_config["paths"]["segments_dir"],
+        "lat": remote_config["station"]["location"]["lat"],
+        "lon": remote_config["station"]["location"]["lon"],
+        "min_conf": remote_config["detection_config"]["min_confidence"],
+        "detections_log": local_config["paths"]["detections_log"]
     }
     
     segmenter = Segmenter(segmenter_config)
     segment_saver = SegmentSaver(segment_saver_config)
     livestream = LiveStream(livestream_config)
-    detection_logger = DetectionLogger(main_config["paths"]["detections_log"])
+    detection_logger = DetectionLogger(local_config["paths"]["detections_log"])
     analyser = Analyser(analyser_config, detection_logger)
     
     

@@ -1,0 +1,13 @@
+station:
+    id: "149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+    station_name: "Development Station"
+    location:
+      lat: 54.607868
+      lon: -5.926437
+      desc: "Back garden, Belfast, Northern Ireland"
+
+detection_config:
+    min_confidence: 0.25
+    high_confidence_threshold: 0.5
+    segment_duration: 20
+    segment_overlap: 5

@@ -1,0 +1,18 @@
+db_api:
+    url: "http://localhost:3002/"
+    api_key: "c069c1fb-aa87-4ac6-8359-15dafa25bb2d"
+
+paths:
+    segments_dir: "data/segments"
+    detections_dir: "data/detections"
+    logs_dir: "data/logs"
+    detections_log: "data/detections/detections.csv"
+
+livestream:
+    output_device: "default"
+
+audio_capture:
+    sample_rate: 48000
+    channels: 1
+    dtype: int16
+    sample_width: 2
