@@ -13,12 +13,17 @@ birdnet:
     high_confidence: 0.75
 
 station:
-    station_id: "default_station"
+    id: "149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+    station_name: "Development Station"
     lat: 54.607868
     lon: -5.926437
 
 livestream:
     output_device: "default"
+    
+db_api:
+    url: "http://localhost:3002/"
+    api_key: "c069c1fb-aa87-4ac6-8359-15dafa25bb2d"
 
 paths:
     segments_dir: "station/data/segments"
