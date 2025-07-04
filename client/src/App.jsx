@@ -1,42 +1,18 @@
-import React, { useState } from 'react';
-
-import Toast from 'react-bootstrap/Toast';
+import { Routes, Route } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-
-import './App.css';
-import BasicExample from './Navbar';
-import Detection from './Detection';
-
-const ExampleToast = ({ children }) => {
-  const [show, toggleShow] = useState(true);
-
-  return (
-    <>
-      {!show && <Button onClick={() => toggleShow(true)}>Show Toast</Button>}
-      <Toast show={show} onClose={() => toggleShow(false)}>
-        <Toast.Header>
-          <strong className="mr-auto">React-Bootstrap</strong>
-        </Toast.Header>
-        <Toast.Body>{children}</Toast.Body>
-      </Toast>
-    </>
-  );
-};
+import MainNavbar from './components/common/MainNavbar';
+import Dashboard from './pages/Dashboard';
+import Detections from './pages/Detections';
+import PageNotFound from './pages/404';
 
 const App = () => (
-  <Container className="p-3">
-    <BasicExample />
-    <Container className="p-5 mb-4 bg-light rounded-3">
-      <h1 className="header">Welcome To React-Bootstrap</h1>
-      <ExampleToast>
-        We now have Toasts
-        <span role="img" aria-label="tada">
-          🎉
-        </span>
-      </ExampleToast>
-    </Container>
-    <Detection />
+  <Container fluid className="p-2">
+    <MainNavbar />
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/detections" element={<Detections />} />
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
   </Container>
 );
 

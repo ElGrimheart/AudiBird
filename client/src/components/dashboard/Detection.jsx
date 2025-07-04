@@ -7,7 +7,7 @@ function Detection() {
 
   const getDetections = async (stationId) => {
   try {
-    const response = await axios.get(`http://localhost:3002/api/stations/${stationId}/detections`);
+    const response = await axios.get(`http://localhost:3002/api/stations/${stationId}/detections/all`);
     setDetections(response.data.result || []);
   } catch (error) {
     console.error('Failed to fetch detections:', error);
