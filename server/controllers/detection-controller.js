@@ -253,7 +253,8 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
         max_confidence,
         limit,
         offset,
-        sort
+        sort = 'desc',
+        sort_by = 'detection_time' // new param, default to detection_time
     } = req.query;
 
     // Check if station exists
@@ -268,6 +269,8 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
     let values = [stationId];
     let idx = 2;
 
+    // ...existing filters...
+
     // Date filters
     if (from) {
         whereClauses.push(`detection_time >= $${idx}`);
@@ -280,7 +283,7 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
         idx++;
     }
 
-    // Species filter (matches common or scientific name)
+    // Species filter (searches both common_name and scientific_name)
     if (species) {
         whereClauses.push(`(common_name ILIKE $${idx} OR scientific_name ILIKE $${idx})`);
         values.push(`%${species}%`);
@@ -288,23 +291,34 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
     }
 
     // Confidence filters
-    if (min_confidence) {
+    if (min_confidence !== undefined && min_confidence !== '' && !isNaN(Number(min_confidence))) {
         whereClauses.push(`confidence >= $${idx}`);
-        values.push(min_confidence);
+        values.push(Number(min_confidence/100));
         idx++;
     }
-    if (max_confidence) {
+    if (max_confidence !== undefined && max_confidence !== '' && !isNaN(Number(max_confidence))) {
         whereClauses.push(`confidence <= $${idx}`);
-        values.push(max_confidence);
+        values.push(Number(max_confidence/100));
         idx++;
     }
 
-    // Sorting
-    const order = sort.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+    // Allowed columns for sorting
+    const sortableColumns = ['detection_time', 'confidence', 'common_name', 'scientific_name'];
+
+    let sortBy = req.query.sort_by ? req.query.sort_by.split(',') : ['detection_time'];
+    let sortDir = req.query.sort ? req.query.sort.split(',') : ['desc'];
+
+    // Build ORDER BY clause
+    const orderByParts = sortBy.map((col, i) => {
+        const column = sortableColumns.includes(col) ? col : 'detection_time';
+        const dir = (sortDir[i] || sortDir[0] || 'desc').toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+        return `${column} ${dir}`;
+    });
+    const orderByClause = orderByParts.length ? `ORDER BY ${orderByParts.join(', ')}` : '';
 
     // Pagination
-    const lim = Math.max(parseInt(limit), 1);
-    const off = Math.max(parseInt(offset), 0);
+    const lim = Math.max(parseInt(limit) || 50, 1);
+    const off = Math.max(parseInt(offset) || 0, 0);
 
     const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
@@ -312,12 +326,13 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
         SELECT *
         FROM detection
         ${whereSQL}
-        ORDER BY detection_time ${order}
+        ${orderByClause}
         LIMIT $${idx}
         OFFSET $${idx + 1}
     `;
     values.push(lim, off);
 
+    console.log(`Filtering detections for Station ID: ${stationId} with SQL: ${sql}`);
     try {
         const result = await db.query(sql, values);
         res.status(200).json({
