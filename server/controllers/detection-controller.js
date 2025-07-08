@@ -122,4 +122,5 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
         });
     } catch (err) {
         handleError(res, err, `Error retrieving filtered detections for Station ID: ${stationId}`);
-};
+    };
+}
