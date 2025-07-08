@@ -1,7 +1,10 @@
 import express from 'express';
 import * as detectionController from '../../controllers/detection-controller.js';
+import verifyStationId from '../../middleware/verifyStationId.js';
 
 const stationrouter = express.Router();
+
+stationrouter.use('/:stationId', verifyStationId);
 
 stationrouter.get('/:stationId/detections/all', detectionController.getAllDetectionsByStationId);
 stationrouter.get('/:stationId/detections/recent', detectionController.getRecentDetectionsByStationId);

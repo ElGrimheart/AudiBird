@@ -1,351 +1,125 @@
-import db from "../config/db-conn.js";
+import * as detectionService from "../services/detection-service.js";
 
-// Utility function to check if a station exists
-export const stationExists = async (stationId) => {
-    const stationSQL = `SELECT 1 FROM station WHERE id=$1`;
-    const result = await db.query(stationSQL, [stationId]);
-    return result.rowCount > 0;
-};
+function handleError(res, err, message, status = 500) {
+    console.error(message, err);
+    res.status(status).json({
+        status: "error",
+        message,
+        error: err.message || err
+    });
+}
 
+function logAction(action, details) {
+    console.log(`${action}:`, details);
+}
 
-// GET /api/:stationId/detections/:detectionId route - retrieves a specific detection by ID for a given station
+// GET /api/:stationId/detections/:detectionId route - retrieves a specific detection by ID
 export const getDetectionById = async (req, res) => {
     const { stationId, detectionId } = req.params;
-
-    console.log(`Retrieving detection ID: ${detectionId} for Station ID: ${stationId}`);
-
-    if (!(await stationExists(stationId))) {
-        return res.status(404).json({
-            status: "failure",
-            message: `Station ID: ${stationId} not found`
-        });
-    }
-
-    const detectionSQL = 
-        `SELECT * FROM detection
-        WHERE station_id=$1 AND id=$2`;
+    
+    logAction("Retrieving detection", { stationId, detectionId });
 
     try {
-        const result = await db.query(detectionSQL, [stationId, detectionId]);
-        if (result.rowCount === 0) {
-            return res.status(404).json({
+        const detection = await detectionService.getDetectionById(stationId, detectionId);
+        if (detection) {
+            res.status(200).json({
+                status: "success",
+                message: `Detection ID: ${detectionId} retrieved`,
+                result: detection
+            });
+        } else {
+            res.status(404).json({
                 status: "failure",
-                message: `Detection ID: ${detectionId} not found for Station ID: ${stationId}`
+                message: `Detection ID: ${detectionId} not found`
             });
         }
-        const detection = result.rows[0];
-        res.status(200).json({
-            status: "success",
-            message: `Detection ID: ${detectionId} retrieved`,
-            result: detection
-        });
     } catch (err) {
-        console.error(`Error retrieving detection by ID: ${err.message}`);
-        res.status(500).json({
-            status: "error",
-            message: `Error retrieving detection ID: ${detectionId} for Station ID: ${stationId}`,
-            error: err.message
-        });
+        handleError(res, err, `Error retrieving detection for ID: ${detectionId}`);
     }
 };
 
 // GET /api/:stationId/detections/all route - retrieves all detections for a given station
 export const getAllDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
-    console.log(`Retrieving detections for Station ID: ${stationId}`);
-
-    if (!(await stationExists(stationId))) {
-        return res.status(404).json({
-            status: "failure",
-            message: `Station ID: ${stationId} not found`
-        });
-    }
-
-    const detectionsByStationSQL = 
-        `SELECT * FROM detection 
-        WHERE station_id=$1`;
+    logAction("Retrieving all detections for", { stationId });
 
     try {
-        const result = await db.query(detectionsByStationSQL, [stationId]);
-        const rows = result.rows;
+        const rows = await detectionService.getAllDetectionsByStationId(stationId);
         res.status(200).json({
             status: "success",
             message: `All detections for Station ID: ${stationId} retrieved`,
             result: rows
         });
     } catch (err) {
-        console.error(`Error retrieving detections by station ID: ${err.message}`);
-        res.status(500).json({
-            status: "error",
-            message: `Error retrieving detections for Station ID: ${stationId}`,
-            error: err.message
-        });
+        handleError(res, err, `Error retrieving detection for Station ID: ${stationId}`);
     }
 };
 
 // GET /api/:stationId/detections/recent route - retrieves 10 most recent detections for a given station
 export const getRecentDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
-
-    if (!(await stationExists(stationId))) {
-        return res.status(404).json({
-            status: "failure",
-            message: `Station ID: ${stationId} not found`
-        });
-        
-    }
-
-    const recentDetectionsSQL = 
-        `SELECT * FROM detection 
-        WHERE station_id=$1 
-        ORDER BY detection_time DESC 
-        LIMIT 10`;
+    logAction("Retrieving recent detections for", { stationId });
 
     try {
-        const result = await db.query(recentDetectionsSQL, [stationId]);
-        const rows = result.rows;
+        const rows = await detectionService.getRecentDetectionsByStationId(stationId);
         res.status(200).json({
             status: "success",
             message: `Recent detections for Station ID: ${stationId} retrieved`,
             result: rows
         });
     } catch (err) {
-        console.error(`Error retrieving recent detections by station ID: ${err.message}`);
-        res.status(500).json({
-            status: "error",
-            message: `Error retrieving recent detections for Station ID: ${stationId}`,
-            error: err.message
-        });
+        handleError(res, err, `Error retrieving recent detections for Station ID: ${stationId}`);
     }
 };
 
-
+// GET /api/:stationId/detections/common route - retrieves the most common species detected at a given station
 export const getMostCommonSpeciesByStationId = async (req, res) => {
     const { stationId } = req.params;
-
-    if (!(await stationExists(stationId))) {
-        return res.status(404).json({
-            status: "failure",
-            message: `Station ID: ${stationId} not found`
-        });
-    }
-
-    const mostCommonSpeciesSQL = `
-        SELECT common_name, COUNT(*) as count
-        FROM detection
-        WHERE station_id=$1
-        GROUP BY common_name
-        ORDER BY count DESC
-        LIMIT 5`;
+    logAction("Retrieving most common species for", { stationId });
 
     try {
-        const result = await db.query(mostCommonSpeciesSQL, [stationId]);
-        const rows = result.rows;
+        const rows = await detectionService.getMostCommonSpeciesByStationId(stationId);
         res.status(200).json({
             status: "success",
             message: `Most common species for Station ID: ${stationId} retrieved`,
             result: rows
         });
     } catch (err) {
-        console.error(`Error retrieving most common species by station ID: ${err.message}`);
-        res.status(500).json({
-            status: "error",
-            message: `Error retrieving most common species for Station ID: ${stationId}`,
-            error: err.message
-        });
+        handleError(res, err, `Error retrieving common species for Station ID: ${stationId}`);
     }
 }
 
+// GET /api/:stationId/detections/summary route - retrieves a summary of detections for a given station
 export const getDetectionSummaryByStationId = async (req, res) => {
     const { stationId } = req.params;
     const { from, to, species } = req.query;
-
-    const filters = [];
-    const values = [stationId];
-
-    let whereClause = 'WHERE station_id = $1';
-
-    // Apply date filters
-    if (from) {
-        values.push(from);
-        filters.push(`detection_time >= $${values.length}`);
-    }
-
-    if (to) {
-        values.push(to);
-        filters.push(`detection_time <= $${values.length}`);
-    }
-
-    // Apply species filter
-    if (species) {
-        values.push(`%${species}%`);
-        filters.push(`(common_name ILIKE $${values.length} OR scientific_name ILIKE $${values.length})`);
-    }
-
-    if (filters.length > 0) {
-        whereClause += ' AND ' + filters.join(' AND ');
-    }
+    logAction("Retrieving detection summary for", { stationId, from, to, species });
 
     try {
-        // Total detections
-        const totalDetections = await db.query(
-        `SELECT COUNT(*) FROM detection ${whereClause}`,
-        values
-        );
-
-        // Total distinct species
-        const totalSpecies = await db.query(
-        `SELECT COUNT(DISTINCT common_name) FROM detection ${whereClause}`,
-        values
-        );
-
-        // Detections today
-        const detectionsToday = await db.query(
-        `SELECT COUNT(*) FROM detection 
-        ${whereClause} AND detection_time >= CURRENT_DATE`,
-        values
-        );
-
-        // Species today
-        const speciesToday = await db.query(
-        `SELECT COUNT(DISTINCT common_name) FROM detection 
-        ${whereClause} AND detection_time >= CURRENT_DATE`,
-        values
-        );
-
-        // Detections in the last hour
-        const detectionsLastHour = await db.query(
-        `SELECT COUNT(*) FROM detection 
-        ${whereClause} AND detection_time >= NOW() - INTERVAL '1 hour'`,
-        values
-        );
-
-        // Species in the last hour
-        const speciesLastHour = await db.query(
-        `SELECT COUNT(DISTINCT common_name) FROM detection 
-        ${whereClause} AND detection_time >= NOW() - INTERVAL '1 hour'`,
-        values
-        );
-
-
-        // Return summary
-        res.json({
-        total_detections: parseInt(totalDetections.rows[0].count),
-        total_species: parseInt(totalSpecies.rows[0].count),
-        detections_today: parseInt(detectionsToday.rows[0].count),
-        species_today: parseInt(speciesToday.rows[0].count),
-        detections_last_hour: parseInt(detectionsLastHour.rows[0].count),
-        species_last_hour: parseInt(speciesLastHour.rows[0].count),
-        });
-    } catch (error) {
-        console.error('Error fetching summary:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-export const getFilteredDetectionsByStationId = async (req, res) => {
-    const { stationId } = req.params;
-    const {
-        from,
-        to,
-        species,
-        min_confidence,
-        max_confidence,
-        limit,
-        offset,
-        sort = 'desc',
-        sort_by = 'detection_time' // new param, default to detection_time
-    } = req.query;
-
-    // Check if station exists
-    if (!(await stationExists(stationId))) {
-        return res.status(404).json({
-            status: "failure",
-            message: `Station ID: ${stationId} not found`
-        });
-    }
-
-    let whereClauses = ['station_id = $1'];
-    let values = [stationId];
-    let idx = 2;
-
-    // ...existing filters...
-
-    // Date filters
-    if (from) {
-        whereClauses.push(`detection_time >= $${idx}`);
-        values.push(from);
-        idx++;
-    }
-    if (to) {
-        whereClauses.push(`detection_time <= $${idx}`);
-        values.push(to);
-        idx++;
-    }
-
-    // Species filter (searches both common_name and scientific_name)
-    if (species) {
-        whereClauses.push(`(common_name ILIKE $${idx} OR scientific_name ILIKE $${idx})`);
-        values.push(`%${species}%`);
-        idx++;
-    }
-
-    // Confidence filters
-    if (min_confidence !== undefined && min_confidence !== '' && !isNaN(Number(min_confidence))) {
-        whereClauses.push(`confidence >= $${idx}`);
-        values.push(Number(min_confidence/100));
-        idx++;
-    }
-    if (max_confidence !== undefined && max_confidence !== '' && !isNaN(Number(max_confidence))) {
-        whereClauses.push(`confidence <= $${idx}`);
-        values.push(Number(max_confidence/100));
-        idx++;
-    }
-
-    // Allowed columns for sorting
-    const sortableColumns = ['detection_time', 'confidence', 'common_name', 'scientific_name'];
-
-    let sortBy = req.query.sort_by ? req.query.sort_by.split(',') : ['detection_time'];
-    let sortDir = req.query.sort ? req.query.sort.split(',') : ['desc'];
-
-    // Build ORDER BY clause
-    const orderByParts = sortBy.map((col, i) => {
-        const column = sortableColumns.includes(col) ? col : 'detection_time';
-        const dir = (sortDir[i] || sortDir[0] || 'desc').toLowerCase() === 'asc' ? 'ASC' : 'DESC';
-        return `${column} ${dir}`;
-    });
-    const orderByClause = orderByParts.length ? `ORDER BY ${orderByParts.join(', ')}` : '';
-
-    // Pagination
-    const lim = Math.max(parseInt(limit) || 50, 1);
-    const off = Math.max(parseInt(offset) || 0, 0);
-
-    const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
-
-    const sql = `
-        SELECT *
-        FROM detection
-        ${whereSQL}
-        ${orderByClause}
-        LIMIT $${idx}
-        OFFSET $${idx + 1}
-    `;
-    values.push(lim, off);
-
-    console.log(`Filtering detections for Station ID: ${stationId} with SQL: ${sql}`);
-    try {
-        const result = await db.query(sql, values);
+        const rows = await detectionService.getDetectionSummaryByStationId(stationId, { from, to, species });
         res.status(200).json({
             status: "success",
-            message: `Filtered detections for Station ID: ${stationId} retrieved`,
-            result: result.rows
+            message: `Detection summary for Station ID: ${stationId} retrieved`,
+            result: rows
+        });
+    } catch (error) {
+        handleError(res, err, `Error retrieving detection summary for Station ID: ${stationId}`);
+    }
+};
+
+// GET /api/:stationId/detections/?filters route - retrieves detections for a given station with various filters
+export const getFilteredDetectionsByStationId = async (req, res) => {
+    const { stationId } = req.params;
+    const { from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by} = req.query;
+    logAction("Retrieving filtered detections for", { stationId, from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by });
+
+    try {
+        const rows = await detectionService.getFilteredDetectionsByStationId(stationId,{ from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by });
+        res.status(200).json({
+            status: "success",
+            message: `${rows.length} records retrieved`,
+            result: rows
         });
     } catch (err) {
-        console.error(`Error filtering detections: ${err.message}`);
-        res.status(500).json({
-            status: "error",
-            message: "Internal server error",
-            error: err.message
-        });
-    }
-}
+        handleError(res, err, `Error retrieving filtered detections for Station ID: ${stationId}`);
+};

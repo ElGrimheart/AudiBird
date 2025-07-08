@@ -16,7 +16,7 @@ const DetectionsContent = () => {
         species: '',
         min_confidence: '',
         max_confidence: '',
-        sort_by: 'detection_time',
+        sort_by: 'detection_timestamp',
         sort: 'desc'
     });
 
@@ -155,7 +155,7 @@ const DetectionsContent = () => {
                             value={filters.sort_by}
                             onChange={handleFilterChange}
                         >
-                            <option value="detection_time">Detection Time</option>
+                            <option value="detection_timestamp">Detection Time</option>
                             <option value="confidence">Confidence</option>
                             <option value="common_name">Species Name</option>
                         </Form.Select>
@@ -178,9 +178,9 @@ const DetectionsContent = () => {
             </Sidebar>
             <Accordion>
                 {detections.map(detection => (
-                    <Accordion.Item eventKey={detection.id} key={detection.id}>
+                    <Accordion.Item eventKey={detection.detection_id} key={detection.detection_id}>
                         <Accordion.Header>
-                            {detection.common_name}, {formatStringToDate(detection.detection_time)}
+                            {detection.common_name}, {formatStringToDate(detection.detection_timestamp)}
                         </Accordion.Header>
                         <Accordion.Body>
                             {/* Detection details, audio, metadata, etc. */}

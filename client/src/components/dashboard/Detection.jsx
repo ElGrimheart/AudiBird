@@ -29,7 +29,7 @@ function Detection() {
           {detections.map((detection, index) => (
             <li key={index}>
               <p>Station ID: {detection.station_id}</p>
-              <p>Detection Time: {new Date(detection.detection_time).toLocaleString()}</p>
+              <p>Detection Time: {new Date(detection.detection_timestamp).toLocaleString()}</p>
               <p>Species: {detection.common_name}</p>
               <p>Confidence: {detection.confidence}</p>
             </li>
