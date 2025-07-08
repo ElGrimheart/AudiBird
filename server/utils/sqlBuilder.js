@@ -1,6 +1,6 @@
 // Utility class for constructing SQL queries for detection data
 
-// Builds a WHERE clause based on provided filters
+// Builds a WHERE clause based on the filters passed
 export function buildDetectionWhereClause(stationId, { from, to, species, min_confidence, max_confidence }) {
     const filters = [];
     const values = [stationId];
@@ -34,7 +34,7 @@ export function buildDetectionWhereClause(stationId, { from, to, species, min_co
     return { whereClause, values };
 }
 
-// Builds an ORDER BY clause based on provided parameters
+// Builds an ORDER BY clause based on the parameters passed
 export function buildDetectionSortClause(sort_by, sort, allowedColumns = ['detection_timestamp', 'confidence', 'common_name', 'scientific_name'], defaultColumn = 'detection_timestamp') {
     let sortByArr = sort_by ? sort_by.split(',') : [defaultColumn];
     let sortDirArr = sort ? sort.split(',') : ['desc'];
