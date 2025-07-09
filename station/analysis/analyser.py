@@ -33,7 +33,7 @@ class Analyser:
         self.running = False
 
 
-    def analyse_segment(self, filename):
+    def analyse_segment(self, filename, audio_metadata):
         """Analyses a single audio segment file and logs any detections.
         
         Args:
@@ -46,7 +46,7 @@ class Analyser:
             str(filepath),
             lat=self.lat,
             lon=self.lon,
-            date=datetime.now(),  
+            date=datetime.strptime(filename, "%Y%m%d_%H%M%S_%f"),
             min_conf=self.min_conf
         )
         recording.analyze()
@@ -55,10 +55,12 @@ class Analyser:
         
         # Log each detection found in the recording
         for detection in recording.detections:
-            self._log_detection(filename, detection)
+            self._log_detection(filename, detection, audio_metadata)
+            self._post_detection(detection, audio_metadata)
+            
 
 
-    def _log_detection(self, filename, detection):
+    def _log_detection(self, filename, detection, audio_metadata):
         """Logs a detection to the detection logger.
         
         Args:
@@ -66,16 +68,28 @@ class Analyser:
             detection (dict): Detection data to log.
         """
         
-        self.detection_logger.log(filename, detection)
+        self.detection_logger.log(filename, detection, audio_metadata)
+        
+        
+    def _post_detection(self, detection, audio_metadata):
+        """Posts a detection to the remote database API.
+        
+        Args:
+            detection (dict): Detection data to post.
+            audio_metadata (dict): Metadata about the audio segment.
+        """
+        
+        self.detection_logger.post_detection(detection, audio_metadata)
+        
 
 
-    def add_segment(self, filename):
+    def add_segment(self, filename, audio_metdata):
         """Adds a segment filename to the analysis queue.
         Args:
             filename (str): Name of the audio segment file to add to the queue.
         """
         
-        self.analysis_queue.put(filename)
+        self.analysis_queue.put((filename, audio_metdata))
         print(f"Segment {filename} added to analysis queue.")
 
     def start(self):
@@ -91,8 +105,8 @@ class Analyser:
         self.running = True
         while self.running:
             try:
-                filename = self.analysis_queue.get(timeout=1)
-                self.analyse_segment(filename)
+                filename, audio_metadata = self.analysis_queue.get(timeout=1)
+                self.analyse_segment(filename, audio_metadata)
                 self.analysis_queue.task_done()
             except queue.Empty:
                 continue

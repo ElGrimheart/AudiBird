@@ -120,3 +120,26 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
     const result = await db.query(sql, values);
     return result.rows;
 }
+
+
+// Creates a new detection in the database
+export async function createDetection(stationId, detectionData) {
+    const sql = `
+        INSERT INTO detection (common_name, scientific_name, confidence, detection_timestamp, audio_metadata, processing_metadata, station_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *
+    `;
+
+    const values = [
+        detectionData.common_name,
+        detectionData.scientific_name,
+        detectionData.confidence,
+        detectionData.detection_timestamp || new Date(),
+        detectionData.audio_metadata,
+        detectionData.processing_metadata,
+        stationId
+    ];
+
+    const result = await db.query(sql, values);
+    return result.rows[0];
+}

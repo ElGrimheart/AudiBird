@@ -82,7 +82,7 @@ class AudioCapture:
                 
                 self.segmenter.append_audio(indata)  
                 for segment in self.segmenter.get_segments():
-                    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
                     self.segments_queue.put((segment, timestamp))
                 
                 
@@ -130,13 +130,24 @@ class AudioCapture:
                 segment, timestamp = self.segments_queue.get(timeout=1) #timeout to prevent blocking indefinitely
                 self.segment_saver.save(segment, timestamp)
                 if self.on_segment_ready:
-                    self.on_segment_ready(timestamp)  # Notify listeners that a segment is ready
+                    self.on_segment_ready(timestamp, self.collect_metadata())  # Notify listeners that a segment is ready
                 self.segments_queue.task_done()
             except queue.Empty:
                 continue
             except Exception as e:
                 print(f"Error saving segment: {e}")
-            
+    
+    def collect_metadata(self):
+        """Collects metadata for the audio segments.
+        
+        Returns:
+            dict: Metadata dictionary containing sample rate, channels, and duration.
+        """
+        return {
+            "sample_rate": self.sample_rate,
+            "channels": self.channels,
+            "duration": self.segmenter.segment_duration
+        }
     
     def stop(self):
         """Stops the audio capture and processes any remaining segments in the queue.

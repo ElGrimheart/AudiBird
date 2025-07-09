@@ -4,14 +4,9 @@ from pathlib import Path
 import threading
 from audio_capture import AudioCapture, LiveStream, Segmenter, SegmentSaver
 from analysis import Analyser, DetectionLogger
+from utils.config_loader import load_yaml_config
 
 if __name__ == "__main__":
-    
-    
-    def load_yaml_config(file_path):
-        """Load YAML configuration from a file."""
-        with open(file_path, "r") as file:
-            return yaml.safe_load(file)
     
     local_config = load_yaml_config('config/local_config.yaml')
     remote_config = load_yaml_config('config/remote_config.yaml')
@@ -48,7 +43,10 @@ if __name__ == "__main__":
         "lat": remote_config["station"]["location"]["lat"],
         "lon": remote_config["station"]["location"]["lon"],
         "min_conf": remote_config["detection_config"]["min_confidence"],
-        "detections_log": local_config["paths"]["detections_log"]
+        "detections_log": local_config["paths"]["detections_log"],
+        "api_url": local_config["db_api"]["url"],
+        "api_key": local_config["db_api"]["api_key"],
+        "post_detection_route": local_config["db_api"]["routes"]["post_detection"]
     }
     
     segmenter = Segmenter(segmenter_config)
@@ -59,8 +57,8 @@ if __name__ == "__main__":
     
     
     # Callback function to handle when a segment is ready for analysis
-    def on_segment_ready(filename):
-        analyser.add_segment(filename)
+    def on_segment_ready(filename, audio_metadata):
+        analyser.add_segment(filename, audio_metadata)
     
     audio_capture = AudioCapture(
         audio_capture_config,

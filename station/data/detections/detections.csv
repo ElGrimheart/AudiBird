@@ -1,21 +1,7 @@
-filename,start_time,end_time,common_name,scientific_name,confidence,label
-2025-06-24_12-24-12,12.0,15.0,Eurasian Jackdaw,Corvus monedula,0.8413039445877075,Corvus monedula_Eurasian Jackdaw
-2025-06-24_12-24-12,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.741718053817749,Corvus monedula_Eurasian Jackdaw
-2025-06-24_12-24-12,18.0,21.0,Eurasian Jackdaw,Corvus monedula,0.8340663313865662,Corvus monedula_Eurasian Jackdaw
-2025-06-24_12-24-27,0.0,3.0,Eurasian Jackdaw,Corvus monedula,0.741718053817749,Corvus monedula_Eurasian Jackdaw
-2025-06-24_12-24-27,3.0,6.0,Eurasian Jackdaw,Corvus monedula,0.8925819396972656,Corvus monedula_Eurasian Jackdaw
-2025-06-24_12-24-27,6.0,9.0,Eurasian Jackdaw,Corvus monedula,0.4063747823238373,Corvus monedula_Eurasian Jackdaw
-2025-06-24_12-24-27,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.7779636979103088,Corvus monedula_Eurasian Jackdaw
-2025-06-24_12-25-58,3.0,6.0,Common House-Martin,Delichon urbicum,0.6144376993179321,Delichon urbicum_Common House-Martin
-2025-06-24_12-25-58,18.0,21.0,European Goldfinch,Carduelis carduelis,0.4151862859725952,Carduelis carduelis_European Goldfinch
-2025-06-24_12-26-13,3.0,6.0,European Goldfinch,Carduelis carduelis,0.44346773624420166,Carduelis carduelis_European Goldfinch
-2025-06-24_12-26-13,15.0,18.0,Eurasian Tree Sparrow,Passer montanus,0.46205437183380127,Passer montanus_Eurasian Tree Sparrow
-2025-06-24_12-26-28,0.0,3.0,Eurasian Tree Sparrow,Passer montanus,0.46205437183380127,Passer montanus_Eurasian Tree Sparrow
-2025-06-24_12-30-19,15.0,18.0,Eurasian Blackbird,Turdus merula,0.7995054721832275,Turdus merula_Eurasian Blackbird
-2025-06-25_11-11-33,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.7048149704933167,Corvus monedula_Eurasian Jackdaw
-2025-06-25_11-11-33,18.0,21.0,Eurasian Jackdaw,Corvus monedula,0.595759391784668,Corvus monedula_Eurasian Jackdaw
-2025-06-25_11-16-10,12.0,15.0,Eurasian Jackdaw,Corvus monedula,0.3491824269294739,Corvus monedula_Eurasian Jackdaw
-2025-06-25_11-16-10,15.0,18.0,Eurasian Jackdaw,Corvus monedula,0.5458423495292664,Corvus monedula_Eurasian Jackdaw
-2025-07-01_10-43-33,3.0,6.0,Eurasian Jackdaw,Corvus monedula,0.6092907786369324,Corvus monedula_Eurasian Jackdaw
-2025-07-01_10-43-33,6.0,9.0,Eurasian Jackdaw,Corvus monedula,0.8023195862770081,Corvus monedula_Eurasian Jackdaw
-2025-07-01_10-43-33,9.0,12.0,Eurasian Jackdaw,Corvus monedula,0.8803233504295349,Corvus monedula_Eurasian Jackdaw
+filename,start_time,end_time,common_name,scientific_name,confidence,detection_timestamp,audio_metadata,processing_metadata,station_id
+20250709_165123_556940,3.0,6.0,Eurasian Jackdaw,Corvus monedula,0.41935810446739197,2025-07-09 16:51:23.556940,"{""sample_rate"": 48000, ""channels"": 1, ""duration"": 20}"
+20250709_171421_824629,0.0,3.0,Eurasian Jackdaw,Corvus monedula,0.6389291882514954,2025-07-09 17:14:21.824629,"{""sample_rate"": 48000, ""channels"": 1, ""duration"": 20}"
+20250709_171436_824308,6.0,9.0,Eurasian Jackdaw,Corvus monedula,0.2872020900249481,2025-07-09 17:14:36.824308,"{""sample_rate"": 48000, ""channels"": 1, ""duration"": 20}"
+20250709_171732_001451,6.0,9.0,Eurasian Jackdaw,Corvus monedula,0.6926915049552917,2025-07-09 17:17:32.001451,"{""sample_rate"": 48000, ""channels"": 1, ""duration"": 20}"
+20250709_171732_001451,9.0,12.0,Eurasian Jackdaw,Corvus monedula,0.6066389083862305,2025-07-09 17:17:32.001451,"{""sample_rate"": 48000, ""channels"": 1, ""duration"": 20}"
+20250709_171732_001451,12.0,15.0,Eurasian Jackdaw,Corvus monedula,0.3572141230106354,2025-07-09 17:17:32.001451,"{""sample_rate"": 48000, ""channels"": 1, ""duration"": 20}"
