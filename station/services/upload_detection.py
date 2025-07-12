@@ -6,7 +6,7 @@ local_config = load_yaml_config('config/local_config.yaml')
 remote_config = load_yaml_config('config/remote_config.yaml')
 
 
-def post_detection(detection, audio_metadata, processing_metadata):
+def upload_detection(detection, station_metadata, audio_metadata, processing_metadata):
     """Posts detection data to the remote database API.
 
     Args:
@@ -29,6 +29,7 @@ def post_detection(detection, audio_metadata, processing_metadata):
             "scientific_name": detection.get("scientific_name"),
             "confidence": detection.get("confidence"),
             "detection_timestamp": detection.get("detection_timestamp"),
+            "station_metadata": station_metadata,
             "audio_metadata": audio_metadata,
             "processing_metadata": processing_metadata
         }

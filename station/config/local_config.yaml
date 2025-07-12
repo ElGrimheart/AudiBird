@@ -18,3 +18,7 @@ audio_capture:
     channels: 1
     dtype: int16
     sample_width: 2
+
+birdnet:
+    model: "BirdNet-Analyser"
+    version: "v2.4"

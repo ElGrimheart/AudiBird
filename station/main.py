@@ -2,15 +2,38 @@
 import yaml
 from pathlib import Path
 import threading
+from utils.config_loader import load_yaml_config
 from audio_capture import AudioCapture, LiveStream, Segmenter, SegmentSaver
 from analysis import Analyser, DetectionLogger
-from utils.config_loader import load_yaml_config
+from services.upload_detection import upload_detection
+
 
 if __name__ == "__main__":
     
     local_config = load_yaml_config('config/local_config.yaml')
     remote_config = load_yaml_config('config/remote_config.yaml')
-        
+    
+    station_metadata = {
+        "station_name": remote_config["station"]["station_name"],
+        "lat": remote_config["station"]["location"]["lat"],
+        "lon": remote_config["station"]["location"]["lon"],
+        "description": remote_config["station"]["location"]["desc"]
+    }
+    
+    audio_metadata = {
+        "duration": remote_config["detection_config"]["segment_duration"],
+        "channels": local_config["audio_capture"]["channels"],
+        "sample_rate": local_config["audio_capture"]["sample_rate"],
+        "sample_width": local_config["audio_capture"]["sample_width"],
+        "dtype": local_config["audio_capture"]["dtype"]
+    }
+    
+    processing_metadata = {
+        "model_name": local_config["birdnet"]["model"] + " " + local_config["birdnet"]["version"],
+        "min_confidence": remote_config["detection_config"]["min_confidence"],
+        "segment_duration": remote_config["detection_config"]["segment_duration"],
+        "segment_overlap": remote_config["detection_config"]["segment_overlap"]
+    }
         
     audio_capture_config = {
         "sample_rate": local_config["audio_capture"]["sample_rate"],
@@ -49,16 +72,26 @@ if __name__ == "__main__":
         "post_detection_route": local_config["db_api"]["routes"]["post_detection"]
     }
     
+    detection_logger_config = {
+        "detections_log": local_config["paths"]["detections_log"],
+        "station_metadata": station_metadata,
+        "audio_metadata": audio_metadata,
+        "processing_metadata": processing_metadata
+    }
+    
     segmenter = Segmenter(segmenter_config)
     segment_saver = SegmentSaver(segment_saver_config)
     livestream = LiveStream(livestream_config)
-    detection_logger = DetectionLogger(local_config["paths"]["detections_log"])
+    detection_logger = DetectionLogger(detection_logger_config)
     analyser = Analyser(analyser_config, detection_logger)
     
     
     # Callback function to handle when a segment is ready for analysis
-    def on_segment_ready(filename, audio_metadata, processing_metadata):
-        analyser.add_segment(filename, audio_metadata, processing_metadata)
+    def on_segment_ready(filename):
+        detections = analyser.analyse_segment(filename)
+        for detection in detections:
+            detection_logger.log(filename, detection)
+            upload_detection(detection, station_metadata, audio_metadata, processing_metadata)
     
     audio_capture = AudioCapture(
         audio_capture_config,

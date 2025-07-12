@@ -28,12 +28,11 @@ class Analyser:
         self.birdnet_analyzer = BirdnetAnalyzer()  
         self.analysis_queue = queue.Queue()
         self.segments_dir = Path(config.get("segments_dir", "pi/data/segments")).resolve()
-        self.detection_logger = detection_logger
         
         self.running = False
 
 
-    def analyse_segment(self, filename, audio_metadata, processing_metadata):
+    def analyse_segment(self, filename):
         """Analyses a single audio segment file and logs any detections.
         
         Args:
@@ -52,64 +51,18 @@ class Analyser:
         recording.analyze()
         print(recording.detections)
         
-        _updated_processing_metadata = self._update_processing_metadata(processing_metadata)
-        
-        # Log each detection found in the recording
-        for detection in recording.detections:
-            self._log_detection(filename, detection, audio_metadata, _updated_processing_metadata)
-            self._post_detection(detection, audio_metadata, _updated_processing_metadata)
-            
-
-
-    def _log_detection(self, filename, detection, audio_metadata, processing_metadata):
-        """Logs a detection to the detection logger.
-        
-        Args:
-            filename (str): Name of the audio segment file.
-            detection (dict): Detection data to log.
-        """
-        
-        self.detection_logger.log(filename, detection, audio_metadata, processing_metadata)
-        
-        
-    def _post_detection(self, detection, audio_metadata, processing_metadata):
-        """Posts a detection to the remote database API.
-        
-        Args:
-            detection (dict): Detection data to post.
-            audio_metadata (dict): Metadata about the audio segment.
-        """
-        
-        self.detection_logger.post_detection(detection, audio_metadata, processing_metadata)
+        return recording.detections
         
 
 
-    def add_segment(self, filename, audio_metdata, processing_metadata):
+    def add_segment(self, filename):
         """Adds a segment filename to the analysis queue.
         Args:
             filename (str): Name of the audio segment file to add to the queue.
         """
         
-        self.analysis_queue.put((filename, audio_metdata, processing_metadata))
+        self.analysis_queue.put(filename)
         print(f"Segment {filename} added to analysis queue.")
-        
-    
-    def _update_processing_metadata(self, processing_metadata):
-        """Collects metadata about the processing configuration.
-        
-        Returns:
-            dict: Metadata about the processing configuration.
-        """
-        
-        config_metadata = {
-            "model": "BirdNet",
-            "version": "v.2.4",
-            "lat": self.lat,
-            "lon": self.lon,
-            "min_confidence": self.min_conf,
-        }
-        
-        return {**config_metadata, **processing_metadata}  
     
 
     def start(self):

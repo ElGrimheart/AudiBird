@@ -30,7 +30,6 @@ class Segmenter:
         self.sample_rate = config.get("sample_rate", 48000)
         self.segment_duration = config.get("segment_duration", 60)
         self.overlap = config.get("segment_overlap", 0)
-        self.sampwidth = config.get("sample_width", 2)
         self.samples_per_segment = int(self.sample_rate * self.segment_duration)
         self.samples_overlap = int(self.sample_rate * self.overlap)
         

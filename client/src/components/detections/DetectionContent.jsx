@@ -180,7 +180,7 @@ const DetectionsContent = () => {
                 {detections.map(detection => (
                     <Accordion.Item eventKey={detection.detection_id} key={detection.detection_id}>
                         <Accordion.Header>
-                            {detection.common_name}, {formatStringToDate(detection.detection_timestamp)}
+                            {detection.common_name}, {detection.scientific_name}, {formatStringToDate(detection.detection_timestamp)}
                         </Accordion.Header>
                         <Accordion.Body>
                             {/* Detection details, audio, metadata, etc. */}
@@ -196,6 +196,12 @@ const DetectionsContent = () => {
                                         {key}: {value}
                                     </p>
                                 ))}
+                                {detection.station_metadata && Object.entries(detection.station_metadata).map(([key, value]) => (
+                                    <p key={key}>
+                                        {key}: {value}
+                                    </p>
+                                ))}
+                                
                             </div>
                             {/* Add more details as needed */}
                         </Accordion.Body>
