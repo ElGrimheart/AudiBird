@@ -181,6 +181,7 @@ const DetectionsContent = () => {
                     <Accordion.Item eventKey={detection.detection_id} key={detection.detection_id}>
                         <Accordion.Header>
                             {detection.common_name}, {detection.scientific_name}, {formatStringToDate(detection.detection_timestamp)}
+                            <audio controls src={`http://localhost:3002/api/audio/${detection.audio_id}`}/>
                         </Accordion.Header>
                         <Accordion.Body>
                             {/* Detection details, audio, metadata, etc. */}

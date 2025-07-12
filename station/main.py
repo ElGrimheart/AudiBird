@@ -91,7 +91,7 @@ if __name__ == "__main__":
         detections = analyser.analyse_segment(filename)
         for detection in detections:
             detection_logger.log(filename, detection)
-            upload_detection(detection, station_metadata, audio_metadata, processing_metadata)
+            upload_detection(filename, detection, station_metadata, audio_metadata, processing_metadata)
     
     audio_capture = AudioCapture(
         audio_capture_config,

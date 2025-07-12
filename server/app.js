@@ -4,6 +4,7 @@ import 'dotenv/config';
 import cors from 'cors';
 import userrouter from './routes/api/user-routes.js';
 import stationrouter from './routes/api/station-routes.js';
+import audiorouter from './routes/api/audio-routes.js';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userrouter);
 app.use('/api/stations', stationrouter);
+app.use('/api/audio', audiorouter);
 
 
 export default app;

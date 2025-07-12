@@ -6,7 +6,7 @@ local_config = load_yaml_config('config/local_config.yaml')
 remote_config = load_yaml_config('config/remote_config.yaml')
 
 
-def upload_detection(detection, station_metadata, audio_metadata, processing_metadata):
+def upload_detection(filename, detection, station_metadata, audio_metadata, processing_metadata):
     """Posts detection data to the remote database API.
 
     Args:
@@ -19,6 +19,8 @@ def upload_detection(detection, station_metadata, audio_metadata, processing_met
     api_url = local_config['db_api']['url']
     station_id = remote_config['station']['id']
     detection_route = local_config['db_api']['routes']['post_detection']
+    
+    segment_path = local_config['paths']['segments_dir'] + '/' + filename + '.wav'
 
     post_detection_route = api_url + station_id + detection_route
 
@@ -31,7 +33,8 @@ def upload_detection(detection, station_metadata, audio_metadata, processing_met
             "detection_timestamp": detection.get("detection_timestamp"),
             "station_metadata": station_metadata,
             "audio_metadata": audio_metadata,
-            "processing_metadata": processing_metadata
+            "processing_metadata": processing_metadata,
+            "audio_path": segment_path
         }
     )
 

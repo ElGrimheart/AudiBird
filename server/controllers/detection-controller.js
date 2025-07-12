@@ -1,3 +1,4 @@
+import { io } from "../server.js";
 import * as detectionService from "../services/detection-service.js";
 import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
@@ -123,6 +124,10 @@ export const createDetection = async (req, res) => {
 
     try {
         const newDetection = await detectionService.createDetection(stationId, detectionData);
+
+        // Emit a socket event to notify clients of the new detection
+        io.emit("newDetection");
+
         res.status(201).json({
             status: "success",
             message: `New detection created for Station ID: ${stationId}`,

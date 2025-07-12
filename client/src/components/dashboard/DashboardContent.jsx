@@ -2,6 +2,7 @@
 import React, { useState, useEffect} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 import StationCard from './StationCard';
 import AudioPlayerCard from './AudioPlayerCard';
 import RecentDetectionsCard from './RecentDetectionsCard';
@@ -9,11 +10,14 @@ import TopSpeciesCard from './TopSpeciesCard';
 import ActivityCard from './ActivityCard';
 import SummaryCard from './SummaryCard';
 
+const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f'; // Example station ID
+
 const DashboardContent = () => {
 
     const [recentDetections, setRecentDetections] = useState([]);
 
-    const getRecentDetections = async (stationId) => {
+    useEffect(() => {
+        const getRecentDetections = async () => {
         try {
             const response = await axios.get(`http://localhost:3002/api/stations/${stationId}/detections/recent`);
             setRecentDetections(response.data.result || []);
@@ -21,11 +25,21 @@ const DashboardContent = () => {
             console.error('Failed to fetch detections:', error);
             setRecentDetections([]);
         }
-    }
+    };
 
-    useEffect(() => {
-        const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f'; // Example station ID
-        getRecentDetections(stationId);
+    getRecentDetections();
+        
+    // Socket.io setup
+        const socket = io("http://localhost:3002");
+        socket.on("newDetection", () => {
+            getRecentDetections();
+        });
+
+        // Cleanup on unmount
+        return () => {
+            socket.off("newDetection");
+            socket.disconnect();
+        };
     }, []);
 
 

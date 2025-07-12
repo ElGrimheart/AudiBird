@@ -29,7 +29,9 @@ export async function getAllDetectionsByStationId(stationId) {
 // Retrieves the most recent 10 detections for a given station ID
 export async function getRecentDetectionsByStationId(stationId) {
     const sql = 
-        `SELECT * FROM detection 
+        `SELECT * 
+        FROM detection 
+        JOIN audio ON detection.detection_id = audio.detection_id
         WHERE station_id=$1 
         ORDER BY detection_timestamp DESC 
         LIMIT 10`;
@@ -110,6 +112,7 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
     const sql = `
         SELECT *
         FROM detection
+        JOIN audio ON detection.detection_id = audio.detection_id
         ${whereClause}
         ${orderByClause}
         LIMIT $${values.length + 1}
@@ -124,13 +127,14 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
 
 // Creates a new detection in the database
 export async function createDetection(stationId, detectionData) {
-    const sql = `
+
+    const detectionSql = `
         INSERT INTO detection (common_name, scientific_name, confidence, detection_timestamp, station_metadata, audio_metadata, processing_metadata, station_id)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *
     `;
 
-    const values = [
+    const detectionValues = [
         detectionData.common_name,
         detectionData.scientific_name,
         detectionData.confidence,
@@ -141,6 +145,28 @@ export async function createDetection(stationId, detectionData) {
         stationId
     ];
 
-    const result = await db.query(sql, values);
-    return result.rows[0];
+    const audioSql = `
+        INSERT INTO audio (file_path, detection_id)
+        VALUES ($1, $2)
+    `;
+
+    try {
+        await db.query('BEGIN');
+
+        const response = await db.query(detectionSql, detectionValues);
+        const newDetectionId = response.rows[0];
+
+        await db.query(audioSql, [
+            detectionData.audio_path,
+            newDetectionId.detection_id
+        ]);
+
+        await db.query('COMMIT');
+        return newDetectionId;
+
+    } catch (err) {
+        await db.query('ROLLBACK');
+        console.error("Error creating detection:", err);
+        throw err;
+    } 
 }
