@@ -16,8 +16,7 @@ class DetectionLogger:
                     "scientific_name", "confidence", "detection_timestamp", "audio_metadata", "processing_metadata", "station_id"
                 ])
 
-    def log(self, filename, detection, audio_metadata):
-        print("audio_metadata:", audio_metadata, type(audio_metadata))
+    def log(self, filename, detection, audio_metadata, processing_metadata):
         with open(self.log_path, "a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([
@@ -28,12 +27,13 @@ class DetectionLogger:
                 detection.get("scientific_name"),
                 detection.get("confidence"),
                 datetime.strptime(filename, "%Y%m%d_%H%M%S_%f"),
-                json.dumps(audio_metadata)
+                json.dumps(audio_metadata),
+                json.dumps(processing_metadata)
             ])
         print(f"Detection logged for {filename}: {detection.get('common_name')} ({detection.get('confidence')})")
         
         
-    def post_detection(self, detection, audio_metadata):
+    def post_detection(self, detection, audio_metadata, processing_metadata):
         """Posts a detection to the remote database API.
 
         Args:
@@ -43,4 +43,4 @@ class DetectionLogger:
         Returns:
             dict: The response from the API.
         """
-        post_detection(detection, audio_metadata)
+        post_detection(detection, audio_metadata, processing_metadata)

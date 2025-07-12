@@ -130,23 +130,36 @@ class AudioCapture:
                 segment, timestamp = self.segments_queue.get(timeout=1) #timeout to prevent blocking indefinitely
                 self.segment_saver.save(segment, timestamp)
                 if self.on_segment_ready:
-                    self.on_segment_ready(timestamp, self.collect_metadata())  # Notify listeners that a segment is ready
+                    self.on_segment_ready(timestamp, self._collect_audio_metadata(), self._collect_processing_metadata())  # Notify listeners that a segment is ready
                 self.segments_queue.task_done()
             except queue.Empty:
                 continue
             except Exception as e:
                 print(f"Error saving segment: {e}")
     
-    def collect_metadata(self):
+    def _collect_audio_metadata(self):
         """Collects metadata for the audio segments.
         
         Returns:
             dict: Metadata dictionary containing sample rate, channels, and duration.
         """
         return {
-            "sample_rate": self.sample_rate,
+            "duration": self.segmenter.segment_duration,
             "channels": self.channels,
-            "duration": self.segmenter.segment_duration
+            "sample_rate": self.sample_rate,
+            "sample_width": self.segmenter.sampwidth,
+            "dtype": self.dtype
+        }
+        
+    def _collect_processing_metadata(self):
+        """Collects metadata about the processing configuration.
+        
+        Returns:
+            dict: Metadata about the processing configuration.
+        """
+        return {
+            "segment_duration": self.segmenter.segment_duration,
+            "segment_overlap": self.segmenter.overlap
         }
     
     def stop(self):

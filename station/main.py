@@ -57,8 +57,8 @@ if __name__ == "__main__":
     
     
     # Callback function to handle when a segment is ready for analysis
-    def on_segment_ready(filename, audio_metadata):
-        analyser.add_segment(filename, audio_metadata)
+    def on_segment_ready(filename, audio_metadata, processing_metadata):
+        analyser.add_segment(filename, audio_metadata, processing_metadata)
     
     audio_capture = AudioCapture(
         audio_capture_config,

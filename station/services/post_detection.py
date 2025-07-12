@@ -6,7 +6,7 @@ local_config = load_yaml_config('config/local_config.yaml')
 remote_config = load_yaml_config('config/remote_config.yaml')
 
 
-def post_detection(detection,audio_metadata):
+def post_detection(detection, audio_metadata, processing_metadata):
     """Posts detection data to the remote database API.
 
     Args:
@@ -30,7 +30,7 @@ def post_detection(detection,audio_metadata):
             "confidence": detection.get("confidence"),
             "detection_timestamp": detection.get("detection_timestamp"),
             "audio_metadata": audio_metadata,
-            "processing_metadata": {"method":"BirdNet"}
+            "processing_metadata": processing_metadata
         }
     )
 

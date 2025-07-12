@@ -186,8 +186,16 @@ const DetectionsContent = () => {
                             {/* Detection details, audio, metadata, etc. */}
                             <div>
                                 <p>Confidence: {Math.round(detection.confidence * 100)}%</p>
-                                <p>Duration: {detection.audio_metadata.duration}</p>
-                                <p>Processed by: {detection.processing_metadata.method}</p>
+                                {Object.entries(detection.audio_metadata).map(([key, value]) => (
+                                    <p key={key}>
+                                        {key}: {value}
+                                    </p>
+                                ))}
+                                {Object.entries(detection.processing_metadata).map(([key, value]) => (
+                                    <p key={key}>
+                                        {key}: {value}
+                                    </p>
+                                ))}
                             </div>
                             {/* Add more details as needed */}
                         </Accordion.Body>
