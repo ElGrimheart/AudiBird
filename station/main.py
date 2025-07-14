@@ -3,7 +3,7 @@ import yaml
 from pathlib import Path
 import threading
 from utils.config_loader import load_yaml_config
-from audio_capture import AudioCapture, LiveStream, Segmenter, SegmentSaver
+from audio_capture import AudioCapture, WebSocketStream, Segmenter, SegmentSaver
 from analysis import Analyser, DetectionLogger
 from services.upload_detection import upload_detection
 
@@ -54,13 +54,6 @@ if __name__ == "__main__":
         "sample_width": local_config["audio_capture"]["sample_width"]
     }
     
-    livestream_config = {
-        "sample_rate": local_config["audio_capture"]["sample_rate"],
-        "channels": local_config["audio_capture"]["channels"],
-        "dtype": local_config["audio_capture"]["dtype"],
-        "output_device": local_config["livestream"]["output_device"]
-    }
-    
     analyser_config = {
         "segments_dir": local_config["paths"]["segments_dir"],
         "lat": remote_config["station"]["location"]["lat"],
@@ -81,7 +74,7 @@ if __name__ == "__main__":
     
     segmenter = Segmenter(segmenter_config)
     segment_saver = SegmentSaver(segment_saver_config)
-    livestream = LiveStream(livestream_config)
+    websocket_stream = WebSocketStream(local_config["websocket_stream"]["url"])
     detection_logger = DetectionLogger(detection_logger_config)
     analyser = Analyser(analyser_config, detection_logger)
     
@@ -100,11 +93,8 @@ if __name__ == "__main__":
         on_segment_ready=on_segment_ready
     )
     
-    
-    """
-    livestream.start()  # Start livestream audio playback
-    audio_capture.add_listener(livestream.play_audio)  # Add livestream as a listener to audio capture
-    """
+    # Add WebsocketStream as a listener to send audio data to server
+    audio_capture.add_listener(websocket_stream.send_audio)
     
     # Starting analyser in separate thread
     threading.Thread(target=analyser.start, daemon=True).start()

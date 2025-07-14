@@ -1,9 +1,12 @@
 import { createServer } from 'http';
 import { Server } from "socket.io";
 import app from './app.js';
+import stationStreamHandler from './sockets/station-stream-handler.js';
 
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
+
+stationStreamHandler(io);
 
 server.listen(process.env.PORT, (error) => {
     if (error) {

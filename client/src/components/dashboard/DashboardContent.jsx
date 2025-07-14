@@ -1,10 +1,10 @@
 //import React from 'react';
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 import StationCard from './StationCard';
-import AudioPlayerCard from './AudioPlayerCard';
+import MicStreamCard from './MicStreamCard';
 import RecentDetectionsCard from './RecentDetectionsCard';
 import TopSpeciesCard from './TopSpeciesCard';
 import ActivityCard from './ActivityCard';
@@ -15,22 +15,26 @@ const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f'; // Example station ID
 const DashboardContent = () => {
 
     const [recentDetections, setRecentDetections] = useState([]);
+    const [isStreamPlaying, setIsStreamPlaying] = useState(false);
+    const streamRef = useRef(null);
 
     useEffect(() => {
         const getRecentDetections = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3002/api/stations/${stationId}/detections/recent`);
-            setRecentDetections(response.data.result || []);
-        } catch (error) {
-            console.error('Failed to fetch detections:', error);
-            setRecentDetections([]);
-        }
-    };
+            try {
+                const response = await axios.get(`http://localhost:3002/api/stations/${stationId}/detections/recent`);
+                setRecentDetections(response.data.result || []);
+            } catch (error) {
+                console.error('Failed to fetch detections:', error);
+                setRecentDetections([]);
+            }
+        };
 
-    getRecentDetections();
-        
-    // Socket.io setup
+        getRecentDetections();
+
+        // Socket.io setup for detections
         const socket = io("http://localhost:3002");
+        streamRef.current = socket;
+
         socket.on("newDetection", () => {
             getRecentDetections();
         });
@@ -43,6 +47,11 @@ const DashboardContent = () => {
     }, []);
 
 
+    // Stream handlers
+    const handleStreamPlay = () => setIsStreamPlaying(true);
+    const handleStreamPause = () => setIsStreamPlaying(false);
+
+
     return (
         <Container fluid className="p-4">
             {/* Row 1: Station Status + Audio Player */}
@@ -51,7 +60,12 @@ const DashboardContent = () => {
                     <StationCard station={{ name: "Station 1", description: "Main field station", isActive: true }} />
                 </Col>
                 <Col md={6}>
-                    <AudioPlayerCard audioFile={{ name: "Sample Audio", duration: "3:45" }} />
+                    <MicStreamCard
+                        socket={streamRef.current}
+                        isPlaying={isStreamPlaying}
+                        onPlay={handleStreamPlay}
+                        onPause={handleStreamPause}
+                    />
                 </Col>
             </Row>
 

@@ -48,13 +48,11 @@ class AudioCapture:
         self.listeners = []     
         
         self.running = False   
-        
-        """
-        self.listeners = []  # List to hold listeners for live audio blocks
+      
       
     def add_listener(self, callback):
         self.listeners.append(callback)
-    """
+    
         
     def start(self, device=None):
         """Starts continuous audio capture from the microphone.
@@ -75,11 +73,11 @@ class AudioCapture:
             """Callback function to process audio data in real-time."""
             if self.running:
                 
-                """
+                # Notify listeners with the live audio block
                 for listener in self.listeners:
                     listener(indata.copy())
-                """
                 
+                # Append audio data to the segmenter
                 self.segmenter.append_audio(indata)  
                 for segment in self.segmenter.get_segments():
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")

@@ -16,7 +16,7 @@ export async function getAudioById(audioId, rangeHeader) {
 
     // return the audio stream
     const { file_path } = result.rows[0];
-    const stationUrl = `http://192.168.0.37:4000/recordings/${file_path}`;
+    const stationUrl = `http://192.168.0.47:4000/recordings/${file_path}`;
 
     const streamResponse = await axios.get(stationUrl, {
         responseType: "stream",

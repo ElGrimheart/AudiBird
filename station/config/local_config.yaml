@@ -1,5 +1,5 @@
 db_api:
-    url: "http://localhost:3002/api/stations/"
+    url: "http://192.168.0.37:3002/api/stations/"
     api_key: "c069c1fb-aa87-4ac6-8359-15dafa25bb2d"
     routes:
         post_detection: "/detections/"
@@ -10,8 +10,8 @@ paths:
     logs_dir: "data/logs"
     detections_log: "data/detections/detections.csv"
 
-livestream:
-    output_device: "default"
+websocket_stream:
+    url: "http://192.168.0.37:3002"
 
 audio_capture:
     sample_rate: 48000
