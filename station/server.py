@@ -2,12 +2,9 @@ import os
 from flask import Flask, send_from_directory, abort
 from utils.config_loader import load_yaml_config
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-config_path = os.path.join(BASE_DIR, "config", "local_config.yaml")
-local_config = load_yaml_config(config_path)
-
 app = Flask(__name__)
-segment_dir = os.path.join(BASE_DIR, local_config['paths']['segments_dir'])
+
+local_config = load_yaml_config('config/local_config.yaml')
 
 @app.route('/recordings/<path:filename>')
 def serve_audio(filename):
