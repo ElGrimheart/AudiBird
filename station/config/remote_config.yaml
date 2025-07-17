@@ -9,5 +9,5 @@ station:
 detection_config:
     min_confidence: 0.25
     high_confidence_threshold: 0.5
-    segment_duration: 20
-    segment_overlap: 5
+    segment_duration: 10
+    segment_overlap: 0

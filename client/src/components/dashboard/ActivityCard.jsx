@@ -27,7 +27,7 @@ const ActivityCard = ({ chartData }) => {
     // Fallback if chartData is missing or malformed
     if (!chartData || !chartData.datasets) {
         return (
-            <DashboardCard title="Peak Activity Hours (Last 7 Days)">
+            <DashboardCard title="Average Activity Per Hour (Last 7 Days)">
                 No data available
             </DashboardCard>
         );
@@ -67,7 +67,7 @@ const ActivityCard = ({ chartData }) => {
     };
 
     return (
-        <DashboardCard title="Peak Activity Hours (Last 7 Days)">
+        <DashboardCard title="Average Activity Per Hour (Last 7 Days)">
             <Line data={chartData} options={options} />
         </DashboardCard>
     );

@@ -51,6 +51,7 @@ class AudioCapture:
       
       
     def add_listener(self, callback):
+        """Adds a listener to receive live audio blocks."""
         self.listeners.append(callback)
     
         

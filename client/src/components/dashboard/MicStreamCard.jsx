@@ -1,7 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
 import DashboardCard from "./DashboardCard";
+import SocketContext from "../../contexts/SocketContext";
 
-const MicStreamCard = ({ socket, onPlay, onPause, isPlaying }) => {
+const MicStreamCard = ({ onPlay, onPause, isPlaying }) => {
+    const socketRef = useContext(SocketContext);
+    const socket = socketRef.current;
     const audioContextRef = useRef(null);
     const bufferQueueRef = useRef([]); // Buffer for incoming chunks
     const isPlayingRef = useRef(isPlaying);

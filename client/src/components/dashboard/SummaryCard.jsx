@@ -1,13 +1,19 @@
 import React from "react";
 import DashboardCard from "./DashboardCard";
 
-const SummaryCard = ({ label, value}) => {
+const SummaryCard = ({ stats }) => {
     return (
-        <DashboardCard title="Detection Summary">
-            <div className="text-center">
-                <h2 className="display-5 mb-0">{value}</h2>
-                <small className="text-muted">{label}</small>
-            </div>
+        <DashboardCard title="Overall Detection Summary">
+            <table className="table table-striped">
+                <tbody>
+                    {stats.map((stat, index) => (
+                        <tr key={index}>
+                            <td>{stat.label}</td>
+                            <td>{stat.value}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </DashboardCard>
     )
 }

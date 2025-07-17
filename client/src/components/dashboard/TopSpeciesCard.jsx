@@ -7,7 +7,7 @@ const TopSpeciesCard = ({ speciesList }) => {
             <ul className="list-unstyled mb-0">
                 {speciesList.map((s, i) => (
                 <li key={i}>
-                    <strong>{i + 1}. {s.name}</strong> — {s.count} detections
+                    <strong>{i + 1}. {s.common_name}</strong> — {s.count} detections
                 </li>
                 ))}
             </ul>

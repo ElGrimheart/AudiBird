@@ -72,6 +72,7 @@ if __name__ == "__main__":
         "processing_metadata": processing_metadata
     }
     
+    # Initialize components
     segmenter = Segmenter(segmenter_config)
     segment_saver = SegmentSaver(segment_saver_config)
     websocket_stream = WebSocketStream(local_config["websocket_stream"]["url"])
@@ -79,7 +80,7 @@ if __name__ == "__main__":
     analyser = Analyser(analyser_config, detection_logger)
     
     
-    # Callback function to handle when a segment is ready for analysis
+    # Callback function - handles when a segment is ready for analysis
     def on_segment_ready(filename):
         detections = analyser.analyse_segment(filename)
         for detection in detections:
@@ -93,11 +94,12 @@ if __name__ == "__main__":
         on_segment_ready=on_segment_ready
     )
     
-    # Add WebsocketStream as a listener to send audio data to server
+    # Adding websocket stream as a listener to the audio capture component
     audio_capture.add_listener(websocket_stream.send_audio)
     
-    # Starting analyser in separate thread
+    # Start analyser in separate thread
     threading.Thread(target=analyser.start, daemon=True).start()
+    
     
     # Start audio capture
     audio_capture.start() 

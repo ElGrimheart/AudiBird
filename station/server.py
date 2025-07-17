@@ -4,16 +4,14 @@ from utils.config_loader import load_yaml_config
 
 app = Flask(__name__)
 
-local_config = load_yaml_config('config/local_config.yaml')
-
 @app.route('/recordings/<path:filename>')
-def serve_audio(filename):
-    file_path = filename
+def serve_audio(filepath):
+    file_name = os.path.basename(filepath)
+    file_dir = os.path.dirname(filepath)
 
-    if not os.path.exists(file_path):
-        abort(404, description=f"File {filename} not found.")
+    if not os.path.exists(filepath):
+        abort(404, description=f"File {filepath} not found.")
 
-    # Send the file directly
-    return send_from_directory(os.path.dirname(file_path), os.path.basename(file_path))
+    return send_from_directory(file_dir, file_name)
 
 app.run(host="0.0.0.0", port=4000)

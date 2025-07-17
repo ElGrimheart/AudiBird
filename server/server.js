@@ -8,7 +8,7 @@ const io = new Server(server, { cors: { origin: '*' } });
 
 stationStreamHandler(io);
 
-server.listen(process.env.PORT, (error) => {
+server.listen(process.env.PORT, '0.0.0.0', (error) => {
     if (error) {
         return console.log(`Error starting server: ${error.message}`);
     }
