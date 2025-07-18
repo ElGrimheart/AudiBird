@@ -13,7 +13,7 @@ const MainNavbar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/" end>Dashboard</Nav.Link>
+            <Nav.Link as={NavLink} to="/dashboard" end>Dashboard</Nav.Link>
             <Nav.Link as={NavLink} to="/detections">Detections</Nav.Link>
             <NavDropdown title="Settings" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Account</NavDropdown.Item>

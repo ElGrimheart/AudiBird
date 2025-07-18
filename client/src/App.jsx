@@ -6,6 +6,7 @@ import SocketContext from './contexts/SocketContext';
 import ToastNotification from "./components/common/ToastNotification";
 import Container from 'react-bootstrap/Container';
 import MainNavbar from './components/common/MainNavbar';
+import AuthPage from "./pages/AuthPage";
 import Dashboard from './pages/Dashboard';
 import Detections from './pages/Detections';
 import PageNotFound from './pages/PageNotFound';
@@ -29,7 +30,8 @@ const App = () => {
         <ToastContainer />
         <ToastNotification />
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<AuthPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/detections" element={<Detections />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
