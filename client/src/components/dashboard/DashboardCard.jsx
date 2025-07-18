@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 
+// DashboardCard component to encapsulate the common structure of cards used in the dashboard
 const DashboardCard = ({ title, children, footer }) => {
     return (
         <Card className="shadow-sm h-100">

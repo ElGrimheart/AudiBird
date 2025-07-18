@@ -1,3 +1,6 @@
+/* Utility functions to format dates and strings for display */
+
+// Formats an ISO date string to a DD MONTH YYYY HH:MM:SS format
 const formatStringToDate = (isoString) => {
     if (!isoString) 
         return "";
@@ -17,11 +20,14 @@ const formatStringToDate = (isoString) => {
     return `${date} ${time}`;
     };
 
+    
+// Converts a date string to a Date object
 const formatDateToString = (date) => {
     if (!(date instanceof Date)) 
         return "";
 
     return date.toISOString();
 }
+
 
 export { formatStringToDate, formatDateToString };

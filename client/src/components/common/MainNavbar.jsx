@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
+// MainNavbar component to render the top navigation bar on all pages
 const MainNavbar = () => {
   return (
     <Navbar expand="sm" className="bg-body-tertiary">

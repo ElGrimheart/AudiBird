@@ -1,8 +1,9 @@
-//import React from 'react';
-import React, { useState, useEffect, useContext} from 'react';
+import React, { useState, useContext} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import SocketContext from '../../contexts/SocketContext';
-import axios from 'axios';
+import useRecentDetections from '../../hooks/useRecentDetections';
+import useCommonSpecies from '../../hooks/useCommonSpecies';
+import useSummaryStats from '../../hooks/useSummaryStats.jsx';
 import StationCard from './StationCard';
 import MicStreamCard from './MicStreamCard';
 import RecentDetectionsCard from './RecentDetectionsCard';
@@ -11,78 +12,21 @@ import ActivityCard from './ActivityCard';
 import SummaryCard from './SummaryCard';
 
 const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f'; // Example station ID
-const API_URL = import.meta.env.VITE_API_URL
 
+// DashboardContent component to manage the dashboard layout and data fetching
 const DashboardContent = () => {
     const socketRef = useContext(SocketContext);
     const socket = socketRef.current;
+
+    // Card data hooks
+    const recentDetections = useRecentDetections(stationId, socket);
+    const commonSpecies = useCommonSpecies(stationId, socket);
+    const summaryStats = useSummaryStats(stationId, socket);
     
-    const [recentDetections, setRecentDetections] = useState([]);
-    const [commonSpecies, setCommonSpecies] = useState([]);
-    const [summaryStats, setSummaryStats] = useState([]);
-    const [isStreamPlaying, setIsStreamPlaying] = useState(false);
-
-    useEffect(() => {
-        const getRecentDetections = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/stations/${stationId}/detections/recent`);
-                setRecentDetections(response.data.result || []);
-            } catch (error) {
-                console.error('Failed to fetch detections:', error);
-                setRecentDetections([]);
-            }
-        };
-
-        const getCommonSpecies = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/stations/${stationId}/detections/common`);
-                setCommonSpecies(response.data.result || []);
-            } catch (error) {
-                console.error('Failed to fetch common species:', error);
-                setCommonSpecies([]);
-            }
-        };
-
-        const getSummaryStats = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/stations/${stationId}/detections/summary`);
-                const statsArr = Object.entries(response.data.result || {}).map(([key, value]) => ({
-                    label: key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
-                    value
-                }));
-            setSummaryStats(statsArr || []);
-            } catch (error) {
-                console.error('Failed to fetch summary stats:', error);
-                setSummaryStats([]);
-            }
-        };
-
-        getRecentDetections();
-        getCommonSpecies();
-        getSummaryStats();
-
-        if (!socket) return;
-
-        // Listen for new detection events
-        const handleNewDetection = () => {
-            getRecentDetections();
-            getCommonSpecies();
-            getSummaryStats();
-        };
-
-        socket.on("newDetection", handleNewDetection);
-
-        // Cleanup on unmount
-        return () => {
-            socket.off("newDetection", handleNewDetection);
-        };
-    }, [socket]);
-
-
     // Stream handlers
+    const [isStreamPlaying, setIsStreamPlaying] = useState(false);
     const handleStreamPlay = () => setIsStreamPlaying(true);
     const handleStreamPause = () => setIsStreamPlaying(false);
-
 
     return (
         <Container fluid className="p-4">
@@ -103,17 +47,17 @@ const DashboardContent = () => {
             {/* Row 2: Recent Detections + Top Species */}
             <Row className="mb-4">
                 <Col md={6}>
-                    <RecentDetectionsCard detectionList={recentDetections}/>
+                    <RecentDetectionsCard detectionsArray={recentDetections}/>
                 </Col>
                 <Col md={6}>
-                    <TopSpeciesCard speciesList={commonSpecies} />
+                    <TopSpeciesCard speciesArray={commonSpecies} />
                 </Col>
             </Row>
 
             {/* Row 3: Summary Stats Cards */}
             <Row>
                 <Col>
-                    <SummaryCard stats={summaryStats} />
+                    <SummaryCard statArray={summaryStats} />
                 </Col>
             </Row>
 
@@ -157,8 +101,7 @@ const DashboardContent = () => {
                 } />
                 </Col>
             </Row>
-
-            </Container>
+        </Container>
     )
 }
 

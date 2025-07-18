@@ -1,5 +1,6 @@
-import DetectionsContent from "../components/detections/DetectionContent";
+import DetectionsContent from "../components/detections/DetectionsContent";
 
+// Main entry point for the Detections page, rendering the DetectionsContent component.
 const Detections = () => {
     return (
         <DetectionsContent />

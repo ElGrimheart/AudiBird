@@ -1,16 +1,17 @@
 import React from "react";
 import DashboardCard from "./DashboardCard";
 
-const TopSpeciesCard = ({ speciesList }) => {
+// TopSpeciesCard component to display the most common species detected in a card format
+const TopSpeciesCard = ({ speciesArray }) => {
     return (
         <DashboardCard title="Most Common Species">
-            <ul className="list-unstyled mb-0">
-                {speciesList.map((s, i) => (
-                <li key={i}>
-                    <strong>{i + 1}. {s.common_name}</strong> — {s.count} detections
+            <ol className="list mb-0">
+                {speciesArray.map((species, index) => (
+                <li key={index}>
+                    <strong>{species.common_name}</strong> — {species.count} detections
                 </li>
                 ))}
-            </ul>
+            </ol>
     </DashboardCard>
     );
 };

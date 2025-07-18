@@ -30,8 +30,8 @@ export async function getAllDetectionsByStationId(stationId) {
 export async function getRecentDetectionsByStationId(stationId) {
     const sql = 
         `SELECT * 
-        FROM detection 
-        JOIN audio ON detection.detection_id = audio.detection_id
+        FROM detection
+        LEFT OUTER JOIN audio ON detection.audio_id = audio.audio_id
         WHERE station_id=$1 
         ORDER BY detection_timestamp DESC 
         LIMIT 10`;
@@ -88,12 +88,12 @@ export async function getDetectionSummaryByStationId(stationId, filters) {
     );
 
     return {
-        total_detections: parseInt(totalDetectionsResult.rows[0].count),
-        total_species: parseInt(totalSpeciesResult.rows[0].count),
-        detections_today: parseInt(detectionsTodayResult.rows[0].count),
-        species_today: parseInt(speciesTodayResult.rows[0].count),
-        detections_last_hour: parseInt(detectionsLastHourResult.rows[0].count),
-        species_last_hour: parseInt(speciesLastHourResult.rows[0].count),
+        "total detections": parseInt(totalDetectionsResult.rows[0].count),
+        "total species": parseInt(totalSpeciesResult.rows[0].count),
+        "detections today": parseInt(detectionsTodayResult.rows[0].count),
+        "species today": parseInt(speciesTodayResult.rows[0].count),
+        "detections last hour": parseInt(detectionsLastHourResult.rows[0].count),
+        "species last hour": parseInt(speciesLastHourResult.rows[0].count),
     };
 }
 
@@ -112,7 +112,7 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
     const sql = `
         SELECT *
         FROM detection
-        JOIN audio ON detection.detection_id = audio.detection_id
+        LEFT OUTER JOIN audio ON detection.audio_id = audio.audio_id
         ${whereClause}
         ${orderByClause}
         LIMIT $${values.length + 1}
@@ -128,45 +128,47 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
 // Creates a new detection in the database
 export async function createDetection(stationId, detectionData) {
 
-    const detectionSql = `
-        INSERT INTO detection (common_name, scientific_name, confidence, detection_timestamp, station_metadata, audio_metadata, processing_metadata, station_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING *
+    const audioSql = `
+        INSERT INTO audio (file_path)
+        VALUES ($1)
+        RETURNING audio_id
     `;
 
-    const detectionValues = [
-        detectionData.common_name,
-        detectionData.scientific_name,
-        detectionData.confidence,
-        detectionData.detection_timestamp || new Date(),
-        detectionData.station_metadata,
-        detectionData.audio_metadata,
-        detectionData.processing_metadata,
-        stationId
-    ];
-
-    const audioSql = `
-        INSERT INTO audio (file_path, detection_id)
-        VALUES ($1, $2)
+    const detectionSql = `
+        INSERT INTO detection (common_name, scientific_name, confidence, detection_timestamp, station_metadata, audio_metadata, processing_metadata, station_id, audio_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *
     `;
 
     try {
         await db.query('BEGIN');
 
-        const response = await db.query(detectionSql, detectionValues);
-        const newDetectionId = response.rows[0];
-
-        await db.query(audioSql, [
-            detectionData.audio_path,
-            newDetectionId.detection_id
+        const audioResponse = await db.query(audioSql, [
+            detectionData.audio_path
         ]);
+        const audioId = audioResponse.rows[0].audio_id;
+
+        const detectionValues = [
+            detectionData.common_name,
+            detectionData.scientific_name,
+            detectionData.confidence,
+            detectionData.detection_timestamp || new Date(),
+            detectionData.station_metadata,
+            detectionData.audio_metadata,
+            detectionData.processing_metadata,
+            stationId,
+            audioId
+        ];
+
+        const detectionResponse = await db.query(detectionSql, detectionValues);
+        const newDetection = detectionResponse.rows[0];
 
         await db.query('COMMIT');
-        return newDetectionId;
+        return newDetection;
 
     } catch (err) {
         await db.query('ROLLBACK');
         console.error("Error creating detection:", err);
         throw err;
-    } 
+    }
 }

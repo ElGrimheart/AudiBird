@@ -12,4 +12,4 @@ export async function comparePassword(password, hashedPassword) {
 }
 
 
-print(hashPassword("password123"));
+console.log(await hashPassword("Pa55w0rd789?£"));

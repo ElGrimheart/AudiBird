@@ -1,12 +1,13 @@
 import React from "react";
 import DashboardCard from "./DashboardCard";
 
-const SummaryCard = ({ stats }) => {
+// SummaryCard component to display overall detection statistics for a station in a card format
+const SummaryCard = ({ statArray }) => {
     return (
         <DashboardCard title="Overall Detection Summary">
             <table className="table table-striped">
                 <tbody>
-                    {stats.map((stat, index) => (
+                    {statArray.map((stat, index) => (
                         <tr key={index}>
                             <td>{stat.label}</td>
                             <td>{stat.value}</td>

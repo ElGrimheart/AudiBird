@@ -1,6 +1,7 @@
 import React from "react";
 import DashboardCard from "./DashboardCard";
 
+// StationCard component to display the status of a specific station
 const StationCard = ({ station }) => {
     return (
         <DashboardCard title="Station Status">
