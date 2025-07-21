@@ -13,8 +13,8 @@ export const getAudioById = async (req, res) => {
         // Setting response headers for audio streaming & piping stream to frontend
         res.set(streamResponse.headers);
         streamResponse.data.pipe(res);
-    } catch (err) {
-        if (err.message === "Audio not found") {
+    } catch (error) {
+        if (error.message === "Audio not found") {
             res.status(404).json({ error: "Audio not found" });
         } else {
             res.status(502).json({ error: "Failed to stream audio from station." });

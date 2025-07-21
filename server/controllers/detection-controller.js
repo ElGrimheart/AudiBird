@@ -14,7 +14,7 @@ export const getDetectionById = async (req, res) => {
         if (detection) {
             res.status(200).json({
                 status: "success",
-                message: `Detection ID: ${detectionId} retrieved`,
+                message: `Retrieved detection ID: ${detectionId}`,
                 result: detection
             });
         } else {
@@ -23,8 +23,8 @@ export const getDetectionById = async (req, res) => {
                 message: `Detection ID: ${detectionId} not found`
             });
         }
-    } catch (err) {
-        handleError(res, err, `Error retrieving detection for ID: ${detectionId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving detection ID: ${detectionId}`);
     }
 };
 
@@ -37,11 +37,11 @@ export const getAllDetectionsByStationId = async (req, res) => {
         const detections = await detectionService.getAllDetectionsByStationId(stationId);
         res.status(200).json({
             status: "success",
-            message: `All detections for Station ID: ${stationId} retrieved`,
+            message: `${detections.length} detections retrieved for Station ID: ${stationId}`,
             result: detections
         });
-    } catch (err) {
-        handleError(res, err, `Error retrieving detection for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving all detections for Station ID: ${stationId}`);
     }
 };
 
@@ -54,11 +54,11 @@ export const getRecentDetectionsByStationId = async (req, res) => {
         const recentDetections = await detectionService.getRecentDetectionsByStationId(stationId);
         res.status(200).json({
             status: "success",
-            message: `Recent detections for Station ID: ${stationId} retrieved`,
+            message: `Retrieved recent detections data for Station ID: ${stationId}`,
             result: recentDetections
         });
-    } catch (err) {
-        handleError(res, err, `Error retrieving recent detections for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving recent detections data for Station ID: ${stationId}`);
     }
 };
 
@@ -71,11 +71,11 @@ export const getMostCommonSpeciesByStationId = async (req, res) => {
         const commonSpecies = await detectionService.getMostCommonSpeciesByStationId(stationId);
         res.status(200).json({
             status: "success",
-            message: `Most common species for Station ID: ${stationId} retrieved`,
+            message: `Retrieved most common species data for Station ID: ${stationId}`,
             result: commonSpecies
         });
-    } catch (err) {
-        handleError(res, err, `Error retrieving common species for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving most common species data for Station ID: ${stationId}`);
     }
 }
 
@@ -89,11 +89,11 @@ export const getDetectionSummaryByStationId = async (req, res) => {
         const detectionSummary = await detectionService.getDetectionSummaryByStationId(stationId, { from, to, species });
         res.status(200).json({
             status: "success",
-            message: `Detection summary for Station ID: ${stationId} retrieved`,
+            message: `Retrieved detection summary data for Station ID: ${stationId}`,
             result: detectionSummary
         });
     } catch (error) {
-        handleError(res, err, `Error retrieving detection summary for Station ID: ${stationId}`);
+        handleError(res, error, `Error retrieving detection summary data for Station ID: ${stationId}`);
     }
 };
 
@@ -110,8 +110,8 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
             message: `${filteredDetections.length} records retrieved`,
             result: filteredDetections
         });
-    } catch (err) {
-        handleError(res, err, `Error retrieving filtered detections for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving filtered detections for Station ID: ${stationId}`);
     };
 }
 
@@ -130,10 +130,10 @@ export const createDetection = async (req, res) => {
 
         res.status(201).json({
             status: "success",
-            message: `New detection created for Station ID: ${stationId}`,
+            message: `New detection created with ID: ${newDetection.id}`,
             result: newDetection
         });
-    } catch (err) {
-        handleError(res, err, `Error creating detection for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error creating detection for Station ID: ${stationId}`);
     }
 };

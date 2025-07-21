@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
 import Sidebar from '../common/Sidebar';
-import { isValidDateRange, isValidMinConfidence, isValidMaxConfidence, isValidMinMaxRange} from '../../utils/valueValidator';
+import { isValidDateRange, isValidMinConfidence, isValidMaxConfidence, isValidMinMaxRange} from '../../utils/filterValueValidator';
 
 
 // DetectionFilterSidebar component to handle filtering options for detections

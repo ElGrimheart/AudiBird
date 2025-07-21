@@ -1,0 +1,93 @@
+import db from '../config/db-conn.js';
+import { hashPassword, comparePassword } from '../utils/hasher.js';
+
+// Retrieves a user by their email
+async function getUserByEmail(email) {
+    const sql = `SELECT user_id, name, username, email, password, users.user_type_id 
+        FROM users 
+        JOIN user_type ON users.user_type_id = user_type.user_type_id
+        WHERE email=$1`;
+
+    const result = await db.query(sql, [email]);
+
+    if (result.rowCount === 0) {
+        return null;
+    }
+    return result.rows[0];
+}
+
+// Retrieves a user by their username
+async function getUserByUsername(username) {
+    const sql = `SELECT user_id, name, username, email, password, users.user_type_id 
+        FROM users
+        JOIN user_type ON users.user_type_id = user_type.user_type_id
+        WHERE username=$1`;
+
+    const result = await db.query(sql, [username]);
+
+    if (result.rowCount === 0) {
+        return null;
+    }
+    return result.rows[0];
+}
+
+// Checks user credentials and returns user data if valid email and password provided
+export const loginUser = async (email, password) => {
+    const storedUser = await getUserByEmail(email);
+    if (!storedUser) {
+        throw new Error('User not found');
+    }
+
+    const validPassword = await comparePassword(password, storedUser.password);
+    if (!validPassword) {
+        throw new Error('Invalid email or password');
+    }
+
+    const safeUser = {
+        userId: storedUser.user_id,
+        name: storedUser.name,
+        username: storedUser.username,
+        email: storedUser.email,
+        user_type_id: storedUser.user_type_id
+    };
+
+    return safeUser;
+}
+
+
+// Registers a new user with the provided details
+export const registerUser = async (name, username, email, password) => {
+    let storedUser = await getUserByEmail(email);
+    if (storedUser) {
+        throw new Error('Email already exists');
+    }
+
+    storedUser = await getUserByUsername(username);
+    if (storedUser) {
+        throw new Error('Username already exists');
+    }
+    
+    
+    const defaultUserTypeId = 2; 
+    const hashedPassword = await hashPassword(password);
+
+    const sql = `INSERT INTO users (name, username, email, password, user_type_id) 
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING user_id, name, username, user_type_id`;
+
+    const values = [
+        name,
+        username,
+        email,
+        hashedPassword,
+        defaultUserTypeId
+    ]
+
+    const newUser = await db.query(sql, values);
+
+    if (newUser.rowCount === 0) {
+        throw new Error('User registration failed');
+    }
+
+    return newUser.rows[0];
+};

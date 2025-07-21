@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Container, Card } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
 import UserForm from '../components/common/UserForm';
 import { getInitialValues, validateAuth } from '../utils/authFormValidator';
 
-const AuthPage = () => {
+const LoginRegister = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
@@ -13,15 +16,22 @@ const AuthPage = () => {
     setFormErrors({});
     try {
       if (isRegister) {
-        await axios.post('/api/auth/register', values);
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/register`, values);
       } else {
-        await axios.post('/api/auth/login', values);
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, values);
+        if (response.data && response.data.result) {
+          localStorage.setItem('jwt', response.data.result.userToken);
+          const redirectTo = location.state?.from?.pathname || '/dashboard';
+          navigate(redirectTo, { replace: true });
+        }
       }
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        setErrors(err.response.data.errors);
-      } else if (err.response?.data?.error) {
-        setFormErrors({ general: err.response.data.error });
+    } catch (error) {
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else if (error.response?.data?.error) {
+        setFormErrors({ general: error.response.data.error });
+      } else if (error.response?.data?.message) {
+        setFormErrors({ general: error.response.data.message });
       } else {
         setFormErrors({ general: "An unexpected error occurred." });
       }
@@ -130,4 +140,4 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage;
+export default LoginRegister;

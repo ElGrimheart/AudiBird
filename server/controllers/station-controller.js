@@ -14,7 +14,7 @@ export const getStationById = async (req, res) => {
         if (station) {
             res.status(200).json({
                 status: "success",
-                message: `Station ID: ${stationId} retrieved`,
+                message: `Retrieved Station ID: ${stationId} data`,
                 result: station
             });
         } else {
@@ -23,8 +23,8 @@ export const getStationById = async (req, res) => {
                 message: `Station ID: ${stationId} not found`
             });
         }
-    } catch (err) {
-        handleError(res, err, `Error retrieving station for ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving data for station ID: ${stationId}`);
     }
 }
 
@@ -39,7 +39,7 @@ export const getStationConfigById = async (req, res) => {
         if (config) {
             res.status(200).json({
                 status: "success",
-                message: `Configuration for Station ID: ${stationId} retrieved`,
+                message: `Retrieved configuration for Station ID: ${stationId}`,
                 result: config
             });
         } else {
@@ -48,8 +48,8 @@ export const getStationConfigById = async (req, res) => {
                 message: `Configuration for Station ID: ${stationId} not found`
             });
         }
-    } catch (err) {
-        handleError(res, err, `Error retrieving configuration for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving configuration for Station ID: ${stationId}`);
     }
 }
 
@@ -64,7 +64,7 @@ export const getStationStatusById = async (req, res) => {
         if (status) {
             res.status(200).json({
                 status: "success",
-                message: `Status for Station ID: ${stationId} retrieved`,
+                message: `Retrieved status for Station ID: ${stationId}`,
                 result: status
             });
         } else {
@@ -73,8 +73,8 @@ export const getStationStatusById = async (req, res) => {
                 message: `Status for Station ID: ${stationId} not found`
             });
         }
-    } catch (err) {
-        handleError(res, err, `Error retrieving status for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error retrieving status for Station ID: ${stationId}`);
     }
 }
 
@@ -89,10 +89,10 @@ export const createStationStatusById = async (req, res) => {
         const updatedStatus = await stationService.createStationStatusById(stationId, statusData);
         res.status(200).json({
             status: "success",
-            message: `Status for Station ID: ${stationId} updated`,
+            message: `Status for Station ID: ${stationId} updated successfully`,
             result: updatedStatus
         });
-    } catch (err) {
-        handleError(res, err, `Error updating status for Station ID: ${stationId}`);
+    } catch (error) {
+        handleError(res, error, `Error updating status for Station ID: ${stationId}`);
     }
 }

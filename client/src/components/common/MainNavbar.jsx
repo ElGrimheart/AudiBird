@@ -1,11 +1,25 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import axios from 'axios';
 
 // MainNavbar component to render the top navigation bar on all pages
 const MainNavbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/users/logout`);
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+    localStorage.removeItem('jwt');
+    navigate('/');
+  };
+
   return (
     <Navbar expand="sm" className="bg-body-tertiary">
       <Container fluid>
@@ -20,7 +34,7 @@ const MainNavbar = () => {
               <NavDropdown.Item href="#action/3.2">System</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.3">Notifications</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
+              <NavDropdown.Item onClick={handleLogout}>
                 Log out
               </NavDropdown.Item>
             </NavDropdown>

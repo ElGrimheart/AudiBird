@@ -18,10 +18,6 @@ app.use(cors({
 app.use(morgan('tiny'));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Welcome to the AudioBirder API');
-});
-
 app.use('/api/users', userrouter);
 app.use('/api/stations', stationrouter);
 app.use('/api/audio', audiorouter);

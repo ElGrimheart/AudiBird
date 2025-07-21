@@ -12,7 +12,7 @@ server.listen(process.env.PORT, '0.0.0.0', (error) => {
     if (error) {
         return console.log(`Error starting server: ${error.message}`);
     }
-    console.log(`Server is running on http://localhost:${process.env.PORT}`);
+    console.log(`Server is running on ${process.env.BACKEND_URL}:${process.env.PORT}`);
 });
 
 

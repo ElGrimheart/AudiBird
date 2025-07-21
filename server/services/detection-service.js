@@ -166,9 +166,9 @@ export async function createDetection(stationId, detectionData) {
         await db.query('COMMIT');
         return newDetection;
 
-    } catch (err) {
+    } catch (error) {
         await db.query('ROLLBACK');
-        console.error("Error creating detection:", err);
-        throw err;
+        console.error("Error creating detection:", error);
+        throw error;
     }
 }

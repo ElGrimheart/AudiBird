@@ -2,11 +2,11 @@ import express from 'express';
 import * as detectionController from '../../controllers/detection-controller.js';
 import * as stationController from '../../controllers/station-controller.js';
 import verifyStationId from '../../middleware/verifyStationId.js';
+import verifyDetectionIdFormat from '../../middleware/verifyDetectionIdFormat.js';
 
 const stationrouter = express.Router();
 
 stationrouter.use('/:stationId', verifyStationId);
-
 
 // Station Routes
 // stationrouter.get('/', stationController.getAllStations);
@@ -23,7 +23,7 @@ stationrouter.get('/:stationId/detections/recent', detectionController.getRecent
 stationrouter.get('/:stationId/detections/common', detectionController.getMostCommonSpeciesByStationId);
 stationrouter.get('/:stationId/detections/summary', detectionController.getDetectionSummaryByStationId);
 stationrouter.get('/:stationId/detections/', detectionController.getFilteredDetectionsByStationId);
-stationrouter.get('/:stationId/detections/:detectionId', detectionController.getDetectionById);
+stationrouter.get('/:stationId/detections/:detectionId', verifyDetectionIdFormat, detectionController.getDetectionById);
 
 stationrouter.post('/:stationId/detections', detectionController.createDetection);
 

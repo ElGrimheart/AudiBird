@@ -1,33 +1,90 @@
-import db from "../config/db-conn.js";
-//import * as hasher from '../utils/hasher.js';
+import * as userService from "../services/user-service.js";
+import { generateJwtToken } from "../utils/jwt.js";
+import handleError from "../utils/errorHandler.js";
+import logAction from "../utils/logger.js";
 
-// GET /api/users/:userId route - retrieves a user record by user_id
-export const getUserByUsername = async (req, res) => {
-    const { username } = req.params;
+// POST /api/users/login route - logs in a user
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body;
 
-    const userByUsernameSQL = `SELECT * FROM users WHERE username=$1`;
-    
+    logAction("User login attempt", { email });
+
     try {
-        const result = await db.query(userByUsernameSQL, [username]);
-        if (result.rowCount === 0) {
-            return res.status(404).json({
-                status: "failure",
-                message: `User with username: ${username} not found`
+        const validUser = await userService.loginUser(email, password);
+
+        if (validUser) {
+            const userToken = generateJwtToken(validUser);
+            res.status(200).json({
+                status: "success",
+                message: "User logged in successfully",
+                result: {
+                    userToken
+                }
             });
+        } else {
+            handleError(res, error, "Error logging in user");
         }
-        
-        const user = result.rows[0];
+    } catch (error) {
+        if (error.message === 'User not found' || error.message === 'Invalid email or password') {
+            res.status(401).json({
+                status: "failure",
+                message: "Invalid login credentials"
+            });
+        } else {
+            handleError(res, error, "Error logging in user");
+        }
+    }
+};
+
+// POST /api/users/logout route - logs out a user
+export const logoutUser = async (req, res) => {
+    try {
         res.status(200).json({
             status: "success",
-            message: `User with username: ${username} retrieved`,
-            result: user
+            message: "User logged out successfully"
         });
-    } catch (err) {
-        console.error(`Error retrieving user by username: ${err.message}`);
-        res.status(500).json({
-            status: "error",
-            message: `Error retrieving user with username: ${username}`,
-            error: err.message
-        });
+    } catch (error) {
+        handleError(res, error);
+    }
+};
+
+
+// POST /api/users/register route - registers a new user
+export const registerUser = async (req, res) => {
+    const { name, username, email, password } = req.body;
+
+    logAction("User registration attempt", { email });
+
+    try {
+        const newUser = await userService.registerUser(name, username, email, password);
+        if (newUser) {
+            const userToken = generateJwtToken(newUser);
+            res.status(200).json({
+                status: "success",
+                message: "User registered successfully",
+                result: {
+                    userToken
+                }
+            });
+        } else {
+            res.status(400).json({
+                status: "failure",
+                message: "Error registering user"
+            });
+        }
+    } catch (error) {
+        if (error.message === 'Email already exists') {
+            res.status(409).json({
+                status: "failure",
+                message: error.message
+            });
+        } else if (error.message === 'Username already exists') {
+            res.status(409).json({
+                status: "failure",
+                message: error.message
+            });
+        } else {
+            handleError(res, error, "Error registering user");
+        }
     }
 };

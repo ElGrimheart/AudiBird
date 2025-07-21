@@ -20,8 +20,8 @@ const verifyStationId = async (req, res, next) => {
         }
         req.station = result.rows[0];
         next();
-    } catch (err) {      // Check for invalid UUID error
-        if (err.code === '22P02' && err.message.includes('uuid')) {
+    } catch (error) {      // Check for invalid UUID error
+        if (error.code === '22P02' && error.message.includes('uuid')) {
             return res.status(400).json({
                 status: "failure",
                 message: `Invalid station ID format: ${stationId}`
@@ -31,7 +31,7 @@ const verifyStationId = async (req, res, next) => {
         return res.status(500).json({
             status: "error",
             message: "Database error while verifying station ID",
-            error: err.message
+            error: error.message
         });
     }
 };
