@@ -2,15 +2,15 @@ import db from "../config/db-conn.js";
 import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sqlBuilder.js";
 
 // Retrieves a detection by its ID
-export async function getDetectionById(stationId, detectionId) {
+export async function getDetectionById(detectionId) {
     const sql = `
         SELECT *
         FROM detection
-        WHERE station_id = $1 AND detection_id = $2
+        WHERE detection_id = $1
         LIMIT 1
     `;
 
-    const result = await db.query(sql, [stationId, detectionId]);
+    const result = await db.query(sql, [detectionId]);
     return result.rows[0] || null;
 }
 

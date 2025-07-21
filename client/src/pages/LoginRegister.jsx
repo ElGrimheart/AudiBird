@@ -16,9 +16,9 @@ const LoginRegister = () => {
     setFormErrors({});
     try {
       if (isRegister) {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/register`, values);
+        const response = await axios.post(`${import.meta.env.VITE_API_USER_URL}/register`, values);
       } else {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, values);
+        const response = await axios.post(`${import.meta.env.VITE_API_USER_URL}/login`, values);
         if (response.data && response.data.result) {
           localStorage.setItem('jwt', response.data.result.userToken);
           const redirectTo = location.state?.from?.pathname || '/dashboard';

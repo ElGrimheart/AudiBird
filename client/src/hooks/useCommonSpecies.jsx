@@ -9,7 +9,7 @@ export default function useCommonSpecies(stationId, socket) {
     useEffect(() => {
         const fetchCommonSpecies = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/stations/${stationId}/detections/common`);
+                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/common/${stationId}`);
                 setCommonSpecies(response.data.result || []);
             } catch (error) {
                 console.error('Failed to fetch common species:', error);

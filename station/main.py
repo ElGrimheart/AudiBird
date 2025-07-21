@@ -58,11 +58,7 @@ if __name__ == "__main__":
         "segments_dir": local_config["paths"]["segments_dir"],
         "lat": remote_config["station"]["location"]["lat"],
         "lon": remote_config["station"]["location"]["lon"],
-        "min_conf": remote_config["detection_config"]["min_confidence"],
-        "detections_log": local_config["paths"]["detections_log"],
-        "api_url": local_config["db_api"]["url"],
-        "api_key": local_config["db_api"]["api_key"],
-        "post_detection_route": local_config["db_api"]["routes"]["post_detection"]
+        "min_conf": remote_config["detection_config"]["min_confidence"]
     }
     
     detection_logger_config = {
@@ -77,7 +73,7 @@ if __name__ == "__main__":
     segment_saver = SegmentSaver(segment_saver_config)
     websocket_stream = WebSocketStream(local_config["websocket_stream"]["url"])
     detection_logger = DetectionLogger(detection_logger_config)
-    analyser = Analyser(analyser_config, detection_logger)
+    analyser = Analyser(analyser_config)
     
     
     # Callback function - handles when a segment is ready for analysis

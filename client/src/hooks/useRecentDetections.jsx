@@ -9,7 +9,7 @@ export default function useRecentDetections(stationId, socket) {
     useEffect(() => {
         const fetchRecentDetections = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/stations/${stationId}/detections/recent`);
+                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/recent/${stationId}`);
                 setRecentDetections(response.data.result || []);
             } catch (error) {
                 console.error('Failed to fetch detections:', error);

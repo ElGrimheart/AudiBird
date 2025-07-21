@@ -1,16 +1,15 @@
 import os
 from flask import Flask, send_from_directory, abort
-from utils.config_loader import load_yaml_config
 
 app = Flask(__name__)
 
-@app.route('/recordings/<path:filename>')
-def serve_audio(filepath):
-    file_name = os.path.basename(filepath)
-    file_dir = os.path.dirname(filepath)
+@app.route('/recordings/<path:file_path>')
+def serve_audio(file_path):
+    file_dir = os.path.dirname(file_path)
+    file_name = os.path.basename(file_path)
 
-    if not os.path.exists(filepath):
-        abort(404, description=f"File {filepath} not found.")
+    if not os.path.exists(file_path):
+        abort(404, description=f"File {file_path} not found.")
 
     return send_from_directory(file_dir, file_name)
 

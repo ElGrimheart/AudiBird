@@ -12,7 +12,7 @@ const MainNavbar = () => {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/users/logout`);
+      await axios.post(`${import.meta.env.VITE_API_USER_URL}/logout`);
     } catch (err) {
       console.error("Logout failed:", err);
     }

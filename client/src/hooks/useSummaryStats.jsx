@@ -9,7 +9,7 @@ export default function useSummaryStats(stationId, socket) {
     useEffect(() => {
         const fetchSummaryStats = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/stations/${stationId}/detections/summary`);
+                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/summary/${stationId}`);
                 const statsArray = Object.entries(response.data.result || {}).map(([key, value]) => ({
                     label: key.replace(/\b\w/g, label => label.toUpperCase()),
                     value
