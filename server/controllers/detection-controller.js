@@ -3,14 +3,14 @@ import * as detectionService from "../services/detection-service.js";
 import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
 
-// GET /api/:stationId/detections/:detectionId route - retrieves a specific detection by ID
+// GET /api/detections/:detectionId route - retrieves a detection by its ID
 export const getDetectionById = async (req, res) => {
-    const { stationId, detectionId } = req.params;
+    const { detectionId } = req.params;
     
-    logAction("Retrieving detection", { stationId, detectionId });
+    logAction("Retrieving detection", { detectionId });
 
     try {
-        const detection = await detectionService.getDetectionById(stationId, detectionId);
+        const detection = await detectionService.getDetectionById(detectionId);
         if (detection) {
             res.status(200).json({
                 status: "success",
@@ -28,7 +28,7 @@ export const getDetectionById = async (req, res) => {
     }
 };
 
-// GET /api/:stationId/detections/all route - retrieves all detections for a given station
+// GET /api/detections/all/:stationId route - retrieves all detections for a given station
 export const getAllDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
     logAction("Retrieving all detections for", { stationId });
@@ -45,7 +45,7 @@ export const getAllDetectionsByStationId = async (req, res) => {
     }
 };
 
-// GET /api/:stationId/detections/recent route - retrieves 10 most recent detections for a given station
+// GET /api/detections/recent/:stationId route - retrieves recent detections for a given station
 export const getRecentDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
     logAction("Retrieving recent detections for", { stationId });
@@ -62,7 +62,7 @@ export const getRecentDetectionsByStationId = async (req, res) => {
     }
 };
 
-// GET /api/:stationId/detections/common route - retrieves the most common species detected at a given station
+// GET /api/detections/common/:stationId route - retrieves the most common species detected for a given station
 export const getMostCommonSpeciesByStationId = async (req, res) => {
     const { stationId } = req.params;
     logAction("Retrieving most common species for", { stationId });
@@ -79,7 +79,7 @@ export const getMostCommonSpeciesByStationId = async (req, res) => {
     }
 }
 
-// GET /api/:stationId/detections/summary route - retrieves a summary of detections for a given station
+// GET /api/detections/summary/:stationId route - retrieves a summary of detections for a given station
 export const getDetectionSummaryByStationId = async (req, res) => {
     const { stationId } = req.params;
     const { from, to, species } = req.query;
@@ -97,7 +97,7 @@ export const getDetectionSummaryByStationId = async (req, res) => {
     }
 };
 
-// GET /api/:stationId/detections/?filters route - retrieves detections for a given station with various filters
+// GET /api/detections/filtered/:stationId route - retrieves filtered detections for a given station
 export const getFilteredDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
     const { from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by} = req.query;
@@ -115,7 +115,7 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
     };
 }
 
-// POST /api/:stationId/detections route - creates a new detection for a given station
+// POST /api/detections/new/:stationId route - creates a new detection for a given station
 export const createDetection = async (req, res) => {
     const { stationId } = req.params;
     const detectionData = req.body;
@@ -130,7 +130,7 @@ export const createDetection = async (req, res) => {
 
         res.status(201).json({
             status: "success",
-            message: `New detection created with ID: ${newDetection.id}`,
+            message: `New detection created with ID: ${newDetection.detection_id}`,
             result: newDetection
         });
     } catch (error) {

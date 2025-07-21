@@ -4,7 +4,12 @@ import app from './app.js';
 import stationStreamHandler from './sockets/station-stream-handler.js';
 
 const server = createServer(app);
-const io = new Server(server, { cors: { origin: '*' } });
+const io = new Server(server, { 
+    cors: { 
+        origin: process.env.FRONTEND_URL,
+        credentials: true
+    }
+});
 
 stationStreamHandler(io);
 

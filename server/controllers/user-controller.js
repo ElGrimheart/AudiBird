@@ -3,6 +3,30 @@ import { generateJwtToken } from "../utils/jwt.js";
 import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
 
+
+// GET /api/users/:userId route - retrieves user by ID
+export const getUserById = async (req, res) => {
+    const { userId } = req.params;
+    logAction("Get user by ID", { userId });
+    try {
+        const user = await userService.getUserById(userId);
+        if (user) {
+            res.status(200).json({
+                status: "success",
+                message: "User retrieved successfully",
+                result: user
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: "User not found"
+            });
+        }
+    } catch (error) {
+        handleError(res, error, "Error retrieving user");
+    }
+};
+
 // POST /api/users/login route - logs in a user
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -25,7 +49,7 @@ export const loginUser = async (req, res) => {
             handleError(res, error, "Error logging in user");
         }
     } catch (error) {
-        if (error.message === 'User not found' || error.message === 'Invalid email or password') {
+        if (error.message === 'User not found' || error.message === 'Invalid password') {
             res.status(401).json({
                 status: "failure",
                 message: "Invalid login credentials"

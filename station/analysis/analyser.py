@@ -20,7 +20,7 @@ class Analyser:
         stop(): Stop the analyser.
     """
     
-    def __init__(self, config, detection_logger):
+    def __init__(self, config):
         self.lat = config.get("lat", None)
         self.lon = config.get("lon", None)
         self.min_conf = config.get("min_conf", 0.25)
@@ -33,7 +33,7 @@ class Analyser:
 
 
     def analyse_segment(self, filename):
-        """Analyses a single audio segment file and logs any detections.
+        """Analyses a single audio segment file and  returns detections.
         
         Args:
             filename (str): Name of the audio segment file to analyze.

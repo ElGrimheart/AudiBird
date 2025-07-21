@@ -20,12 +20,11 @@ def upload_detection(filename, detection, station_metadata, audio_metadata, proc
         dict: The response from the API.
     """
     api_url = local_config['db_api']['url']
+    detections_route = local_config['db_api']['routes']['detection']
     station_id = remote_config['station']['id']
-    detections_route = local_config['db_api']['routes']['post_detection']
-    
-    segment_path = local_config['paths']['segments_dir'] + '/' + filename + '.wav'
 
-    post_detection_route = api_url + station_id + detections_route
+    post_detection_route = api_url + detections_route + "/new/" + station_id
+    segment_path = local_config['paths']['segments_dir'] + '/' + filename + '.wav'
 
     try:
         response = requests.post(

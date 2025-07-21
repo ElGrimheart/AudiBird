@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function useDetections(stationId) {
     const [detections, setDetections] = useState([]);
 
@@ -25,7 +23,7 @@ export default function useDetections(stationId) {
                 !isNaN(Number(filters.max_confidence))
                 ) { params.max_confidence = Number(filters.max_confidence); }
 
-            const response = await axios.get(`${API_URL}/stations/${stationId}/detections/`, { params });
+            const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/filtered/${stationId}`, { params });
             setDetections(response.data.result || []);
         } catch (error) {
             console.error('Failed to fetch detections:', error);
