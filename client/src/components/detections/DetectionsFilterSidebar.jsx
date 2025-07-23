@@ -1,26 +1,42 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
+import { validateFilterValues } from '../../utils/filterValueValidator';
 import Sidebar from '../common/Sidebar';
-import { isValidDateRange, isValidMinConfidence, isValidMaxConfidence, isValidMinMaxRange} from '../../utils/filterValueValidator';
 
 
 // DetectionFilterSidebar component to handle filtering options for detections
-const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit }) => (
+const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error }) => (
   <Sidebar title="Filters" show={show} onHide={onHide}>
+    { // Conditional rendering for error messages
+    error && (
+      <div className="alert alert-danger mb-3">
+        {error}
+      </div>
+    )}
     <Formik
+      // Formik setup for handling filter form submission
       initialValues={filters}
-      validate={validate}
+      validate={validateFilterValues}
       onSubmit={onFilterSubmit}
       enableReinitialize
     >
-      {({ handleSubmit, handleChange, values, errors, touched, setFieldTouched  }) => (
+
+      {({
+        handleSubmit,
+        handleChange,
+        values,
+        errors,
+        touched, 
+        setFieldTouched  
+      }) => (
         <Form noValidate onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Date Range</Form.Label>
             <Row>
               <Col>
                 <Form.Control
+                //Date input for filtering detections by FROM date
                   type="date"
                   name="from"
                   value={values.from}
@@ -35,6 +51,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit }) => (
               </Col>
               <Col>
                 <Form.Control
+                //Date input for filtering detections by TO date
                   type="date"
                   name="to"
                   value={values.to}
@@ -49,18 +66,25 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit }) => (
           <Form.Group className="mb-3">
             <Form.Label>Species</Form.Label>
             <Form.Control
+            // Species search input
               type="text"
               name="species"
               value={values.species}
+              onBlur={() => setFieldTouched('species', true)}
               onChange={handleChange}
               placeholder="Species name"
+              isInvalid={!!errors.species && touched.species}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.species}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Confidence (%)</Form.Label>
             <Row>
               <Col>
                 <Form.Control
+                // Min confidence input
                   type="number"
                   name="min_confidence"
                   value={values.min_confidence}
@@ -77,6 +101,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit }) => (
               </Col>
               <Col>
                 <Form.Control
+                // Max confidence input
                   type="number"
                   name="max_confidence"
                   value={values.max_confidence}
@@ -96,25 +121,36 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit }) => (
           <Form.Group className="mb-3">
             <Form.Label>Sort By</Form.Label>
             <Form.Select
+            // Sort by selection
               name="sort_by"
               value={values.sort_by}
               onChange={handleChange}
+              isInvalid={!!errors.sort_by && touched.sort_by}
             >
               <option value="detection_timestamp">Detection Time</option>
               <option value="confidence">Confidence</option>
               <option value="common_name">Species Name</option>
             </Form.Select>
+            <Form.Control.Feedback type="invalid">
+              {errors.sort_by}
+            </Form.Control.Feedback>
           </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>Sort Order</Form.Label>
             <Form.Select
+            // Sort order selection
               name="sort"
               value={values.sort}
               onChange={handleChange}
+              isInvalid={!!errors.sort && touched.sort}
             >
               <option value="desc">Descending</option>
               <option value="asc">Ascending</option>
             </Form.Select>
+            <Form.Control.Feedback type="invalid">
+              {errors.sort}
+            </Form.Control.Feedback>
           </Form.Group>
           <Button variant="primary" type="submit" className="w-100">
             Apply Filters
@@ -124,30 +160,5 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit }) => (
     </Formik>
   </Sidebar>
 );
-
-// Validation function for the form values
-const validate = values => {
-    const errors = {};
-    const { from, to, min_confidence, max_confidence } = values;
-
-    if (!isValidMinConfidence(min_confidence)) {
-        errors.min_confidence = 'Minimum confidence must be a number between 0 and 100.';
-    }
-
-    if (!isValidMaxConfidence(max_confidence)) {
-        errors.max_confidence = 'Maximum confidence must be a number between 0 and 100.';
-    }
-
-    if (!isValidDateRange(from, to)) {
-        errors.from = 'From date cannot be after To date.';
-        errors.to = 'From date cannot be after To date.';
-    }
-
-    if (!isValidMinMaxRange(min_confidence, max_confidence)) {
-        errors.min_confidence = 'Minimum confidence cannot be greater than maximum confidence.';
-    }
-
-    return errors;
-};
 
 export default DetectionsFilterSidebar;

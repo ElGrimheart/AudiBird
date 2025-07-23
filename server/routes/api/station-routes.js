@@ -1,15 +1,14 @@
 import express from 'express';
+import { validateStationId } from '../../middleware/stationValidator.js';
 import * as stationController from '../../controllers/station-controller.js';
-import verifyStationId from '../../middleware/verifyStationId.js';
+
 
 const stationRouter = express.Router();
-
-stationRouter.use('/:stationId', verifyStationId);
 
 // Station Routes
 // stationRouter.get('/status/:stationId', stationController.getStationStatusById);
 // stationRouter.get('/config/:stationId', stationController.getStationConfigById);
-stationRouter.get('/:stationId', stationController.getStationById);
+stationRouter.get('/:stationId', validateStationId, stationController.getStationById);
 
 // stationRouter.post('/status/:stationId', stationController.updateStationStatusById);
 // stationRouter.post('/config/:stationId', stationController.updateStationConfigById);

@@ -153,9 +153,9 @@ export async function createDetection(stationId, detectionData) {
             detectionData.scientific_name,
             detectionData.confidence,
             detectionData.detection_timestamp || new Date(),
-            detectionData.station_metadata,
-            detectionData.audio_metadata,
-            detectionData.processing_metadata,
+            detectionData.station_metadata || {},
+            detectionData.audio_metadata || {},
+            detectionData.processing_metadata || {},
             stationId,
             audioId
         ];
