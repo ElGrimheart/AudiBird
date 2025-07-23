@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 
+// Resusable UserForm component. Accepts fields, onSubmit handler, submit button text, secondary button text and action, general error message, and submission state.
 const UserForm = ({ fields, onSubmit, submitText, secondaryText, onSecondary, secondaryType = "button", generalError, isSubmitting = false }) => (
   <Form onSubmit={onSubmit}>
     {generalError && (
@@ -14,7 +15,7 @@ const UserForm = ({ fields, onSubmit, submitText, secondaryText, onSecondary, se
         <Form.Control
           type={type}
           name={name}
-          value={value}
+          value={value || ""}
           onChange={onChange}
           onBlur={onBlur}
           placeholder={placeholder}
@@ -22,7 +23,9 @@ const UserForm = ({ fields, onSubmit, submitText, secondaryText, onSecondary, se
           isInvalid={!!error}
         />
         <Form.Control.Feedback type="invalid">
-          {error}
+          {Array.isArray(error)
+            ? error.map((msg, idx) => <div key={idx}>{msg}</div>)
+            : error}
         </Form.Control.Feedback>
       </Form.Group>
     ))}

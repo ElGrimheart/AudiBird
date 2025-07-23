@@ -25,7 +25,12 @@ const App = () => {
   const socketRef = useRef();
 
     useEffect(() => {
-        socketRef.current = io(import.meta.env.VITE_SOCKET_URL, { auth: { token: localStorage.getItem('jwt') } });
+        socketRef.current = io(import.meta.env.VITE_SOCKET_URL, { 
+          auth: { token: localStorage.getItem('jwt') },
+          reconnection: true,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 1000,
+        });
 
         return () => {
             socketRef.current.disconnect();

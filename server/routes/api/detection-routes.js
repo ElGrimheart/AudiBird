@@ -1,18 +1,21 @@
 import express from 'express';
+import { validateDetectionId } from '../../middleware/detectionValidator.js';
+import { validateStationId } from '../../middleware/stationValidator.js';
 import * as detectionController from '../../controllers/detection-controller.js';
-import verifyStationId from '../../middleware/verifyStationId.js';
-import verifyDetectionIdFormat from '../../middleware/verifyDetectionIdFormat.js';
+import { validateDetectionFilters, validateDetectionCreation } from '../../middleware/detectionValidator.js';
+
+
 
 const detectionRouter = express.Router();
 
-detectionRouter.get('/all/:stationId', verifyStationId, detectionController.getAllDetectionsByStationId);
-detectionRouter.get('/recent/:stationId', verifyStationId, detectionController.getRecentDetectionsByStationId);
-detectionRouter.get('/common/:stationId', verifyStationId, detectionController.getMostCommonSpeciesByStationId);
-detectionRouter.get('/summary/:stationId', verifyStationId, detectionController.getDetectionSummaryByStationId);
-detectionRouter.get('/filtered/:stationId', verifyStationId, detectionController.getFilteredDetectionsByStationId);
-detectionRouter.get('/:detectionId', verifyDetectionIdFormat, detectionController.getDetectionById);
+detectionRouter.get('/all/:stationId', validateStationId, detectionController.getAllDetectionsByStationId);
+detectionRouter.get('/recent/:stationId', validateStationId, detectionController.getRecentDetectionsByStationId);
+detectionRouter.get('/common/:stationId', validateStationId, detectionController.getMostCommonSpeciesByStationId);
+detectionRouter.get('/summary/:stationId', validateStationId, detectionController.getDetectionSummaryByStationId);
+detectionRouter.get('/filtered/:stationId', validateStationId, validateDetectionFilters,detectionController.getFilteredDetectionsByStationId);
+detectionRouter.get('/:detectionId', validateDetectionId,  detectionController.getDetectionById);
 
-detectionRouter.post('/new/:stationId', verifyStationId, detectionController.createDetection);
+detectionRouter.post('/new/:stationId', validateStationId, validateDetectionCreation, detectionController.createDetection);
 
 /* Future development - multi-stations support
 /api/detections/all?stations=stationId1,stationId2 - all detections for multiple stations

@@ -10,6 +10,3 @@ export async function hashPassword(password) {
 export async function comparePassword(password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 }
-
-
-console.log(await hashPassword("Pa55w0rd789?£"));

@@ -2,36 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import useFilteredDetections from '../../hooks/useFilteredDetections';
 import DetectionsFilterSidebar from './DetectionsFilterSidebar';
+import { getInitialValues } from '../../utils/filterValueValidator';
 import FilteredDetections from './FilteredDetections';
 
 const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f';
 
 // DetectionsContent component to manage the display of detections with filtering options
 const DetectionsContent = () => {
-    const [detections, fetchDetections] = useFilteredDetections(stationId);
+    const [filters, setFilters] = useState(getInitialValues());
+    const [detections, fetchDetections, error] = useFilteredDetections(stationId, filters);
     const [showSidebar, setShowSidebar] = useState(false);
-    const [filters, setFilters] = useState({
-        from: '',
-        to: '',
-        species: '',
-        min_confidence: '',
-        max_confidence: '',
-        sort_by: 'detection_timestamp',
-        sort: 'desc'
-    });
 
     const handleCloseSidebar = () => setShowSidebar(false);
     const handleShowSidebar = () => setShowSidebar(true);
 
     useEffect(() => {
-        fetchDetections({});
-    }, [fetchDetections]);
+        fetchDetections(filters);
+    }, [fetchDetections, filters]);
 
     const handleFilterSubmit = (values, { setSubmitting }) => {
+        setFilters(values);
         fetchDetections(values);
         setShowSidebar(false);
         setSubmitting(false);
-        setFilters(values);
     };
 
     return (
@@ -44,6 +37,7 @@ const DetectionsContent = () => {
                 onHide={handleCloseSidebar}
                 filters={filters}
                 onFilterSubmit={handleFilterSubmit}
+                error={error}
             />
             <FilteredDetections detections={detections} />
         </Container>

@@ -3,33 +3,30 @@ import axios from 'axios';
 
 export default function useDetections(stationId) {
     const [detections, setDetections] = useState([]);
+    const [error, setError] = useState(null)
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const fetchDetections = useCallback(async (filters = {}) => {
-        try {
-            const params = {
-                from: filters.from || undefined,
-                to: filters.to || undefined,
-                species: filters.species || undefined,
-                sort_by: filters.sort_by,
-                sort: filters.sort
-            };
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/filtered/${stationId}`, { params: filters });
+        setDetections(response.data.result || []);
+        setError(null);
+        setFieldErrors({});
+    } catch (error) {
+        console.error('Failed to fetch detections:', error);
 
-            if (
-                filters.min_confidence !== '' &&
-                !isNaN(Number(filters.min_confidence)) 
-                ) { params.min_confidence = Number(filters.min_confidence); }
+        // API error response handling
+        const generalError = error.response?.data?.errors?.map(err => err.msg).join(', ') || 'An error occurred';
+        setError(generalError); 
+        setFieldErrors(
+            error.response?.data?.errors?.reduce((acc, curr) => {
+                acc[curr.path] = curr.msg;
+                return acc;
+            }, {}) || {}
+        );
+        setDetections([]);
+    }
+}, [stationId]);
 
-            if (filters.max_confidence !== '' &&
-                !isNaN(Number(filters.max_confidence))
-                ) { params.max_confidence = Number(filters.max_confidence); }
-
-            const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/filtered/${stationId}`, { params });
-            setDetections(response.data.result || []);
-        } catch (error) {
-            console.error('Failed to fetch detections:', error);
-            setDetections([]);
-        }
-    }, [stationId]);
-
-    return [detections, fetchDetections];
+    return [detections, fetchDetections, error, fieldErrors];
 }

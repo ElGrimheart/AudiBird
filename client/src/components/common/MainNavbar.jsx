@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import axios from 'axios';
 
-// MainNavbar component to render the top navigation bar on all pages
+// MainNavbar component for top navigation bar on all pages
 const MainNavbar = () => {
   const navigate = useNavigate();
 

@@ -4,7 +4,7 @@ import { Container, Card } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
 import UserForm from '../components/common/UserForm';
-import { getInitialValues, validateAuth } from '../utils/authFormValidator';
+import { getInitialValues, validateUserForm } from '../utils/userFormValidator';
 
 const LoginRegister = () => {
   const location = useLocation();
@@ -17,6 +17,10 @@ const LoginRegister = () => {
     try {
       if (isRegister) {
         const response = await axios.post(`${import.meta.env.VITE_API_USER_URL}/register`, values);
+        if (response.data && response.data.result) {
+          localStorage.setItem('jwt', response.data.result.userToken);
+          navigate('dashboard');
+        }
       } else {
         const response = await axios.post(`${import.meta.env.VITE_API_USER_URL}/login`, values);
         if (response.data && response.data.result) {
@@ -27,7 +31,17 @@ const LoginRegister = () => {
       }
     } catch (error) {
       if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors);
+        const apiErrors = {};
+        error.response.data.errors.forEach(err => {
+          if (!apiErrors[err.path]) {
+            apiErrors[err.path] = [];
+          }
+          apiErrors[err.path].push(err.msg);
+        });
+        Object.keys(apiErrors).forEach(key => {
+          apiErrors[key] = apiErrors[key].join(', ');
+        });
+        setErrors(apiErrors);
       } else if (error.response?.data?.error) {
         setFormErrors({ general: error.response.data.error });
       } else if (error.response?.data?.message) {
@@ -46,7 +60,7 @@ const LoginRegister = () => {
           <h2 className="mb-4 text-center">{isRegister ? 'Register' : 'Login'}</h2>
           <Formik
             initialValues={getInitialValues(isRegister)}
-            validate={values => validateAuth(values, isRegister)}
+            validate={values => validateUserForm(values, isRegister)}
             onSubmit={handleSubmit}
             enableReinitialize
           >
@@ -114,13 +128,13 @@ const LoginRegister = () => {
                         {
                           label: "Confirm Password",
                           type: "password",
-                          name: "confirmPassword",
-                          value: values.confirmPassword,
+                          name: "confirm_password",
+                          value: values.confirm_password,
                           onChange: handleChange,
-                          onBlur: () => setFieldTouched('confirmPassword', true),
+                          onBlur: () => setFieldTouched('confirm_password', true),
                           placeholder: "Confirm Password",
                           required: true,
-                          error: touched.confirmPassword && errors.confirmPassword
+                          error: touched.confirm_password && errors.confirm_password
                         }
                       ]
                     : [])

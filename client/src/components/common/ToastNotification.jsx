@@ -2,13 +2,16 @@ import { useContext, useEffect } from "react";
 import { toast, Bounce } from "react-toastify";
 import SocketContext from "../../contexts/SocketContext";
 
-// Toast component to display notifications for new detections
+// Toast component to display notifications when newDetection event received from socket
 const ToastNotification = () => {
     const socketRef = useContext(SocketContext);
     const socket = socketRef.current;
 
     useEffect(() => {
-        
+        if (!socket) {
+            console.error("Socket connection not established");
+            return;
+        }
 
         const handleNewDetection = (detection) => {
             toast.success(
@@ -24,16 +27,15 @@ const ToastNotification = () => {
             );
         };
 
-        if (!socket) 
-            return;
-
         socket.on("newDetection", handleNewDetection);
+
+
         return () => {
             socket.off("newDetection", handleNewDetection);
         };
     }, [socket]);
 
-    return null; // This component does not render anything
+    return null; 
 };
 
 export default ToastNotification;
