@@ -1,23 +1,21 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
-import { validateFilterValues } from '../../utils/filterValueValidator';
+import { detectionFiltersSchema } from '../../utils/userValueValidator';
 import Sidebar from '../common/Sidebar';
 
 
 // DetectionFilterSidebar component to handle filtering options for detections
 const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error }) => (
   <Sidebar title="Filters" show={show} onHide={onHide}>
-    { // Conditional rendering for error messages
-    error && (
+    {error && error.general && (
       <div className="alert alert-danger mb-3">
-        {error}
+        {error.general} {/* Display all errors in the general message */}
       </div>
-    )}
+  )}
     <Formik
-      // Formik setup for handling filter form submission
       initialValues={filters}
-      validate={validateFilterValues}
+      //validationSchema={detectionFiltersSchema}
       onSubmit={onFilterSubmit}
       enableReinitialize
     >
@@ -36,7 +34,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
             <Row>
               <Col>
                 <Form.Control
-                //Date input for filtering detections by FROM date
+                                      //Date input for filtering detections by FROM date
                   type="date"
                   name="from"
                   value={values.from}
@@ -51,7 +49,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
               </Col>
               <Col>
                 <Form.Control
-                //Date input for filtering detections by TO date
+                                      //Date input for filtering detections by TO date
                   type="date"
                   name="to"
                   value={values.to}
@@ -60,13 +58,16 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
                   isInvalid={!!errors.to && touched.to}
                   placeholder="To"
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.to}
+                </Form.Control.Feedback>
               </Col>
             </Row>
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Species</Form.Label>
             <Form.Control
-            // Species search input
+                                      // Species search input
               type="text"
               name="species"
               value={values.species}
@@ -84,7 +85,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
             <Row>
               <Col>
                 <Form.Control
-                // Min confidence input
+                                      // Min confidence input
                   type="number"
                   name="min_confidence"
                   value={values.min_confidence}
@@ -101,7 +102,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
               </Col>
               <Col>
                 <Form.Control
-                // Max confidence input
+                                        // Max confidence input
                   type="number"
                   name="max_confidence"
                   value={values.max_confidence}
@@ -121,7 +122,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
           <Form.Group className="mb-3">
             <Form.Label>Sort By</Form.Label>
             <Form.Select
-            // Sort by selection
+                                        // Sort by selection
               name="sort_by"
               value={values.sort_by}
               onChange={handleChange}
@@ -139,7 +140,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
           <Form.Group className="mb-3">
             <Form.Label>Sort Order</Form.Label>
             <Form.Select
-            // Sort order selection
+                                        // Sort order selection
               name="sort"
               value={values.sort}
               onChange={handleChange}

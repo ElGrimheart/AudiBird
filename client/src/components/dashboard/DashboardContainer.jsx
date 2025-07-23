@@ -1,15 +1,15 @@
 import React, { useState, useContext} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import SocketContext from '../../contexts/SocketContext';
-import useRecentDetections from '../../hooks/useRecentDetections';
-import useCommonSpecies from '../../hooks/useCommonSpecies';
+import SocketContext from '../../contexts/SocketContext.jsx';
+import useRecentDetections from '../../hooks/useRecentDetections.jsx';
+import useCommonSpecies from '../../hooks/useCommonSpecies.jsx';
 import useSummaryStats from '../../hooks/useSummaryStats.jsx';
-import StationCard from './StationCard';
-import MicStreamCard from './MicStreamCard';
-import RecentDetectionsCard from './RecentDetectionsCard';
-import TopSpeciesCard from './TopSpeciesCard';
-import ActivityCard from './ActivityCard';
-import SummaryCard from './SummaryCard';
+import StationCard from './StationCard.jsx';
+import MicStreamCard from './MicStreamCard.jsx';
+import RecentDetectionsCard from './RecentDetectionsCard.jsx';
+import TopSpeciesCard from './TopSpeciesCard.jsx';
+import ActivityCard from './ActivityCard.jsx';
+import SummaryCard from './SummaryCard.jsx';
 
 const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f'; // Example station ID
 

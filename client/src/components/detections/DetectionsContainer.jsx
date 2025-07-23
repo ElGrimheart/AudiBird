@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import useFilteredDetections from '../../hooks/useFilteredDetections';
 import DetectionsFilterSidebar from './DetectionsFilterSidebar';
-import { getInitialValues } from '../../utils/filterValueValidator';
+import { useFilters } from '../../hooks/useFilters';
 import FilteredDetections from './FilteredDetections';
 
 const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f';
 
 // DetectionsContent component to manage the display of detections with filtering options
 const DetectionsContent = () => {
-    const [filters, setFilters] = useState(getInitialValues());
+    const { filters, setFilters } = useFilters();
     const [detections, fetchDetections, error] = useFilteredDetections(stationId, filters);
     const [showSidebar, setShowSidebar] = useState(false);
 
@@ -20,9 +20,9 @@ const DetectionsContent = () => {
         fetchDetections(filters);
     }, [fetchDetections, filters]);
 
-    const handleFilterSubmit = (values, { setSubmitting }) => {
+    const handleFilterSubmit = async(values, { setSubmitting }) => {
         setFilters(values);
-        fetchDetections(values);
+        await fetchDetections(values);
         setShowSidebar(false);
         setSubmitting(false);
     };
