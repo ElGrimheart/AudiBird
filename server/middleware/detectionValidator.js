@@ -176,9 +176,9 @@ export const validateNewDetection = [
       }
       return true;
     }),
-  body('audio_path')
-    .exists().withMessage('Audio path is required')
-    .isString().withMessage('Audio path must be a valid file path'),
+  body('recording_file_name')
+    .exists().withMessage('Recording file name is required')
+    .isString().withMessage('Recording file name must be a valid file name'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

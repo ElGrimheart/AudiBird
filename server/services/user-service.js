@@ -31,6 +31,36 @@ async function getUserByUsername(username) {
     return result.rows[0];
 }
 
+// Retrieves a users station list by user ID
+export const getUserStations = async (userId) => {
+    const sql = `SELECT station.station_id, station.station_name, user_station.station_user_type_id
+        FROM user_station
+        JOIN station ON user_station.station_id = station.station_id
+        WHERE user_id=$1 AND station_user_type_id = 1`;
+
+    const result = await db.query(sql, [userId]);
+
+    if (result.rowCount === 0) {
+        return [];
+    }
+    return result.rows;
+}
+
+// Retrievs a users subscribed stations by user ID
+export const getUserSubscribedStations = async (userId) => {
+    const sql = `SELECT station.station_id, station.station_name, user_station.station_user_type_id
+        FROM user_station
+        JOIN station ON user_station.station_id = station.station_id
+        WHERE user_id=$1 AND station_user_type_id = 2`;
+
+    const result = await db.query(sql, [userId]);
+
+    if (result.rowCount === 0) {
+        return [];
+    }
+    return result.rows;
+};
+
 // Checks user credentials and returns user data if valid email and password provided
 export const loginUser = async (email, password) => {
     const storedUser = await getUserByEmail(email);

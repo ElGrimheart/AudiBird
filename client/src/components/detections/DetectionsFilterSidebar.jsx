@@ -15,7 +15,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
   )}
     <Formik
       initialValues={filters}
-      //validationSchema={detectionFiltersSchema}
+      validationSchema={detectionFiltersSchema}
       onSubmit={onFilterSubmit}
       enableReinitialize
     >

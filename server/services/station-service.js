@@ -12,6 +12,19 @@ export async function getStationById(stationId) {
     return result.rows[0] || null;
 }
 
+export async function getUsersStations(userId) {
+    const sql = `
+        SELECT *
+        FROM station
+        INNER JOIN user_station ON station.station_id = user_station.station_id
+        WHERE user_id = $1
+        ORDER BY created_at DESC
+    `;
+
+    const result = await db.query(sql, [userId]);
+    return result.rows;
+}
+
 export async function getStationConfigById(stationId) {
     // SQL query to retrieve station configuration from the database
     
