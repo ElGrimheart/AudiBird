@@ -1,13 +1,29 @@
+import React, { useState, useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import axios from 'axios';
+import UserStationsContext from '../../contexts/UserStationsContext';
+import SelectedStationContext from '../../contexts/SelectedStationContext';
 
 // MainNavbar component for top navigation bar on all pages
 const MainNavbar = () => {
   const navigate = useNavigate();
+  const { setSelectedStation } = useContext(SelectedStationContext);
+  const { stations } = useContext(UserStationsContext);
+  const [selectedStation, setLocalSelectedStation] = useState("");
+
+  // Find the selected station's name
+  const selectedStationName =
+    stations.find((s) => s.station_id === selectedStation)?.station_name || "Select Station";
+
+  const handleStationChange = (event) => {
+    const stationUUID = event.target.value;
+    setLocalSelectedStation(stationUUID);
+    setSelectedStation(stationUUID);
+  };
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -38,6 +54,15 @@ const MainNavbar = () => {
                 Log out
               </NavDropdown.Item>
             </NavDropdown>
+            {stations && stations.length > 0 && (
+              <NavDropdown title={selectedStationName} id="station-dropdown">
+                {stations.map((station) => (
+                  <NavDropdown.Item key={station.station_id} value={station.station_id} onClick={() => handleStationChange({ target: { value: station.station_id } })}>
+                    {station.station_name}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -1,5 +1,6 @@
 import React, { useState, useContext} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import SelectedStationContext from '../../contexts/SelectedStationContext';
 import SocketContext from '../../contexts/SocketContext.jsx';
 import useRecentDetections from '../../hooks/useRecentDetections.jsx';
 import useCommonSpecies from '../../hooks/useCommonSpecies.jsx';
@@ -15,14 +16,16 @@ const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f'; // Example station ID
 
 // DashboardContent component to manage the dashboard layout and data fetching
 const DashboardContent = () => {
+    const { selectedStation } = useContext(SelectedStationContext);
+
     const socketRef = useContext(SocketContext);
     const socket = socketRef.current;
 
     // Card data hooks
-    const recentDetections = useRecentDetections(stationId, socket);
-    const commonSpecies = useCommonSpecies(stationId, socket);
-    const summaryStats = useSummaryStats(stationId, socket);
-    
+    const recentDetections = useRecentDetections(selectedStation, socket);
+    const commonSpecies = useCommonSpecies(selectedStation, socket);
+    const summaryStats = useSummaryStats(selectedStation, socket);
+
     // Stream handlers
     const [isStreamPlaying, setIsStreamPlaying] = useState(false);
     const handleStreamPlay = () => setIsStreamPlaying(true);

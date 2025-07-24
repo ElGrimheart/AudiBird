@@ -3,6 +3,8 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ToastContainer } from "react-toastify";
 import { io } from "socket.io-client";
 import SocketContext from './contexts/SocketContext';
+import { UserStationsProvider } from "./providers/UserStationsProvider";
+import { SelectedStationProvider } from "./providers/SelectedStationProvider";
 import ToastNotification from "./components/common/ToastNotification";
 import Container from 'react-bootstrap/Container';
 import MainNavbar from './components/common/MainNavbar';
@@ -37,35 +39,39 @@ const App = () => {
         };
     }, []);
 
-
   return (
-    <SocketContext.Provider value={socketRef}>
-      <Container fluid className="p-2">
-        <MainNavbar />
-        <ToastContainer />
-        <ToastNotification />
-        <Routes>
-          <Route path="/" element={<LoginRegister />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/detections"
-            element={
-              <PrivateRoute>
-                <Detections />
-              </PrivateRoute>
-            }
-          />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Container>
+    <UserStationsProvider >
+      <SelectedStationProvider>
+      <SocketContext.Provider value={socketRef}>
+        <Container fluid className="p-2">
+          <MainNavbar />
+          <ToastContainer />
+          <ToastNotification />
+          <Routes>
+            <Route path="/" element={<LoginRegister />} />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/detections"
+              element={
+                <PrivateRoute>
+                  <Detections />
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Container>
+      
     </SocketContext.Provider>
+    </SelectedStationProvider>
+    </UserStationsProvider >
   )
   
 };

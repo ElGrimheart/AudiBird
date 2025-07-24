@@ -2,6 +2,7 @@ import * as userService from "../services/user-service.js";
 import { generateJwtToken } from "../utils/jwt.js";
 import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
+import { verifyJwtToken } from "../utils/jwt.js";
 
 
 // GET /api/users/:userId route - retrieves user by ID
@@ -24,6 +25,42 @@ export const getUserById = async (req, res) => {
         }
     } catch (error) {
         handleError(res, error, "Error retrieving user");
+    }
+};
+
+
+// GET /api/users/stations route - retrieves stations for the authenticated user
+export const getUserStations = async (req, res) => {
+    const userId = req.user.userId;
+    logAction("Getting user's stations", { userId });
+
+    try {
+        const stations = await userService.getUserStations(userId);
+        res.status(200).json({
+            status: "success",
+            message: "User stations retrieved successfully",
+            result: stations
+        });
+    } catch (error) {
+        handleError(res, error, "Error retrieving user stations");
+    }
+};
+
+
+// GET /api/users/subscribed-stations route - retrieves subscribed stations for the authenticated user
+export const getUserSubscribedStations = async (req, res) => {
+    const userId = req.user.userId;
+    logAction("Getting user's subscribed stations", { userId });
+
+    try {
+        const subscribedStations = await userService.getUserSubscribedStations(userId);
+        res.status(200).json({
+            status: "success",
+            message: "User subscribed stations retrieved successfully",
+            result: subscribedStations
+        });
+    } catch (error) {
+        handleError(res, error, "Error retrieving user subscribed stations");
     }
 };
 

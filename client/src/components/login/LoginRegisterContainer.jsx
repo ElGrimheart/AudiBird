@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import LoginRegisterForm from './LoginRegisterForm';
 import axios from 'axios';
+import LoginRegisterForm from './LoginRegisterForm';
+import UserStationsContext from '../../contexts/UserStationsContext';
 
 const LoginRegisterContainer = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [generalError, setGeneralError] = useState(null);
+  const { fetchUserStations } = useContext(UserStationsContext);
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     setGeneralError(null);
@@ -19,7 +21,14 @@ const LoginRegisterContainer = () => {
       const response = await axios.post(endpoint, values);
 
       if (response.data && response.data.result) {
-        localStorage.setItem('jwt', response.data.result.userToken);
+        const token = response.data.result.userToken;
+        localStorage.setItem('jwt', token);
+
+        try {
+          fetchUserStations(token); // Pass the token to fetchUserStations
+        } catch (error) {
+          console.error("Error fetching user stations:", error);
+        }
         const redirectTo = location.state?.from?.pathname || '/dashboard';
         navigate(redirectTo, { replace: true });
       }

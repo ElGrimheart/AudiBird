@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
+import SelectedStationContext from '../../contexts/SelectedStationContext';
 import useFilteredDetections from '../../hooks/useFilteredDetections';
 import DetectionsFilterSidebar from './DetectionsFilterSidebar';
 import { useFilters } from '../../hooks/useFilters';
 import FilteredDetections from './FilteredDetections';
 
-const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f';
 
 // DetectionsContent component to manage the display of detections with filtering options
 const DetectionsContent = () => {
+    const { selectedStation } = useContext(SelectedStationContext);
+
     const { filters, setFilters } = useFilters();
-    const [detections, fetchDetections, error] = useFilteredDetections(stationId, filters);
+    const [detections, fetchDetections, error] = useFilteredDetections(selectedStation, filters);
     const [showSidebar, setShowSidebar] = useState(false);
 
     const handleCloseSidebar = () => setShowSidebar(false);
