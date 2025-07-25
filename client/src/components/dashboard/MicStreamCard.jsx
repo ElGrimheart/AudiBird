@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useContext } from "react";
 import DashboardCard from "./DashboardCard";
 import SocketContext from "../../contexts/SocketContext";
 
+// MicStreamCard component to play the live audio stream from the microphone
 const MicStreamCard = ({ onPlay, onPause, isPlaying }) => {
     const socketRef = useContext(SocketContext);
     const socket = socketRef.current;
     const audioContextRef = useRef(null);
-    const bufferQueueRef = useRef([]); // Buffer for incoming chunks
+    const bufferQueueRef = useRef([]); 
     const isPlayingRef = useRef(isPlaying);
 
     useEffect(() => {

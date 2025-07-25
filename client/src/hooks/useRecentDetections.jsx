@@ -5,15 +5,26 @@ import axios from 'axios';
 Updates when a new detection is received via socket. */
 export default function useRecentDetections(stationId, socket) {
     const [recentDetections, setRecentDetections] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (!stationId) {
+            setRecentDetections([]);
+            return;
+        }
+
         const fetchRecentDetections = async () => {
+            setLoading(true);
+            setError(null);
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/recent/${stationId}`);
                 setRecentDetections(response.data.result || []);
             } catch (error) {
-                console.error('Failed to fetch detections:', error);
+                setError(error);
                 setRecentDetections([]);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -27,5 +38,5 @@ export default function useRecentDetections(stationId, socket) {
 
     }, [stationId, socket]);
 
-    return recentDetections;
+    return { recentDetections, loading, error };
 }

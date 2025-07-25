@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import UserForm from '../common/UserForm';
 import { loginRegisterSchema } from '../../utils/userValueValidator';
 
-const LoginRegisterForm = ({ isRegister, onSubmit, generalError, setIsRegister }) => ( // Add setIsRegister as a prop
+const LoginRegisterForm = ({ isRegister, onSubmit, generalError, setIsRegister }) => (
   <>
     {generalError && (
       <div className="alert alert-danger mb-3">
@@ -94,7 +94,7 @@ const LoginRegisterForm = ({ isRegister, onSubmit, generalError, setIsRegister }
           onSubmit={handleSubmit}
           submitText={isRegister ? 'Register' : 'Login'}
           secondaryText={isRegister ? 'Already have an account? Login' : 'New User? Register here'}
-          onSecondary={() => setIsRegister((prev) => !prev)} // Use setIsRegister here
+          onSecondary={() => setIsRegister((prev) => !prev)} 
           isSubmitting={isSubmitting}
         />
       )}

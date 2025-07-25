@@ -5,9 +5,18 @@ import axios from 'axios';
 Updates when a new detection is received via socket.*/
 export default function useSummaryStats(stationId, socket) {
     const [summaryStats, setSummaryStats] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        if (!stationId) {
+            setSummaryStats([]);
+            return;
+        }
+
         const fetchSummaryStats = async () => {
+            setLoading(true);
+            setError(null);
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/summary/${stationId}`);
                 const statsArray = Object.entries(response.data.result || {}).map(([key, value]) => ({
@@ -16,8 +25,10 @@ export default function useSummaryStats(stationId, socket) {
                 }));
                 setSummaryStats(statsArray || []);
             } catch (error) {
-                console.error('Failed to fetch summary stats:', error);
+                setError(error);
                 setSummaryStats([]);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -30,5 +41,5 @@ export default function useSummaryStats(stationId, socket) {
 
     }, [stationId, socket]);
 
-    return summaryStats;
+    return { summaryStats, loading, error }
 }

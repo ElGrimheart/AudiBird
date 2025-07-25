@@ -29,7 +29,7 @@ export const getUserById = async (req, res) => {
 };
 
 
-// GET /api/users/stations route - retrieves stations for the authenticated user
+// GET /api/users/stations route - retrieves a list of users stations
 export const getUserStations = async (req, res) => {
     const userId = req.user.userId;
     logAction("Getting user's stations", { userId });
@@ -43,24 +43,6 @@ export const getUserStations = async (req, res) => {
         });
     } catch (error) {
         handleError(res, error, "Error retrieving user stations");
-    }
-};
-
-
-// GET /api/users/subscribed-stations route - retrieves subscribed stations for the authenticated user
-export const getUserSubscribedStations = async (req, res) => {
-    const userId = req.user.userId;
-    logAction("Getting user's subscribed stations", { userId });
-
-    try {
-        const subscribedStations = await userService.getUserSubscribedStations(userId);
-        res.status(200).json({
-            status: "success",
-            message: "User subscribed stations retrieved successfully",
-            result: subscribedStations
-        });
-    } catch (error) {
-        handleError(res, error, "Error retrieving user subscribed stations");
     }
 };
 

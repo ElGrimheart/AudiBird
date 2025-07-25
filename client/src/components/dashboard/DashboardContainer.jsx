@@ -8,11 +8,9 @@ import useSummaryStats from '../../hooks/useSummaryStats.jsx';
 import StationCard from './StationCard.jsx';
 import MicStreamCard from './MicStreamCard.jsx';
 import RecentDetectionsCard from './RecentDetectionsCard.jsx';
-import TopSpeciesCard from './TopSpeciesCard.jsx';
+import CommonSpeciesCard from './CommonSpeciesCard.jsx';
 import ActivityCard from './ActivityCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
-
-const stationId = '149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f'; // Example station ID
 
 // DashboardContent component to manage the dashboard layout and data fetching
 const DashboardContent = () => {
@@ -22,17 +20,18 @@ const DashboardContent = () => {
     const socket = socketRef.current;
 
     // Card data hooks
-    const recentDetections = useRecentDetections(selectedStation, socket);
-    const commonSpecies = useCommonSpecies(selectedStation, socket);
-    const summaryStats = useSummaryStats(selectedStation, socket);
+    const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation, socket);
+    const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation, socket);
+    const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation, socket);
 
-    // Stream handlers
+    // Mic stream handlers
     const [isStreamPlaying, setIsStreamPlaying] = useState(false);
     const handleStreamPlay = () => setIsStreamPlaying(true);
     const handleStreamPause = () => setIsStreamPlaying(false);
 
     return (
-        <Container fluid className="p-4">
+        selectedStation != null ? 
+            <Container fluid className="p-4">
             {/* Row 1: Station Status + Audio Player */}
             <Row className="mb-4">
                 <Col md={6}>
@@ -50,17 +49,29 @@ const DashboardContent = () => {
             {/* Row 2: Recent Detections + Top Species */}
             <Row className="mb-4">
                 <Col md={6}>
-                    <RecentDetectionsCard detectionsArray={recentDetections}/>
+                    <RecentDetectionsCard 
+                        detectionsData={recentDetections}
+                        loading={detectionsLoading}
+                        error={detectionsError}
+                    />
                 </Col>
                 <Col md={6}>
-                    <TopSpeciesCard speciesArray={commonSpecies} />
+                    <CommonSpeciesCard 
+                        speciesData={commonSpecies}
+                        loading={speciesLoading}
+                        error={speciesError}
+                    />
                 </Col>
             </Row>
 
             {/* Row 3: Summary Stats Cards */}
             <Row>
                 <Col>
-                    <SummaryCard statArray={summaryStats} />
+                    <SummaryCard 
+                        summaryData={summaryStats}
+                        loading={summaryLoading}
+                        error={summaryError}
+                    />
                 </Col>
             </Row>
 
@@ -105,6 +116,11 @@ const DashboardContent = () => {
                 </Col>
             </Row>
         </Container>
+        :
+        <Container className="text-center mt-5">
+            <h2>Click here to register a station</h2>
+        </Container>
+
     )
 }
 

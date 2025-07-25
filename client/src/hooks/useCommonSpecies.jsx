@@ -1,19 +1,29 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Hook to fetch common species for a given station. Returns an array of species objects (common_name and count).
-// Updates when a new detection is received via socket.
 export default function useCommonSpecies(stationId, socket) {
     const [commonSpecies, setCommonSpecies] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (!stationId) {
+                setCommonSpecies([]);
+                return;
+        
+        }
+        
         const fetchCommonSpecies = async () => {
+            setLoading(true);
+            setError(null);
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/common/${stationId}`);
                 setCommonSpecies(response.data.result || []);
             } catch (error) {
-                console.error('Failed to fetch common species:', error);
+                setError(error);
                 setCommonSpecies([]);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -26,5 +36,5 @@ export default function useCommonSpecies(stationId, socket) {
 
     }, [stationId, socket]);
 
-    return commonSpecies;
+    return { commonSpecies, loading, error };
 }

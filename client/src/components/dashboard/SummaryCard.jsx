@@ -1,20 +1,25 @@
 import React from "react";
 import DashboardCard from "./DashboardCard";
+import { Spinner } from "react-bootstrap";
 
 // SummaryCard component to display overall detection statistics for a station in a card format
-const SummaryCard = ({ statArray }) => {
+const SummaryCard = ({ summaryData, loading, error }) => {
     return (
         <DashboardCard title="Overall Detection Summary">
-            <table className="table table-striped">
-                <tbody>
-                    {statArray.map((stat, index) => (
-                        <tr key={index}>
-                            <td>{stat.label}</td>
-                            <td>{stat.value}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {loading && <Spinner animation="border" />}
+            {error && <div className="text-danger">Error: {error.message}</div>}
+            {!loading && !error && (
+                <table className="table table-striped">
+                    <tbody>
+                        {summaryData.map((stat, index) => (
+                            <tr key={index}>
+                                <td>{stat.label}</td>
+                                <td>{stat.value}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </DashboardCard>
     )
 }
