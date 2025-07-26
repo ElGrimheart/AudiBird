@@ -19,7 +19,7 @@ const useLoginRegister = (fetchUserStations) => {
             const token = response.data.result.userToken;
             localStorage.setItem('jwt', token);
 
-            await fetchUserStations(token);
+            await fetchUserStations();
             
             const redirectTo = location.state?.from?.pathname || '/dashboard';
             navigate(redirectTo, { replace: true });

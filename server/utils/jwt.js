@@ -2,8 +2,10 @@ import jwt from "jsonwebtoken";
 
 // Generates a JWT token with the provided user information
 export function generateJwtToken(user) {
+    console.log(user.userId, "Generating JWT token for userID:", user.userId);
     const payload = {
-        userId: user.userId
+        userId: user.userId,
+        user_type_id: user.user_type_id,
     };
     
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '2h' });

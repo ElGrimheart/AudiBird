@@ -23,7 +23,9 @@ export default function useCommonSpecies(stationId) {
             setError(null);
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/common/${stationId}`);
+                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/common/${stationId}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
+                });
                 setCommonSpecies(response.data.result || []);
             } catch (error) {
                 setError(error);

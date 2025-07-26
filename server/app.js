@@ -10,7 +10,9 @@ import audioRouter from './routes/api/audio-routes.js';
 
 const app = express();
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(helmet({ 
+    crossOriginResourcePolicy: { policy: "cross-origin" } 
+}));
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true

@@ -27,10 +27,6 @@ io.on('connection', (socket) => {
         console.log(`Client ${socket.id} left station: ${stationId}`);
         socket.leave(stationId);
     });
-
-    socket.on('disconnect', () => {
-        console.log(`Client disconnected: ${socket.id}`);
-    });
 });
 
 stationStreamHandler(io);

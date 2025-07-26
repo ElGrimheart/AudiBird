@@ -14,7 +14,7 @@ export const getUserById = async (req, res) => {
         if (user) {
             res.status(200).json({
                 status: "success",
-                message: "User retrieved successfully",
+                message: `Retrieved user ID: ${userId}`,
                 result: user
             });
         } else {
@@ -24,7 +24,7 @@ export const getUserById = async (req, res) => {
             });
         }
     } catch (error) {
-        handleError(res, error, "Error retrieving user");
+        handleError(res, error, `Error retrieving user ID: ${userId}`);
     }
 };
 
@@ -38,11 +38,11 @@ export const getUserStations = async (req, res) => {
         const stations = await userService.getUserStations(userId);
         res.status(200).json({
             status: "success",
-            message: "User stations retrieved successfully",
+            message: `Retrieved stations for user ID: ${userId}`,
             result: stations
         });
     } catch (error) {
-        handleError(res, error, "Error retrieving user stations");
+        handleError(res, error, `Error retrieving stations for user ID: ${userId}`);
     }
 };
 

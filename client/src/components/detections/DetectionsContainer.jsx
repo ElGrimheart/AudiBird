@@ -12,7 +12,7 @@ const DetectionsContainer = () => {
     const { selectedStation } = useContext(SelectedStationContext);
 
     const { filters, setFilters } = useDetectionFilters();
-    const [detections, fetchDetections, error] = useFilteredDetections(selectedStation, filters);
+    const [detections, fetchDetections, error, loading] = useFilteredDetections(selectedStation, filters);
     const [showSidebar, setShowSidebar] = useState(false);
 
     const handleCloseSidebar = () => setShowSidebar(false);
@@ -41,7 +41,7 @@ const DetectionsContainer = () => {
                 onFilterSubmit={handleFilterSubmit}
                 error={error}
             />
-            <FilteredDetections detections={detections} />
+            <FilteredDetections detections={detections} loading={loading} error={error} />
         </Container>
     );
 };

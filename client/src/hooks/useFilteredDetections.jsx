@@ -15,7 +15,9 @@ export default function useDetections(stationId) {
     
         try {
             setLoading(true);
-            const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/filtered/${stationId}`, { params: filters });
+            const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/filtered/${stationId}`, { 
+                params: filters, 
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` } });
             setDetections(response.data.result || []);
             setError(null);
         } catch (error) {

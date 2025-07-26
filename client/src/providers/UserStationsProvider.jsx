@@ -14,12 +14,12 @@ export const UserStationsProvider = ({ children }) => {
         localStorage.setItem("userStations", JSON.stringify(stations));
     }, [stations]);
 
-    const fetchUserStations = async (token) => {
+    const fetchUserStations = async () => {
         try {
           setLoading(true);
           setError(null);
           const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/stations`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
           });
           setStations(response.data.result || []);
         } catch (error) {
