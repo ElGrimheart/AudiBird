@@ -1,9 +1,9 @@
-import DashboardContent from "../components/dashboard/DashboardContainer";
+import DashboardContainer from "../components/dashboard/DashboardContainer";
 
 // Main entry point for the Dashboard page, rendering the DashboardContent component.
 const Dashboard = () => {
     return (
-        <DashboardContent />
+        <DashboardContainer />
     );
 }
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export async function getAudioById(audioId, rangeHeader) {
     const sql = `
-        SELECT file_path
+        SELECT file_name
         FROM audio
         WHERE audio_id = $1
     `;
@@ -15,8 +15,8 @@ export async function getAudioById(audioId, rangeHeader) {
     }
 
     // return the audio stream
-    const { file_path } = result.rows[0];
-    const stationUrl = `http://192.168.0.47:4000/recordings/${file_path}`;
+    const { file_name } = result.rows[0];
+    const stationUrl = `http://192.168.0.47:4000/recordings/${file_name}`;
 
     const streamResponse = await axios.get(stationUrl, {
         responseType: "stream",

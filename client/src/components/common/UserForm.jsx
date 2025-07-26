@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 
-// Resusable UserForm component. Accepts fields, onSubmit handler, submit button text, secondary button text and action, general error message, and submission state.
+// Reusable UserForm component
 const UserForm = ({ fields, onSubmit, submitText, secondaryText, onSecondary, secondaryType = "button", generalError, isSubmitting = false }) => (
   <Form onSubmit={onSubmit}>
     {generalError && (

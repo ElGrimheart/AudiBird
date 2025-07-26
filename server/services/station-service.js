@@ -14,18 +14,15 @@ export async function getStationById(stationId) {
 
 export async function getStationConfigById(stationId) {
     // SQL query to retrieve station configuration from the database
-    
     return null;
 }
 
 export async function getStationStatusById(stationId) {
     // SQL query to retrieve the most recent station status from the database
-    
     return null;
 }
 
 export async function createStationStatusById(stationId, statusData) {
     // SQL query to update station status in the database
-    
     return null;
 }

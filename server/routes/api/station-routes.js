@@ -1,14 +1,18 @@
 import express from 'express';
+import { authenticateUser, authenticateAccessPermission } from '../../middleware/authenticator.js';
 import { validateStationId } from '../../middleware/stationValidator.js';
 import * as stationController from '../../controllers/station-controller.js';
-
 
 const stationRouter = express.Router();
 
 // Station Routes
 // stationRouter.get('/status/:stationId', stationController.getStationStatusById);
 // stationRouter.get('/config/:stationId', stationController.getStationConfigById);
-stationRouter.get('/:stationId', validateStationId, stationController.getStationById);
+stationRouter.get('/:stationId', 
+    authenticateUser, 
+    authenticateAccessPermission,
+    validateStationId, 
+    stationController.getStationById);
 
 // stationRouter.post('/status/:stationId', stationController.updateStationStatusById);
 // stationRouter.post('/config/:stationId', stationController.updateStationConfigById);

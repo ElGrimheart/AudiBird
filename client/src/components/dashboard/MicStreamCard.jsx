@@ -1,20 +1,41 @@
 import React, { useEffect, useRef, useContext } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import DashboardCard from "./DashboardCard";
 import SocketContext from "../../contexts/SocketContext";
+import { Spinner } from "react-bootstrap";
 
-const MicStreamCard = ({ onPlay, onPause, isPlaying }) => {
-    const socketRef = useContext(SocketContext);
-    const socket = socketRef.current;
+// MicStreamCard component to play the live audio stream from the microphone
+const MicStreamCard = ({ onPlay, onPause, isPlaying, loading, error }) => {
+
+    const { socketRef, isConnected } = useContext(SocketContext);
+    const socket = socketRef?.current;
     const audioContextRef = useRef(null);
-    const bufferQueueRef = useRef([]); // Buffer for incoming chunks
+    const bufferQueueRef = useRef([]); 
     const isPlayingRef = useRef(isPlaying);
+
+    const renderSkeleton = () => {
+        return (
+            <div>
+                <div className="text-center mb-3">
+                    <Spinner animation="border" role="status" variant="primary">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </div>
+                <div className="d-flex justify-content-center">
+                    <Skeleton width={80} height={40} className="me-2" />
+                    <Skeleton width={80} height={40} />
+                </div>
+            </div>
+        );
+    };
 
     useEffect(() => {
         isPlayingRef.current = isPlaying;
     }, [isPlaying]);
 
     useEffect(() => {
-        if (!socket) return;
+        if (!socket || !isConnected) return;
 
         if (isPlaying && !audioContextRef.current) {
             audioContextRef.current = new AudioContext({ sampleRate: 48000 });
@@ -59,7 +80,7 @@ const MicStreamCard = ({ onPlay, onPause, isPlaying }) => {
                         console.error("Error playing buffered audio chunk:", err);
                     }
                 }
-            }, 20); // Try to play a chunk every 20ms (adjust as needed)
+            }, 20); // Try to play a chunk every 20ms
         }
 
         return () => {
@@ -72,18 +93,40 @@ const MicStreamCard = ({ onPlay, onPause, isPlaying }) => {
             }
             bufferQueueRef.current = [];
         };
-    }, [socket, isPlaying]);
+    }, [socket, isPlaying, isConnected]);
 
     return (
         <DashboardCard title="Station Stream">
-            <div className="mt-2">
-                <button className="btn btn-primary" onClick={onPlay} disabled={isPlaying}>
-                    Play
-                </button>
-                <button className="btn btn-secondary ms-2" onClick={onPause} disabled={!isPlaying}>
-                    Pause
-                </button>
-            </div>
+            {error && (
+                <div className="alert alert-danger">
+                    {error.message || "Error connecting to audio stream"}
+                </div>
+            )}
+            
+            {loading ? renderSkeleton() : (
+                !socket || !isConnected ? (
+                    <div className="alert alert-warning">
+                        Waiting for connection to station...
+                    </div>
+                ) : (
+                    <div className="mt-2">
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={onPlay} 
+                            disabled={isPlaying || !isConnected}
+                        >
+                            Play
+                        </button>
+                        <button 
+                            className="btn btn-secondary ms-2" 
+                            onClick={onPause} 
+                            disabled={!isPlaying || !isConnected}
+                        >
+                            Pause
+                        </button>
+                    </div>
+                )
+            )}
         </DashboardCard>
     );
 };

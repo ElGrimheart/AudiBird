@@ -2,6 +2,7 @@ import * as userService from "../services/user-service.js";
 import { generateJwtToken } from "../utils/jwt.js";
 import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
+import { verifyJwtToken } from "../utils/jwt.js";
 
 
 // GET /api/users/:userId route - retrieves user by ID
@@ -13,7 +14,7 @@ export const getUserById = async (req, res) => {
         if (user) {
             res.status(200).json({
                 status: "success",
-                message: "User retrieved successfully",
+                message: `Retrieved user ID: ${userId}`,
                 result: user
             });
         } else {
@@ -23,7 +24,25 @@ export const getUserById = async (req, res) => {
             });
         }
     } catch (error) {
-        handleError(res, error, "Error retrieving user");
+        handleError(res, error, `Error retrieving user ID: ${userId}`);
+    }
+};
+
+
+// GET /api/users/stations route - retrieves a list of users stations
+export const getUserStations = async (req, res) => {
+    const userId = req.user.userId;
+    logAction("Getting user's stations", { userId });
+
+    try {
+        const stations = await userService.getUserStations(userId);
+        res.status(200).json({
+            status: "success",
+            message: `Retrieved stations for user ID: ${userId}`,
+            result: stations
+        });
+    } catch (error) {
+        handleError(res, error, `Error retrieving stations for user ID: ${userId}`);
     }
 };
 
@@ -38,6 +57,7 @@ export const loginUser = async (req, res) => {
 
         if (validUser) {
             const userToken = generateJwtToken(validUser);
+
             res.status(200).json({
                 status: "success",
                 message: "User logged in successfully",

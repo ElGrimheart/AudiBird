@@ -1,6 +1,9 @@
 import { createContext } from "react";
 
-// Creates a context for managing socket connections
-const SocketContext = createContext(null);
+// Context for managing socket connections
+const SocketContext = createContext({
+    socketRef: { current: null },
+    isConnected: false
+});
 
 export default SocketContext;

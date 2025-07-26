@@ -1,30 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import SocketContext from '../contexts/SocketContext';
 import axios from 'axios';
 
-// Hook to fetch common species for a given station. Returns an array of species objects (common_name and count).
-// Updates when a new detection is received via socket.
-export default function useCommonSpecies(stationId, socket) {
+/* Hook to fetch common species for a given station. Returns an array of common species objects with common name and count.
+updates when a new detection is received via room socket.*/
+export default function useCommonSpecies(stationId) {
     const [commonSpecies, setCommonSpecies] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const { socketRef, isConnected } = useContext(SocketContext);
+    const socket = socketRef?.current;
 
     useEffect(() => {
+        if (!stationId) {
+            setCommonSpecies([]);
+            return;
+        }
+
         const fetchCommonSpecies = async () => {
+            setLoading(true);
+            setError(null);
+
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/common/${stationId}`);
+                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/common/${stationId}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
+                });
                 setCommonSpecies(response.data.result || []);
             } catch (error) {
-                console.error('Failed to fetch common species:', error);
+                setError(error);
                 setCommonSpecies([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        const handleNewDetection = (detection) => {
+            if (detection.station_id === stationId) {
+                fetchCommonSpecies();
             }
         };
 
+        // Initial fetch of common species
         fetchCommonSpecies();
 
-        if (!socket) return;
+        // Socket listener for new detections
+        if (!socket || !isConnected) return;
+        socket.on("newDetection", handleNewDetection);
+        return () => socket.off("newDetection", handleNewDetection);
 
-        socket.on("newDetection", fetchCommonSpecies);
-        return () => socket.off("newDetection", fetchCommonSpecies);
+    }, [stationId, socket, isConnected]);
 
-    }, [stationId, socket]);
-
-    return commonSpecies;
+    return { commonSpecies, loading, error };
 }

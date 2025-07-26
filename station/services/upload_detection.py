@@ -22,9 +22,9 @@ def upload_detection(filename, detection, station_metadata, audio_metadata, proc
     api_url = local_config['db_api']['url']
     detections_route = local_config['db_api']['routes']['detection']
     station_id = remote_config['station']['id']
+    station_api_key = remote_config['station']['api_key']
 
     post_detection_route = api_url + detections_route + "/new/" + station_id
-    segment_path = local_config['paths']['segments_dir'] + '/' + filename + '.wav'
 
     try:
         response = requests.post(
@@ -37,10 +37,11 @@ def upload_detection(filename, detection, station_metadata, audio_metadata, proc
                 "station_metadata": station_metadata,
                 "audio_metadata": audio_metadata,
                 "processing_metadata": processing_metadata,
-                "audio_path": segment_path
+                "recording_file_name": filename + ".wav"
             }
         )
         response.raise_for_status()
+        print(response.status_code, response.json())
         return response.json()
     except requests.RequestException as e:
         print(f"Error posting detection: {e}")

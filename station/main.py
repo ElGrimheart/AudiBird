@@ -6,6 +6,7 @@ from utils.config_loader import load_yaml_config
 from audio_capture import AudioCapture, WebSocketStream, Segmenter, SegmentSaver
 from analysis import Analyser, DetectionLogger
 from services.upload_detection import upload_detection
+from server import AudioServer
 
 
 if __name__ == "__main__":
@@ -68,14 +69,23 @@ if __name__ == "__main__":
         "processing_metadata": processing_metadata
     }
     
+    server_config = {
+        "host": local_config["flask_server"]["host"],
+        "port": local_config["flask_server"]["port"],
+        "recordings_dir": local_config["paths"]["segments_dir"]
+    }
+    
     # Initialize components
     segmenter = Segmenter(segmenter_config)
     segment_saver = SegmentSaver(segment_saver_config)
     websocket_stream = WebSocketStream(local_config["websocket_stream"]["url"])
     detection_logger = DetectionLogger(detection_logger_config)
     analyser = Analyser(analyser_config)
-    
-    
+    server = AudioServer(server_config)
+
+    # Start the server in separate thread
+    threading.Thread(target=server.start, daemon=True).start()
+
     # Callback function - handles when a segment is ready for analysis
     def on_segment_ready(filename):
         detections = analyser.analyse_segment(filename)

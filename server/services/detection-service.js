@@ -129,7 +129,7 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
 export async function createDetection(stationId, detectionData) {
 
     const audioSql = `
-        INSERT INTO audio (file_path)
+        INSERT INTO audio (file_name)
         VALUES ($1)
         RETURNING audio_id
     `;
@@ -144,7 +144,7 @@ export async function createDetection(stationId, detectionData) {
         await db.query('BEGIN');
 
         const audioResponse = await db.query(audioSql, [
-            detectionData.audio_path
+            detectionData.recording_file_name
         ]);
         const audioId = audioResponse.rows[0].audio_id;
 

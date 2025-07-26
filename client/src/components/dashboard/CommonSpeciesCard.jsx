@@ -3,11 +3,10 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import DashboardCard from "./DashboardCard";
 import { Spinner } from "react-bootstrap";
-import { formatStringToDate } from "../../utils/dateFormatter";
 
-// RecentDetectionsCard component to display a list of recent detections by a station
-const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
-
+// CommonSpeciesCard component to display the most common species detected by a station
+const CommonSpeciesCard = ({ speciesData, loading, error }) => {
+    
     const renderSkeleton = () => {
         return (
             <div>
@@ -17,10 +16,10 @@ const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
                     </Spinner>
                 </div>
                 <ol className="list mb-0">
-                    {Array(3).fill(0).map((_, index) => (
+                    {Array(5).fill(0).map((_, index) => (
                         <li key={index} className="mb-2">
                             <strong><Skeleton width={120} /></strong> 
-                            <Skeleton width={180} />
+                            <Skeleton width={100} />
                         </li>
                     ))}
                 </ol>
@@ -29,22 +28,22 @@ const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
     };
 
     return (
-        <DashboardCard title="Recent Detections">
-            {error && <div className="text-danger">{error.message}</div>}
+        <DashboardCard title="Most Common Species">
+            {error && <div className="text-danger">Error: {error.message}</div>}
             {loading ? renderSkeleton() : (
                 <ol className="list mb-0">
-                    {detectionsData && detectionsData.length > 0 ? 
-                        detectionsData.map((detection, index) => (
+                    {speciesData && speciesData.length > 0 ? 
+                        speciesData.map((species, index) => (
                             <li key={index} className="mb-2">
-                                <strong>{detection.common_name}</strong> - {formatStringToDate(detection.detection_timestamp)} - {Math.round(detection.confidence * 100)}%
+                                <strong>{species.common_name}</strong> — {species.count} detections
                             </li>
                         )) : 
-                        <li>No recent detections</li>
+                        <li>No species data available</li>
                     }
                 </ol>
             )}
         </DashboardCard>
     );
-}
+};
 
-export default RecentDetectionsCard;
+export default CommonSpeciesCard;
