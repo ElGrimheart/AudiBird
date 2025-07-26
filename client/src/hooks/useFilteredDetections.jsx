@@ -1,9 +1,11 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
+// Hook to fetch filtered detections for a given station. Returns an array of detection objects
 export default function useDetections(stationId) {
     const [detections, setDetections] = useState([]);
     const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false);
 
     const fetchDetections = useCallback(async (filters = {}) => {
         if (!stationId) {
@@ -12,11 +14,12 @@ export default function useDetections(stationId) {
         }
     
         try {
+            setLoading(true);
             const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/filtered/${stationId}`, { params: filters });
             setDetections(response.data.result || []);
             setError(null);
         } catch (error) {
-            console.error('Failed to fetch detections:', error);
+            setError.error('Failed to fetch detections:', error);
 
             // API error response handling
             if (error.response && error.response.data.errors) {
@@ -26,8 +29,10 @@ export default function useDetections(stationId) {
                 setError({ general: 'An unexpected error occurred' }); // Fallback error
             }
             setDetections([]);
+        } finally {
+            setLoading(false);
         }
 }, [stationId]);
 
-    return [detections, fetchDetections, error];
+    return [detections, fetchDetections, error, loading];
 }

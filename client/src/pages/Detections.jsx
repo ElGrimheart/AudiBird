@@ -1,12 +1,14 @@
-import DetectionsContent from "../components/detections/DetectionsContainer";
-import FiltersProvider from "../providers/FiltersProvider";
+import DetectionsContainer from "../components/detections/DetectionsContainer";
+import DetectionFiltersProvider from "../providers/DetectionFiltersProvider";
 
-// Main entry point for the Detections page, rendering the DetectionsContent component.
+/* Main entry point for the Detections page. 
+Wraps the DetectionsContainer with DetectionFiltersProvider to manage filter state
+*/
 const Detections = () => {
     return (
-        <FiltersProvider>
-            <DetectionsContent />
-        </FiltersProvider>
+        <DetectionFiltersProvider>
+            <DetectionsContainer />
+        </DetectionFiltersProvider>
     );
 }
 

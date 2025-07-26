@@ -2,7 +2,7 @@ import React from "react";
 import DashboardCard from "./DashboardCard";
 import { Spinner } from "react-bootstrap";
 
-// TopSpeciesCard component to display the most common species detected in a card format
+// CommonSpeciesCard component to display the most common species detected by a station
 const CommonSpeciesCard = ({ speciesData, loading, error }) => {
     return (
         <DashboardCard title="Most Common Species">

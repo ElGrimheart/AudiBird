@@ -1,14 +1,36 @@
-import { createServer } from 'http';
+import http from 'http';
 import { Server } from "socket.io";
 import app from './app.js';
 import stationStreamHandler from './sockets/station-stream-handler.js';
 
-const server = createServer(app);
-const io = new Server(server, { 
+const server = http.createServer(app);
+export const io = new Server(server, { 
     cors: { 
         origin: process.env.FRONTEND_URL,
         credentials: true
     }
+});
+
+io.on('connection', (socket) => {
+    console.log(`New client connected: ${socket.id}`);
+
+    socket.on ('connect', () => {
+        console.log(`Client ${socket.id} connected`);
+    });
+
+    socket.on('joinStation', (stationId) => {
+        console.log(`Client ${socket.id} joined station: ${stationId}`);
+        socket.join(stationId);
+    });
+
+    socket.on('leaveStation', (stationId) => {
+        console.log(`Client ${socket.id} left station: ${stationId}`);
+        socket.leave(stationId);
+    });
+
+    socket.on('disconnect', () => {
+        console.log(`Client disconnected: ${socket.id}`);
+    });
 });
 
 stationStreamHandler(io);
@@ -19,6 +41,3 @@ server.listen(process.env.PORT, '0.0.0.0', (error) => {
     }
     console.log(`Server is running on ${process.env.BACKEND_URL}:${process.env.PORT}`);
 });
-
-
-export { io };

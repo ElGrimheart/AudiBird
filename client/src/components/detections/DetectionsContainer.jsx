@@ -3,15 +3,15 @@ import { Container, Button } from 'react-bootstrap';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
 import useFilteredDetections from '../../hooks/useFilteredDetections';
 import DetectionsFilterSidebar from './DetectionsFilterSidebar';
-import { useFilters } from '../../hooks/useFilters';
+import { useDetectionFilters } from '../../hooks/useDetectionFilters';
 import FilteredDetections from './FilteredDetections';
 
 
 // DetectionsContent component to manage the display of detections with filtering options
-const DetectionsContent = () => {
+const DetectionsContainer = () => {
     const { selectedStation } = useContext(SelectedStationContext);
 
-    const { filters, setFilters } = useFilters();
+    const { filters, setFilters } = useDetectionFilters();
     const [detections, fetchDetections, error] = useFilteredDetections(selectedStation, filters);
     const [showSidebar, setShowSidebar] = useState(false);
 
@@ -46,4 +46,4 @@ const DetectionsContent = () => {
     );
 };
 
-export default DetectionsContent;
+export default DetectionsContainer;

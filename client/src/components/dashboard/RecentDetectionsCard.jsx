@@ -3,7 +3,7 @@ import DashboardCard from "./DashboardCard";
 import { formatStringToDate } from "../../utils/dateFormatter";
 import { Spinner } from "react-bootstrap";
 
-// RecentDetectionsCard component to display a list of recent detections in a card format
+// RecentDetectionsCard component to display a list of recent detections by a station
 const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
 
     return (

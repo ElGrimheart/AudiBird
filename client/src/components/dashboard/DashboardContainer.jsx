@@ -1,7 +1,6 @@
 import React, { useState, useContext} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
-import SocketContext from '../../contexts/SocketContext.jsx';
 import useRecentDetections from '../../hooks/useRecentDetections.jsx';
 import useCommonSpecies from '../../hooks/useCommonSpecies.jsx';
 import useSummaryStats from '../../hooks/useSummaryStats.jsx';
@@ -12,17 +11,14 @@ import CommonSpeciesCard from './CommonSpeciesCard.jsx';
 import ActivityCard from './ActivityCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
-// DashboardContent component to manage the dashboard layout and data fetching
-const DashboardContent = () => {
+// DashboardContent component to manage the dashboard layout and pass data to cards
+const DashboardContainer = () => {
     const { selectedStation } = useContext(SelectedStationContext);
 
-    const socketRef = useContext(SocketContext);
-    const socket = socketRef.current;
-
     // Card data hooks
-    const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation, socket);
-    const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation, socket);
-    const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation, socket);
+    const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation);
+    const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation);
+    const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation);
 
     // Mic stream handlers
     const [isStreamPlaying, setIsStreamPlaying] = useState(false);
@@ -124,4 +120,4 @@ const DashboardContent = () => {
     )
 }
 
-export default DashboardContent;
+export default DashboardContainer;

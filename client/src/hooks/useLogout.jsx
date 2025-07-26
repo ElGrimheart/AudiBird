@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// Hook to handle user logout
 const useLogout = () => {
     const navigate = useNavigate();
 
@@ -11,7 +12,7 @@ const useLogout = () => {
         } catch (err) {
             console.error("Logout failed:", err);
         }
-        localStorage.removeItem('jwt');
+        localStorage.clear();
         navigate('/');
     };
 

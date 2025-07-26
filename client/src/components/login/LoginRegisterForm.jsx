@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import UserForm from '../common/UserForm';
 import { loginRegisterSchema } from '../../utils/userValueValidator';
 
+// LoginRegisterForm component to handle user login and registration
 const LoginRegisterForm = ({ isRegister, onSubmit, generalError, setIsRegister }) => (
   <>
     {generalError && (

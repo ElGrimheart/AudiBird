@@ -1,21 +1,19 @@
 import { useContext, useEffect } from "react";
 import { toast, Bounce } from "react-toastify";
 import SocketContext from "../../contexts/SocketContext";
+import { formatStringToDate } from "../../utils/dateFormatter";
 
-// Toast component to display notifications when newDetection event received from socket
+// Toast component to display notifications when newDetection event received from room socket
 const ToastNotification = () => {
-    const socketRef = useContext(SocketContext);
-    const socket = socketRef.current;
+    const { socketRef, isConnected } = useContext(SocketContext);
+    const socket = socketRef?.current;
 
     useEffect(() => {
-        if (!socket) {
-            console.error("Socket connection not established");
-            return;
-        }
+        if (!socket || !isConnected) return;
 
         const handleNewDetection = (detection) => {
             toast.success(
-                `New detection: ${detection.species || detection.common_name} at ${detection.detection_timestamp} (${Math.round(detection.confidence * 100)}%)`,
+                `New detection: ${detection.species || detection.common_name} at ${formatStringToDate(detection.detection_timestamp)} (${Math.round(detection.confidence * 100)}%)`,
                 {
                     position: "bottom-right",
                     autoClose: 6000,
@@ -25,15 +23,12 @@ const ToastNotification = () => {
                     transition: Bounce
                 }
             );
-        };
+        }
 
         socket.on("newDetection", handleNewDetection);
 
-
-        return () => {
-            socket.off("newDetection", handleNewDetection);
-        };
-    }, [socket]);
+        return () => {socket.off("newDetection", handleNewDetection);};
+    }, [socket, isConnected]);
 
     return null; 
 };

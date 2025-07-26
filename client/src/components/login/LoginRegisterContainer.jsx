@@ -3,6 +3,7 @@ import LoginRegisterForm from './LoginRegisterForm';
 import useLoginRegister from '../../hooks/useLoginRegister';
 import UserStationsContext from '../../contexts/UserStationsContext';
 
+// LoginRegisterContainer component to handle user login and registration
 const LoginRegisterContainer = () => {
     const [isRegister, setIsRegister] = useState(false);
     const { fetchUserStations } = useContext(UserStationsContext);

@@ -1,12 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import SocketContext from '../contexts/SocketContext';
 import axios from 'axios';
 
 /* Hook to fetch recent detections for a given station. Returns an array of detection objects.
-Updates when a new detection is received via socket. */
-export default function useRecentDetections(stationId, socket) {
+Updates when a new detection is received via room socket. */
+export default function useRecentDetections(stationId) {
     const [recentDetections, setRecentDetections] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const { socketRef, isConnected } = useContext(SocketContext);
+    const socket = socketRef?.current;
 
     useEffect(() => {
         if (!stationId) {
@@ -17,6 +21,7 @@ export default function useRecentDetections(stationId, socket) {
         const fetchRecentDetections = async () => {
             setLoading(true);
             setError(null);
+
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/recent/${stationId}`);
                 setRecentDetections(response.data.result || []);
@@ -28,15 +33,21 @@ export default function useRecentDetections(stationId, socket) {
             }
         };
 
+        // Initial fetch of recent detections
         fetchRecentDetections();
 
-        if (!socket) 
-            return;
-        
-        socket.on("newDetection", fetchRecentDetections);
-        return () => socket.off("newDetection", fetchRecentDetections);
+        // Socket listener for new detections
+        const handleNewDetection = (detection) => {
+            if (detection.station_id === stationId) {
+                fetchRecentDetections();
+            }
+        };
 
-    }, [stationId, socket]);
+        if (!socket || !isConnected) return;
+        socket.on("newDetection", handleNewDetection);
+        return () => socket.off("newDetection", handleNewDetection);
+
+    }, [ stationId, socket, isConnected]);
 
     return { recentDetections, loading, error };
 }

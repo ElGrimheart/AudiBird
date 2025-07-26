@@ -2,7 +2,7 @@ import React from "react";
 import DashboardCard from "./DashboardCard";
 import { Spinner } from "react-bootstrap";
 
-// SummaryCard component to display overall detection statistics for a station in a card format
+// SummaryCard component to display overall detection statistics for a station
 const SummaryCard = ({ summaryData, loading, error }) => {
     return (
         <DashboardCard title="Overall Detection Summary">
