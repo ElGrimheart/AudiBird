@@ -2,10 +2,10 @@ import jwt from "jsonwebtoken";
 
 // Generates a JWT token with the provided user information
 export function generateJwtToken(user) {
-    console.log(user.userId, "Generating JWT token for userID:", user.userId);
     const payload = {
         userId: user.userId,
         user_type_id: user.user_type_id,
+        stations: user.stations || {}
     };
     
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '2h' });
@@ -14,8 +14,8 @@ export function generateJwtToken(user) {
 // Verifies the JWT token and returns the decoded payload
 export function verifyJwtToken(token) {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        return decoded;
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        return payload;
     } catch (error) {
         return null;
     }

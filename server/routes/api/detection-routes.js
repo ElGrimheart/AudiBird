@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateUser, authenticateAccessPermission, authenticateWritePermission } from '../../middleware/authenticator.js';
+import { authenticateJWT, authenticateApiKey, authenticateAccessPermission, authenticateWritePermission } from '../../middleware/authenticators.js';
 import { validateDetectionId } from '../../middleware/detectionValidator.js';
 import { validateStationId } from '../../middleware/stationValidator.js';
 import { validateDetectionFilters, validateNewDetection } from '../../middleware/detectionValidator.js';
@@ -10,38 +10,38 @@ import * as detectionController from '../../controllers/detection-controller.js'
 const detectionRouter = express.Router();
 
 detectionRouter.get('/all/:stationId', 
-    authenticateUser, 
+    authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     detectionController.getAllDetectionsByStationId
 );
 detectionRouter.get('/recent/:stationId', 
-    authenticateUser, 
+    authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     detectionController.getRecentDetectionsByStationId
 );
 detectionRouter.get('/common/:stationId', 
-    authenticateUser, 
+    authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     detectionController.getMostCommonSpeciesByStationId
 );
 detectionRouter.get('/summary/:stationId', 
-    authenticateUser, 
+    authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     detectionController.getDetectionSummaryByStationId
 );
 detectionRouter.get('/filtered/:stationId', 
-    authenticateUser, 
+    authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     validateDetectionFilters, 
     detectionController.getFilteredDetectionsByStationId
 );
 detectionRouter.get('/:stationId/:detectionId', 
-    authenticateUser, 
+    authenticateJWT, 
     authenticateAccessPermission, 
     validateDetectionId, 
     detectionController.getDetectionById
@@ -49,7 +49,8 @@ detectionRouter.get('/:stationId/:detectionId',
 
 detectionRouter.post('/new/:stationId', 
     validateStationId, 
-    validateNewDetection, 
+    validateNewDetection,
+    authenticateApiKey, 
     detectionController.createDetection
 );
 

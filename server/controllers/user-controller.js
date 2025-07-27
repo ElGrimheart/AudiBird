@@ -56,13 +56,13 @@ export const loginUser = async (req, res) => {
         const validUser = await userService.loginUser(email, password);
 
         if (validUser) {
-            const userToken = generateJwtToken(validUser);
+            const jwt = generateJwtToken(validUser);
 
             res.status(200).json({
                 status: "success",
                 message: "User logged in successfully",
                 result: {
-                    userToken
+                    userToken: jwt
                 }
             });
         } else {
@@ -102,12 +102,12 @@ export const registerUser = async (req, res) => {
     try {
         const newUser = await userService.registerUser(name, username, email, password);
         if (newUser) {
-            const userToken = generateJwtToken(newUser);
+            const jwt = generateJwtToken(newUser);
             res.status(200).json({
                 status: "success",
                 message: "User registered successfully",
                 result: {
-                    userToken
+                    userToken: jwt
                 }
             });
         } else {

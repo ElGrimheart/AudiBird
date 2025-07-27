@@ -38,17 +38,25 @@ export const loginUser = async (email, password) => {
         throw new Error('User not found');
     }
 
+    // Verify password
     const validPassword = await comparePassword(password, storedUser.password);
     if (!validPassword) {
         throw new Error('Invalid password');
     }
 
+    // Get users stations and permissions
+    const userStations = await getUserStations(storedUser.user_id);
+
+    const stationPermissions = {};
+    userStations.forEach(station => {
+        console.log(`Station ID: ${station.station_id}, User Type: ${station.station_user_type_id}`);
+        stationPermissions[station.station_id] = station.station_user_type_id;
+    });
+
     const safeUser = {
         userId: storedUser.user_id,
-        name: storedUser.name,
-        username: storedUser.username,
-        email: storedUser.email,
-        user_type_id: storedUser.user_type_id
+        user_type_id: storedUser.user_type_id,
+        stations: stationPermissions
     };
 
     return safeUser;
@@ -91,10 +99,8 @@ export const registerUser = async (name, username, email, password) => {
 
     const safeUser = {
         userId: newUser.rows[0].user_id,
-        name: newUser.rows[0].name,
-        username: newUser.rows[0].username,
-        email: newUser.rows[0].email,
-        user_type_id: newUser.rows[0].user_type_id
+        user_type_id: newUser.rows[0].user_type_id,
+        stations: {}
     };
 
     return safeUser;
