@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateUser, authenticateAccessPermission } from '../../middleware/authenticator.js';
+import { authenticateJWT, authenticateAccessPermission } from '../../middleware/authenticators.js';
 import { validateStationId } from '../../middleware/stationValidator.js';
 import * as stationController from '../../controllers/station-controller.js';
 
@@ -8,10 +8,11 @@ const stationRouter = express.Router();
 // Station Routes
 // stationRouter.get('/status/:stationId', stationController.getStationStatusById);
 // stationRouter.get('/config/:stationId', stationController.getStationConfigById);
-stationRouter.get('/:stationId', 
-    authenticateUser, 
-    authenticateAccessPermission,
+stationRouter.get(
+    '/:stationId', 
     validateStationId, 
+    authenticateJWT, 
+    authenticateAccessPermission,
     stationController.getStationById);
 
 // stationRouter.post('/status/:stationId', stationController.updateStationStatusById);

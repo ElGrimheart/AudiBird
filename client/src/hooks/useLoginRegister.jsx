@@ -16,7 +16,7 @@ const useLoginRegister = (fetchUserStations) => {
           const response = await axios.post(endpoint, values);
 
           if (response.status === 200 && response.data.result) {
-            const token = response.data.result.userToken;
+            const token = response.data.result.jwt;
             localStorage.setItem('jwt', token);
 
             await fetchUserStations();

@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
-import useFilteredDetections from '../../hooks/useFilteredDetections';
 import DetectionsFilterSidebar from './DetectionsFilterSidebar';
 import { useDetectionFilters } from '../../hooks/useDetectionFilters';
+import useFilteredDetections from '../../hooks/useFilteredDetections';
 import FilteredDetections from './FilteredDetections';
 
 

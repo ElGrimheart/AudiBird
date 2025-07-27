@@ -14,7 +14,7 @@ export async function getAudioById(audioId, rangeHeader) {
         throw new Error('Audio not found');
     }
 
-    // return the audio stream
+    // return the audio stream from the station server
     const { file_name } = result.rows[0];
     const stationUrl = `http://192.168.0.47:4000/recordings/${file_name}`;
 

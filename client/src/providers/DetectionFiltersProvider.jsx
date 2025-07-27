@@ -7,10 +7,10 @@ const DetectionFiltersProvider = ({ children }) => {
         from: '',
         to: '',
         species: '',
-        min_confidence: '',
-        max_confidence: '',
-        sort_by: 'detection_timestamp',
-        sort: 'desc',
+        minConfidence: '',
+        maxConfidence: '',
+        sortBy: 'detection_timestamp',
+        sortOrder: 'desc',
     });
 
     return (

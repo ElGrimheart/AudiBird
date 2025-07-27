@@ -44,7 +44,7 @@ export const loginRegisterSchema = (isRegister) =>
             }
           ),
 
-        confirm_password: isRegister
+        confirmPassword: isRegister
           ? Yup.string()
               .required('Please confirm your password.')
               .oneOf([Yup.ref('password')], 'Passwords do not match.')
@@ -80,13 +80,13 @@ export const detectionFiltersSchema = Yup.object().shape({
       .nullable()
       .matches(speciesRegex, 'Species can only contain letters and spaces'),
 
-    min_confidence: Yup.number()
+    minConfidence: Yup.number()
       .nullable()
       .min(confidenceMinValue, `Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
       .max(confidenceMaxValue, `Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
       .typeError('Minimum confidence must be a number'),
 
-    max_confidence: Yup.number()
+    maxConfidence: Yup.number()
       .nullable()
       .min(confidenceMinValue, `Maximum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
       .max(confidenceMaxValue, `Maximum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
@@ -99,11 +99,11 @@ export const detectionFiltersSchema = Yup.object().shape({
         return min_confidence <= value;
       }),
       
-    sort_by: Yup.string()
+    sortBy: Yup.string()
       .required('Sort by is required') // Mark as required
       .oneOf(['detection_timestamp', 'common_name', 'confidence'], 'Sort by must be a valid field'),
     
-    sort: Yup.string()
+    sortOrder: Yup.string()
       .required('Sort is required') // Mark as required
       .oneOf(['asc', 'desc'], 'Sort must be either asc or desc'),
 });

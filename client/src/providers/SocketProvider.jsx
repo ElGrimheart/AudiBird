@@ -8,6 +8,10 @@ export const SocketProvider = ({ children }) => {
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
+        if (localStorage.getItem("jwt") === null) {
+            return;
+        }
+
         socketRef.current = io(import.meta.env.VITE_SOCKET_URL, {
             auth: { token: localStorage.getItem("jwt") },
             reconnection: true,

@@ -2,13 +2,13 @@ import * as userService from "../services/user-service.js";
 import { generateJwtToken } from "../utils/jwt.js";
 import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
-import { verifyJwtToken } from "../utils/jwt.js";
 
 
 // GET /api/users/:userId route - retrieves user by ID
 export const getUserById = async (req, res) => {
     const { userId } = req.params;
     logAction("Get user by ID", { userId });
+    
     try {
         const user = await userService.getUserById(userId);
         if (user) {
@@ -56,13 +56,13 @@ export const loginUser = async (req, res) => {
         const validUser = await userService.loginUser(email, password);
 
         if (validUser) {
-            const userToken = generateJwtToken(validUser);
+            const token = generateJwtToken(validUser);
 
             res.status(200).json({
                 status: "success",
                 message: "User logged in successfully",
                 result: {
-                    userToken
+                    jwt: token
                 }
             });
         } else {
@@ -102,12 +102,12 @@ export const registerUser = async (req, res) => {
     try {
         const newUser = await userService.registerUser(name, username, email, password);
         if (newUser) {
-            const userToken = generateJwtToken(newUser);
+            const token = generateJwtToken(newUser);
             res.status(200).json({
                 status: "success",
                 message: "User registered successfully",
                 result: {
-                    userToken
+                    jwt: token
                 }
             });
         } else {

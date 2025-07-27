@@ -38,11 +38,11 @@ export const validateDetectionFilters = [
     .optional()
     .custom((value) => value === '' || /^[A-Za-z\s]+$/.test(value))
     .withMessage('Species can only contain letters and spaces'),
-  query('min_confidence')
+  query('minConfidence')
     .optional()
     .custom((value) => value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100))
     .withMessage('Minimum confidence must be between 0 and 100'),
-  query('max_confidence')
+  query('maxConfidence')
     .optional()
     .custom((value) => value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100))
     .withMessage('Maximum confidence must be between 0 and 100'),
@@ -54,20 +54,20 @@ export const validateDetectionFilters = [
     .optional()
     .custom((value) => value === '' || parseInt(value) >= 0)
     .withMessage('Offset must be a non-negative integer'),
-  query('sort')
+  query('sortOrder')
     .optional()
     .custom((value) => value === '' || ['asc', 'desc'].includes(value))
     .withMessage('Sort must be either asc or desc'),
-  query('sort_by')
+  query('sortBy')
     .optional()
     .custom((value) => value === '' || ['detection_timestamp', 'common_name', 'confidence'].includes(value))
     .withMessage('Sort by must be a valid field'),
   query()
     .custom((_, { req }) => {
-        const { from, to, min_confidence, max_confidence } = req.query;
+        const { from, to, minConfidence, maxConfidence } = req.query;
 
-        // Ensure `min_confidence` is not greater than `max_confidence`
-        if (min_confidence && max_confidence && parseFloat(min_confidence) > parseFloat(max_confidence)) {
+        // Ensure `minConfidence` is not greater than `maxConfidence`
+        if (minConfidence && maxConfidence && parseFloat(minConfidence) > parseFloat(maxConfidence)) {
             throw new Error('Minimum confidence cannot be greater than maximum confidence');
         }
 
