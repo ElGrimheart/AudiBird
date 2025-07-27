@@ -42,7 +42,7 @@ export const validateRegisterForm = [
         .matches(/[A-Z]/).withMessage('API: Password must contain at least 1 uppercase letter')
         .matches(/[a-z]/).withMessage('API: Password must contain at least 1 lowercase letter')
         .matches(/[^A-Za-z0-9]/).withMessage('API: Password must contain at least 1 special character'),
-    check('confirm_password')
+    check('confirmPassword')
         .trim()
         .custom((value, { req }) => {
             if (value !== req.body.password) {

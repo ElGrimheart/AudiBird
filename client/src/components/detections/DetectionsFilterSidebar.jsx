@@ -34,7 +34,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
             <Row>
               <Col>
                 <Form.Control
-                                      //Date input for filtering detections by FROM date
+                  //Date input for filtering detections by FROM date
                   type="date"
                   name="from"
                   value={values.from}
@@ -49,7 +49,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
               </Col>
               <Col>
                 <Form.Control
-                                      //Date input for filtering detections by TO date
+                  //Date input for filtering detections by TO date
                   type="date"
                   name="to"
                   value={values.to}
@@ -67,7 +67,7 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
           <Form.Group className="mb-3">
             <Form.Label>Species</Form.Label>
             <Form.Control
-                                      // Species search input
+              // Species search input
               type="text"
               name="species"
               value={values.species}
@@ -85,36 +85,36 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
             <Row>
               <Col>
                 <Form.Control
-                                      // Min confidence input
+                  // Min confidence input
                   type="number"
-                  name="min_confidence"
-                  value={values.min_confidence}
+                  name="minConfidence"
+                  value={values.minConfidence}
                   onChange={handleChange}
-                  onBlur={() => setFieldTouched('min_confidence', true)}
+                  onBlur={() => setFieldTouched('minConfidence', true)}
                   placeholder="Min"
                   min={0}
                   max={100}
-                  isInvalid={!!errors.min_confidence && touched.min_confidence}
+                  isInvalid={!!errors.minConfidence && touched.minConfidence}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.min_confidence}
+                  {errors.minConfidence}
                 </Form.Control.Feedback>
               </Col>
               <Col>
                 <Form.Control
-                                        // Max confidence input
+                  // Max confidence input
                   type="number"
-                  name="max_confidence"
-                  value={values.max_confidence}
+                  name="maxConfidence"
+                  value={values.maxConfidence}
                   onChange={handleChange}
-                  onBlur={() => setFieldTouched('max_confidence', true)}
+                  onBlur={() => setFieldTouched('maxConfidence', true)}
                   placeholder="Max"
                   min={0}
                   max={100}
-                  isInvalid={!!errors.max_confidence && touched.max_confidence}
+                  isInvalid={!!errors.maxConfidence && touched.maxConfidence}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.max_confidence}
+                  {errors.maxConfidence}
                 </Form.Control.Feedback>
               </Col>
             </Row>
@@ -122,35 +122,35 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
           <Form.Group className="mb-3">
             <Form.Label>Sort By</Form.Label>
             <Form.Select
-                                        // Sort by selection
-              name="sort_by"
-              value={values.sort_by}
+              // Sort by selection
+              name="sortBy"
+              value={values.sortBy}
               onChange={handleChange}
-              isInvalid={!!errors.sort_by && touched.sort_by}
+              isInvalid={!!errors.sortBy && touched.sortBy}
             >
               <option value="detection_timestamp">Detection Time</option>
               <option value="confidence">Confidence</option>
               <option value="common_name">Species Name</option>
             </Form.Select>
             <Form.Control.Feedback type="invalid">
-              {errors.sort_by}
+              {errors.sortBy}
             </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Sort Order</Form.Label>
             <Form.Select
-                                        // Sort order selection
-              name="sort"
-              value={values.sort}
+              // Sort order selection
+              name="sortOrder"
+              value={values.sortOrder}
               onChange={handleChange}
-              isInvalid={!!errors.sort && touched.sort}
+              isInvalid={!!errors.sortOrder && touched.sortOrder}
             >
               <option value="desc">Descending</option>
               <option value="asc">Ascending</option>
             </Form.Select>
             <Form.Control.Feedback type="invalid">
-              {errors.sort}
+              {errors.sortOrder}
             </Form.Control.Feedback>
           </Form.Group>
           <Button variant="primary" type="submit" className="w-100">

@@ -98,12 +98,12 @@ export async function getDetectionSummaryByStationId(stationId, filters) {
 }
 
 // Retrieves filtered detections for a given station ID
-export async function getFilteredDetectionsByStationId(stationId, { from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by }) {
+export async function getFilteredDetectionsByStationId(stationId, { from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy }) {
     // Build the WHERE clause based on filters
-    const { whereClause, values } = buildDetectionWhereClause(stationId, {from, to, species, min_confidence, max_confidence});
+    const { whereClause, values } = buildDetectionWhereClause(stationId, {from, to, species, minConfidence, maxConfidence});
 
     // Build the ORDER BY clause based on sort parameters
-    const orderByClause = buildDetectionSortClause(sort_by, sort);
+    const orderByClause = buildDetectionSortClause(sortBy, sortOrder);
 
     // Pagination
     const lim = Math.max(parseInt(limit) || 50, 1);

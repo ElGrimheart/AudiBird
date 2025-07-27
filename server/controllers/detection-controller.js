@@ -100,11 +100,11 @@ export const getDetectionSummaryByStationId = async (req, res) => {
 // GET /api/detections/filtered/:stationId route - retrieves filtered detections for a given station
 export const getFilteredDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
-    const { from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by} = req.query;
-    logAction("Retrieving filtered detections for", { stationId, from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by });
+    const { from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy } = req.query;
+    logAction("Retrieving filtered detections for", { stationId, from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy });
 
     try {
-        const filteredDetections = await detectionService.getFilteredDetectionsByStationId(stationId,{ from, to, species, min_confidence, max_confidence, limit, offset, sort, sort_by });
+        const filteredDetections = await detectionService.getFilteredDetectionsByStationId(stationId,{ from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy });
         res.status(200).json({
             status: "success",
             message: `${filteredDetections.length} records retrieved`,

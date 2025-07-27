@@ -1,7 +1,7 @@
 // Utility class for constructing SQL queries for detection data
 
 // Builds a WHERE clause based on the filters passed
-export function buildDetectionWhereClause(stationId, { from, to, species, min_confidence, max_confidence }) {
+export function buildDetectionWhereClause(stationId, { from, to, species, minConfidence, maxConfidence }) {
     const filters = [];
     const values = [stationId];
 
@@ -19,12 +19,12 @@ export function buildDetectionWhereClause(stationId, { from, to, species, min_co
         values.push(`%${species}%`);
         filters.push(`(common_name ILIKE $${values.length} OR scientific_name ILIKE $${values.length})`);
     }
-    if (min_confidence !== undefined && min_confidence !== '' && !isNaN(Number(min_confidence))) {
-        values.push(Number(min_confidence) / 100);
+    if (minConfidence !== undefined && minConfidence !== '' && !isNaN(Number(minConfidence))) {
+        values.push(Number(minConfidence) / 100);
         filters.push(`confidence >= $${values.length}`);
     }
-    if (max_confidence !== undefined && max_confidence !== '' && !isNaN(Number(max_confidence))) {
-        values.push(Number(max_confidence) / 100);
+    if (maxConfidence !== undefined && maxConfidence !== '' && !isNaN(Number(maxConfidence))) {
+        values.push(Number(maxConfidence) / 100);
         filters.push(`confidence <= $${values.length}`);
     }
     if (filters.length > 0) {
@@ -35,9 +35,9 @@ export function buildDetectionWhereClause(stationId, { from, to, species, min_co
 }
 
 // Builds an ORDER BY clause based on the parameters passed
-export function buildDetectionSortClause(sort_by, sort, allowedColumns = ['detection_timestamp', 'confidence', 'common_name', 'scientific_name'], defaultColumn = 'detection_timestamp') {
-    let sortByArr = sort_by ? sort_by.split(',') : [defaultColumn];
-    let sortDirArr = sort ? sort.split(',') : ['desc'];
+export function buildDetectionSortClause(sortBy, sortOrder, allowedColumns = ['detection_timestamp', 'confidence', 'common_name', 'scientific_name'], defaultColumn = 'detection_timestamp') {
+    let sortByArr = sortBy ? sortBy.split(',') : [defaultColumn];
+    let sortDirArr = sortOrder ? sortOrder.split(',') : ['desc'];
     const orderByParts = sortByArr.map((col, i) => {
         const column = allowedColumns.includes(col) ? col : defaultColumn;
         const dir = (sortDirArr[i] || sortDirArr[0] || 'desc').toLowerCase() === 'asc' ? 'ASC' : 'DESC';

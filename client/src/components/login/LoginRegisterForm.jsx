@@ -17,7 +17,7 @@ const LoginRegisterForm = ({ isRegister, onSubmit, generalError, setIsRegister }
         username: '',
         email: '',
         password: '',
-        confirm_password: '',
+        confirmPassword: '',
       }}
       validationSchema={loginRegisterSchema(isRegister)}
       onSubmit={onSubmit}
@@ -82,12 +82,12 @@ const LoginRegisterForm = ({ isRegister, onSubmit, generalError, setIsRegister }
                   {
                     label: 'Confirm Password',
                     type: 'password',
-                    name: 'confirm_password',
-                    value: values.confirm_password,
+                    name: 'confirmPassword',
+                    value: values.confirmPassword,
                     onChange: handleChange,
-                    onBlur: () => setFieldTouched('confirm_password', true),
+                    onBlur: () => setFieldTouched('confirmPassword', true),
                     placeholder: 'Confirm Password',
-                    error: touched.confirm_password && errors.confirm_password,
+                    error: touched.confirmPassword && errors.confirmPassword,
                   },
                 ]
               : []),

@@ -1,9 +1,9 @@
 import React from 'react';
-import Accordion from 'react-bootstrap/Accordion';
-import { formatStringToDate } from '../../utils/dateFormatter';
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Spinner } from "react-bootstrap";
+import Accordion from 'react-bootstrap/Accordion';
+import { formatStringToDate } from '../../utils/dateFormatter';
 
 // FilteredDetections component to display detections in an accordion format
 const FilteredDetections = ({ detections, loading, error }) => {

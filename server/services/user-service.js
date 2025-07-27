@@ -55,7 +55,7 @@ export const loginUser = async (email, password) => {
 
     const safeUser = {
         userId: storedUser.user_id,
-        user_type_id: storedUser.user_type_id,
+        userTypeId: storedUser.user_type_id,
         stations: stationPermissions
     };
 
@@ -74,9 +74,8 @@ export const registerUser = async (name, username, email, password) => {
     if (storedUser) {
         throw new Error('Username already exists');
     }
-    
-    
-    const defaultUserTypeId = 2; 
+     
+    const defaultUserTypeId = 2;        // 1 = Admin, 2 = User
     const hashedPassword = await hashPassword(password);
 
     const sql = `INSERT INTO users (name, username, email, password, user_type_id) 
@@ -99,7 +98,7 @@ export const registerUser = async (name, username, email, password) => {
 
     const safeUser = {
         userId: newUser.rows[0].user_id,
-        user_type_id: newUser.rows[0].user_type_id,
+        userTypeId: newUser.rows[0].user_type_id,
         stations: {}
     };
 
@@ -120,20 +119,4 @@ export const getUserStations = async (userId) => {
         return [];
     }
     return result.rows;
-}
-
-// Returns the user_station_type_id for the given user and station
-// 1 = Owner, 2 = Admin, 3 = Viwer
-export const getUsersStationPermissions = async (userId, stationId) => {
-    const sql = `SELECT station_user_type_id 
-        FROM user_station 
-        WHERE user_id=$1 AND station_id=$2`;
-
-    const result = await db.query(sql, [userId, stationId]);
-
-    if (result.rowCount === 0) {
-        return null; // User does not have access to the station
-    }
-
-    return result.rows[0].station_user_type_id; 
 }

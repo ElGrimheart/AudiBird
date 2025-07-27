@@ -1,6 +1,5 @@
 import { verifyJwtToken } from "../utils/jwt.js";
-import {  getStationById } from "../services/station-service.js";
-import { getUsersStationPermissions } from "../services/user-service.js";
+import { getStationById } from "../services/station-service.js";
 
 // Authenticates user supplied JWT token. Adds user info to request object if valid.
 export const authenticateJWT = (req, res, next) => {
@@ -23,7 +22,7 @@ export const authenticateJWT = (req, res, next) => {
         });
     }
 
-    req.auth_type = "JWT";
+    req.authType = "JWT";
     req.user = payload;
     next();
 };
@@ -59,7 +58,7 @@ export const authenticateApiKey = async (req, res, next) => {
             });
         }
 
-        req.auth_type = "API";
+        req.authType = "API";
         req.station = storedStation;
         next();
 
@@ -90,7 +89,7 @@ export const dualAuth = async (req, res, next) => {
     const jwtPayload = verifyJwtToken(token);
     if (jwtPayload) {
         // Valid JWT - authenticate as user
-        req.auth_type = "JWT";
+        req.authType = "JWT";
         req.user = jwtPayload;
         return next();
     }
@@ -113,7 +112,7 @@ export const dualAuth = async (req, res, next) => {
             });
         }
 
-        req.auth_type = "API";
+        req.authType = "API";
         req.station = storedStation;
         return next();
 
@@ -151,10 +150,10 @@ export const authenticateWritePermission = async (req, res, next) => {
         return next();
     }
 
-    const userId = req.user.userId;
+    const stationId = req.params.stationId;
     const stationPermissions = req.user.stations;
 
-    if (!stationPermissions || stationPermissions[stationId] === 3) {  // user_station_type_id: 3 = 'Viewer'
+    if (!stationPermissions || !(stationPermissions[stationId] === 1 || stationPermissions[stationId] === 2)) {  // user_station_type_id: 1 = 'Owner', 2 = 'Admin'
         return res.status(403).json({
             status: "failure",
             message: "Forbidden: You do not have access to this station"
@@ -166,5 +165,5 @@ export const authenticateWritePermission = async (req, res, next) => {
 
 // Helper function to check if the user is an admin
 function isAdmin (user) {
-    return user.user_type_id === 1; // user_type_id: 1 = 'Admin'
+    return user.userTypeId === 1; // user_type_id: 1 = 'Admin'
 }
