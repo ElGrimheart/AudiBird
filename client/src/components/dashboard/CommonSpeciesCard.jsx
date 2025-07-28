@@ -2,6 +2,7 @@ import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import DashboardCard from "./DashboardCard";
+import AvatarImage from "../common/Avatar";
 import { Spinner } from "react-bootstrap";
 
 // CommonSpeciesCard component to display the most common species detected by a station
@@ -35,7 +36,13 @@ const CommonSpeciesCard = ({ speciesData, loading, error }) => {
                     {speciesData && speciesData.length > 0 ? 
                         speciesData.map((species, index) => (
                             <li key={index} className="mb-2">
-                                <strong>{species.common_name}</strong> — {species.count} detections
+                                <AvatarImage 
+                                    src={species.image_url || "https://cdn.download.ams.birds.cornell.edu/api/v1/asset/305880301/320"} 
+                                    alt={` ${species.common_name}, ${species.scientific_name} - Copyright: ${species.rights_holder}`}
+                                    size={56} 
+                                    className="me-2 birdAvatar"
+                                />
+                                <strong> {species.common_name}</strong> — {species.count} detections
                             </li>
                         )) : 
                         <li>No species data available</li>

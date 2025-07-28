@@ -51,7 +51,7 @@ const FilteredDetections = ({ detections, loading, error }) => {
                     <Accordion.Header>
                         {detection.common_name}, {detection.scientific_name}, {formatStringToDate(detection.detection_timestamp)}, {Math.round(detection.confidence * 100)}%
                         {detection.audio_id ? (
-                            <audio controls src={`${import.meta.env.VITE_API_AUDIO_URL}/${detection.audio_id}`} />
+                            <audio controls src="{`${import.meta.env.VITE_API_AUDIO_URL}/${detection.audio_id}`}" />
                         ) : (
                             " No audio available"
                         )}

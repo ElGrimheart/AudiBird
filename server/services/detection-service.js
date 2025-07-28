@@ -1,4 +1,7 @@
 import db from "../config/db-conn.js";
+import { getSpeciesCodeByName } from "./species-service.js";
+import { getMediaBySpeciesCode, postMedia } from "./media-service.js";
+import { scrapeImgUrl, scrapeAudioUrl } from "../utils/media-scraper.js";
 import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sqlBuilder.js";
 
 // Retrieves a detection by its ID
@@ -6,6 +9,7 @@ export async function getDetectionById(detectionId) {
     const sql = `
         SELECT *
         FROM detection
+        LEFT JOIN
         WHERE detection_id = $1
         LIMIT 1
     `;
@@ -43,7 +47,7 @@ export async function getRecentDetectionsByStationId(stationId) {
 // Retrieves the 5 most common species detected for a given station ID
 export async function getMostCommonSpeciesByStationId(stationId) {
     const sql = 
-        `SELECT common_name, COUNT(*) as count
+        `SELECT common_name, image_url, image_rights, COUNT(*) as count
         FROM detection
         WHERE station_id=$1
         GROUP BY common_name
@@ -135,19 +139,50 @@ export async function createDetection(stationId, detectionData) {
     `;
 
     const detectionSql = `
-        INSERT INTO detection (common_name, scientific_name, confidence, detection_timestamp, station_metadata, audio_metadata, processing_metadata, station_id, audio_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        INSERT INTO detection (common_name, scientific_name, confidence, detection_timestamp, station_metadata, audio_metadata, processing_metadata, station_id, species_code, audio_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
+    `;
+
+    const speciesCodeSql = `
+        SELECT species_code
+        FROM taxonomy
+        WHERE LOWER(common_name) = LOWER($1) OR LOWER(scientific_name) = LOWER($2)
+        LIMIT 1
     `;
 
     try {
         await db.query('BEGIN');
 
+        // Insert audio file and get its ID
         const audioResponse = await db.query(audioSql, [
             detectionData.recording_file_name
         ]);
         const audioId = audioResponse.rows[0].audio_id;
 
+        // Get species code from taxonomy table
+        const speciesCode = await getSpeciesCodeByName(detectionData.common_name, detectionData.scientific_name);
+        console.log(speciesCode);
+        // Get media links for the species
+        let mediaLinks = await getMediaBySpeciesCode(speciesCode);
+        console.log(`Media links for species ${speciesCode}:`, mediaLinks);
+
+        // If no media links found, scrape eBird for media and insert into media table
+        if (!mediaLinks || !mediaLinks.image_url || !mediaLinks.audio_url) {
+            console.log(`Missing media links for species code: ${speciesCode}. Scraping eBird for media...`);
+            const { imageUrl, imageRights } = await scrapeImgUrl(speciesCode);
+            const { audioUrl, audioRights } = await scrapeAudioUrl(speciesCode);
+
+            console.log(`Scraped image URL: ${imageUrl} with rights: ${imageRights}`);
+            console.log(`Scraped audio URL: ${audioUrl} with rights: ${audioRights}`);
+
+            if (imageUrl) {
+                mediaLinks = await postMedia(speciesCode, imageUrl, imageRights, audioUrl, audioRights);
+            }
+        }
+
+        console.log(`Media links for species ${speciesCode}:`, mediaLinks);
+        // Insert detection data
         const detectionValues = [
             detectionData.common_name,
             detectionData.scientific_name,
@@ -157,6 +192,7 @@ export async function createDetection(stationId, detectionData) {
             detectionData.audio_metadata || {},
             detectionData.processing_metadata || {},
             stationId,
+            speciesCode || null, 
             audioId
         ];
 

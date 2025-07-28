@@ -27,17 +27,17 @@ const DashboardContainer = () => {
 
     return (
         selectedStation != null ? 
-            <Container fluid className="p-4">
+            <Container className="p-4">
             {/* Row 1: Station Status + Audio Player */}
             <Row className="mb-4">
                 <Col md={6}>
                     <StationCard station={{ name: "Station 1", description: "Main field station", isActive: true }} />
                 </Col>
                 <Col md={6}>
-                    <MicStreamCard
-                        isPlaying={isStreamPlaying}
-                        onPlay={handleStreamPlay}
-                        onPause={handleStreamPause}
+                    <SummaryCard 
+                        summaryData={summaryStats}
+                        loading={summaryLoading}
+                        error={summaryError}
                     />
                 </Col>
             </Row>
@@ -61,18 +61,18 @@ const DashboardContainer = () => {
             </Row>
 
             {/* Row 3: Summary Stats Cards */}
-            <Row>
+            <Row className="mb-4">
                 <Col>
-                    <SummaryCard 
-                        summaryData={summaryStats}
-                        loading={summaryLoading}
-                        error={summaryError}
+                    <MicStreamCard
+                        isPlaying={isStreamPlaying}
+                        onPlay={handleStreamPlay}
+                        onPause={handleStreamPause}
                     />
                 </Col>
             </Row>
 
             {/* Row 4: Activity Chart */}
-            <Row>
+            <Row className="mb-4">
                 <Col>
                     <ActivityCard chartData={{
                         labels: ['Detections'],
