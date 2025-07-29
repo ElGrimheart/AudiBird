@@ -4,9 +4,11 @@ import { ToastContainer } from "react-toastify";
 import { SocketProvider } from './providers/SocketProvider';
 import { UserStationsProvider } from "./providers/UserStationsProvider";
 import { SelectedStationProvider } from "./providers/SelectedStationProvider";
+import AudioPlayerProvider from "./providers/AudioPlayerProvider";
 import ToastNotification from "./components/common/ToastNotification";
 import Container from 'react-bootstrap/Container';
 import MainNavbar from './components/common/MainNavbar';
+import MainFooter from './components/common/MainFooter';
 import LoginRegister from "./pages/LoginRegister";
 import Dashboard from './pages/Dashboard';
 import Detections from './pages/Detections';
@@ -30,10 +32,11 @@ const App = () => {
                 <SocketProvider>
                     <UserStationsProvider>
                         <SelectedStationProvider>
-                            <Container fluid className="p-2">
-                                <MainNavbar />
-                                <ToastContainer />
-                                <ToastNotification />
+                            <AudioPlayerProvider>
+                                <Container fluid className="p-2">
+                                    <MainNavbar />
+                                    <ToastContainer />
+                                    <ToastNotification />
                                     <Routes>
                                         <Route
                                           path="/dashboard"
@@ -53,7 +56,9 @@ const App = () => {
                                         />
                                         <Route path="*" element={<PageNotFound />} />
                                     </Routes>
-                            </Container>
+                                    <MainFooter />
+                                </Container>
+                            </AudioPlayerProvider>
                         </SelectedStationProvider>
                     </UserStationsProvider>
                 </SocketProvider> 

@@ -1,3 +1,8 @@
 .header {
   text-align: center;
 }
+
+.birdAvatar {
+  objectFit: "cover"; 
+  border: "2px solid #eee"
+}

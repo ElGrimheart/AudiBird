@@ -3,7 +3,7 @@ import { toast, Bounce } from "react-toastify";
 import SocketContext from "../../contexts/SocketContext";
 import { formatStringToDate } from "../../utils/dateFormatter";
 
-// Toast component to display notifications when newDetection event received from room socket
+// Toast component to display notifications whenever a newDetection event received from room socket
 const ToastNotification = () => {
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;

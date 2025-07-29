@@ -30,7 +30,7 @@ const DetectionsContainer = () => {
     };
 
     return (
-        <Container fluid className="p-4">
+        <Container className="p-4">
             <Button variant="primary" className="mb-3" onClick={handleShowSidebar}>
                 Show Filters
             </Button>

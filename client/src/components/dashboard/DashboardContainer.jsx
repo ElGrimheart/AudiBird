@@ -4,11 +4,12 @@ import SelectedStationContext from '../../contexts/SelectedStationContext';
 import useRecentDetections from '../../hooks/useRecentDetections.jsx';
 import useCommonSpecies from '../../hooks/useCommonSpecies.jsx';
 import useSummaryStats from '../../hooks/useSummaryStats.jsx';
+import useAverageDetections from '../../hooks/useAverageDetections.jsx';
 import StationCard from './StationCard.jsx';
 import MicStreamCard from './MicStreamCard.jsx';
 import RecentDetectionsCard from './RecentDetectionsCard.jsx';
 import CommonSpeciesCard from './CommonSpeciesCard.jsx';
-import ActivityCard from './ActivityCard.jsx';
+import ActivityCard from './AverageDetectionsCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
 // DashboardContent component to manage the dashboard layout and pass data to cards
@@ -19,6 +20,27 @@ const DashboardContainer = () => {
     const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation);
     const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation);
     const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation);
+    const { averageDetections, loading: averageLoading, error: averageError } = useAverageDetections(selectedStation, { startDate: "", endDate: "" });
+
+    // Prepare data for activity chart
+    const hours = Array.from({ length: 24 }, (_, i) => i); // [0, 1, ..., 23]
+    const labels = hours.map(h => h.toString().padStart(2, '0') + ":00");
+    const data = hours.map(h => {
+        const found = averageDetections.find(row => row.hour_of_day === h);
+        return found ? found.average_detections : 0;
+    });
+    const chartData = {
+        labels,
+        datasets: [
+            {
+                label: 'Average Detections',
+                data,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+            }
+        ]
+    };
 
     // Mic stream handlers
     const [isStreamPlaying, setIsStreamPlaying] = useState(false);
@@ -27,17 +49,17 @@ const DashboardContainer = () => {
 
     return (
         selectedStation != null ? 
-            <Container fluid className="p-4">
+            <Container className="p-4">
             {/* Row 1: Station Status + Audio Player */}
             <Row className="mb-4">
                 <Col md={6}>
                     <StationCard station={{ name: "Station 1", description: "Main field station", isActive: true }} />
                 </Col>
                 <Col md={6}>
-                    <MicStreamCard
-                        isPlaying={isStreamPlaying}
-                        onPlay={handleStreamPlay}
-                        onPause={handleStreamPause}
+                    <SummaryCard 
+                        summaryData={summaryStats}
+                        loading={summaryLoading}
+                        error={summaryError}
                     />
                 </Col>
             </Row>
@@ -61,56 +83,27 @@ const DashboardContainer = () => {
             </Row>
 
             {/* Row 3: Summary Stats Cards */}
-            <Row>
+            <Row className="mb-4">
                 <Col>
-                    <SummaryCard 
-                        summaryData={summaryStats}
-                        loading={summaryLoading}
-                        error={summaryError}
+                    <MicStreamCard
+                        isPlaying={isStreamPlaying}
+                        onPlay={handleStreamPlay}
+                        onPause={handleStreamPause}
                     />
                 </Col>
             </Row>
 
             {/* Row 4: Activity Chart */}
-            <Row>
+            <Row className="mb-4">
                 <Col>
-                    <ActivityCard chartData={{
-                        labels: ['Detections'],
-                        datasets: [
-                            {
-                                label: 'Detections',
-                                data: [
-                                    { x: '2025-07-04T00:00:00Z', y: 5 },
-                                    { x: '2025-07-04T01:00:00Z', y: 10 },
-                                    { x: '2025-07-04T02:00:00Z', y: 15 },
-                                    { x: '2025-07-04T03:00:00Z', y: 2 },
-                                    { x: '2025-07-04T04:00:00Z', y: 65 },
-                                    { x: '2025-07-04T05:00:00Z', y: 30 },
-                                    { x: '2025-07-04T06:00:00Z', y: 16 },
-                                    { x: '2025-07-04T07:00:00Z', y: 8 },
-                                    { x: '2025-07-04T08:00:00Z', y: 12 },
-                                    { x: '2025-07-04T09:00:00Z', y: 20 },
-                                    { x: '2025-07-04T10:00:00Z', y: 25 },
-                                    { x: '2025-07-04T11:00:00Z', y: 18 },
-                                    { x: '2025-07-04T12:00:00Z', y: 22 },
-                                    { x: '2025-07-04T13:00:00Z', y: 4 },
-                                    { x: '2025-07-04T14:00:00Z', y: 15 },
-                                    { x: '2025-07-04T15:00:00Z', y: 63 },
-                                    { x: '2025-07-04T16:00:00Z', y: 43 },
-                                    { x: '2025-07-04T17:00:00Z', y: 24 },
-                                    { x: '2025-07-04T18:00:00Z', y: 34 },
-                                    { x: '2025-07-04T19:00:00Z', y: 13 },
-                                    { x: '2025-07-04T20:00:00Z', y: 5 },
-                                    { x: '2025-07-04T21:00:00Z', y: 5 },
-                                    { x: '2025-07-04T22:00:00Z', y: 2 },
-                                    { x: '2025-07-04T23:00:00Z', y: 5 }
-                                ]
-                            }
-                        ]
-                    }
-                } />
+                    <ActivityCard 
+                        chartData={chartData}
+                        loading={averageLoading}
+                        error={averageError}
+                    />
                 </Col>
             </Row>
+
         </Container>
         :
         <Container className="text-center mt-5">

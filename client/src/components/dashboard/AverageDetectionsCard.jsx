@@ -16,16 +16,6 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 
-ChartJS.register(
-  LineElement,
-  PointElement,
-  LinearScale,
-  TimeScale,
-  CategoryScale,
-  Tooltip,
-  Legend
-);
-
 const ActivityCard = ({ chartData, loading, error }) => {
 
     const renderSkeleton = () => {
@@ -45,11 +35,21 @@ const ActivityCard = ({ chartData, loading, error }) => {
 
     if (error) {
         return (
-            <DashboardCard title="Average Activity Per Hour (Last 7 Days)">
+            <DashboardCard title="Average Detections Per Hour (Last 7 Days)">
                 <div className="text-danger">Error loading chart data</div>
             </DashboardCard>
         );
     }
+
+    ChartJS.register(
+        LineElement,
+        PointElement,
+        LinearScale,
+        TimeScale,
+        CategoryScale,
+        Tooltip,
+        Legend
+    );
 
     const options = {
         responsive: true,
@@ -63,16 +63,10 @@ const ActivityCard = ({ chartData, loading, error }) => {
         },
         scales: {
             x: {
-                type: 'time',
-                time: {
-                    unit: 'hour',
-                    tooltipFormat: 'MMM D, h:mm a'
-                },
-                min: '2025-07-04T00:00:00Z',
-                max: '2025-07-04T23:00:00Z',
+                type: 'category',
                 title: {
                     display: true,
-                    text: 'Time of Day'
+                    text: 'Hour of Day'
                 }
             },
             y: {
@@ -82,7 +76,7 @@ const ActivityCard = ({ chartData, loading, error }) => {
                 }
             }
         }
-    };
+};
 
     return (
         <DashboardCard title="Average Activity Per Hour (Last 7 Days)">
