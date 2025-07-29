@@ -98,11 +98,11 @@ export const validateNewDetection = [
   body('common_name')
     .exists().withMessage('Common name is required')
     .isString().withMessage('Common name must be a string')
-    .custom((value) => /^[A-Za-z\s]+$/.test(value)).withMessage('Common name can only contain letters and spaces'),
+    .custom((value) => /^[A-Za-z\s\-']+$/.test(value)).withMessage('Common name can only contain letters and spaces'),
   body('scientific_name')
     .exists().withMessage('Scientific name is required')
     .isString().withMessage('Scientific name must be a string')
-    .custom((value) => /^[A-Za-z\s]+$/.test(value)).withMessage('Scientific name can only contain letters and spaces'),
+    .custom((value) => /^[A-Za-z\s\-']+$/.test(value)).withMessage('Scientific name can only contain letters and spaces'),
   body('confidence')
     .exists().withMessage('Confidence is required')
     .isFloat({ min: 0, max: 1 }).withMessage('Confidence must be between 0 and 1'),

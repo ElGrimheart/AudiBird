@@ -1,7 +1,7 @@
 import db from "../config/db-conn.js";
 import { getSpeciesCodeByName } from "./species-service.js";
 import { getMediaBySpeciesCode, postMedia } from "./media-service.js";
-import { scrapeImgUrl, scrapeAudioUrl } from "../utils/media-scraper.js";
+import { scrapeImgUrl, scrapeAudioUrl } from "../utils/mediaScraper.js";
 import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sqlBuilder.js";
 
 // Retrieves a detection by its ID
@@ -36,6 +36,7 @@ export async function getRecentDetectionsByStationId(stationId) {
         `SELECT * 
         FROM detection
         LEFT OUTER JOIN audio ON detection.audio_id = audio.audio_id
+        LEFT JOIN species_media ON detection.species_code = species_media.species_code
         WHERE station_id=$1 
         ORDER BY detection_timestamp DESC 
         LIMIT 10`;
@@ -47,10 +48,11 @@ export async function getRecentDetectionsByStationId(stationId) {
 // Retrieves the 5 most common species detected for a given station ID
 export async function getMostCommonSpeciesByStationId(stationId) {
     const sql = 
-        `SELECT common_name, image_url, image_rights, COUNT(*) as count
+        `SELECT detection.common_name, detection.scientific_name, detection.species_code, species_media.image_url, species_media.image_rights, COUNT(*) as count
         FROM detection
-        WHERE station_id=$1
-        GROUP BY common_name
+        LEFT JOIN species_media ON detection.species_code = species_media.species_code
+        WHERE detection.station_id = $1
+        GROUP BY detection.common_name, detection.scientific_name, detection.species_code, species_media.image_url, species_media.image_rights
         ORDER BY count DESC
         LIMIT 5`;
 
@@ -117,6 +119,7 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
         SELECT *
         FROM detection
         LEFT OUTER JOIN audio ON detection.audio_id = audio.audio_id
+        LEFT OUTER JOIN species_media ON detection.species_code = species_media.species_code
         ${whereClause}
         ${orderByClause}
         LIMIT $${values.length + 1}
@@ -162,10 +165,9 @@ export async function createDetection(stationId, detectionData) {
 
         // Get species code from taxonomy table
         const speciesCode = await getSpeciesCodeByName(detectionData.common_name, detectionData.scientific_name);
-        console.log(speciesCode);
-        // Get media links for the species
+        
+        // Check for cached media links for species in the database
         let mediaLinks = await getMediaBySpeciesCode(speciesCode);
-        console.log(`Media links for species ${speciesCode}:`, mediaLinks);
 
         // If no media links found, scrape eBird for media and insert into media table
         if (!mediaLinks || !mediaLinks.image_url || !mediaLinks.audio_url) {
@@ -181,7 +183,6 @@ export async function createDetection(stationId, detectionData) {
             }
         }
 
-        console.log(`Media links for species ${speciesCode}:`, mediaLinks);
         // Insert detection data
         const detectionValues = [
             detectionData.common_name,

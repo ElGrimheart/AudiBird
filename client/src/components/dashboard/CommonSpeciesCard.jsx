@@ -3,6 +3,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import DashboardCard from "./DashboardCard";
 import AvatarImage from "../common/Avatar";
+import { BoxArrowUpRight } from "react-bootstrap-icons";
 import { Spinner } from "react-bootstrap";
 
 // CommonSpeciesCard component to display the most common species detected by a station
@@ -37,12 +38,20 @@ const CommonSpeciesCard = ({ speciesData, loading, error }) => {
                         speciesData.map((species, index) => (
                             <li key={index} className="mb-2">
                                 <AvatarImage 
-                                    src={species.image_url || "https://cdn.download.ams.birds.cornell.edu/api/v1/asset/305880301/320"} 
-                                    alt={` ${species.common_name}, ${species.scientific_name} - Copyright: ${species.rights_holder}`}
-                                    size={56} 
+                                    src={species.image_url || "../../../public/bird_avatar_placeholder.png"} 
+                                    alt={`${species.common_name} by ${species.image_rights}; ${import.meta.env.VITE_EXTERNAL_MEDIA_NAME}`}
+                                    commonName={species.common_name}
+                                    contributor={species.image_rights}
+                                    size={72} 
                                     className="me-2 birdAvatar"
                                 />
-                                <strong> {species.common_name}</strong> — {species.count} detections
+                                <strong> {species.common_name}</strong> 
+                                <em> ({species.scientific_name}) 
+                                    <a href={`${import.meta.env.VITE_API_EBIRD_URL}/${species.species_code}`} target="_blank" rel="noopener noreferrer">
+                                        <BoxArrowUpRight size={12} aria-label="external link" title="External link" style={{ marginLeft: 4 }} />
+                                    </a>
+                                </em> 
+                                {" - "}{species.count} detections
                             </li>
                         )) : 
                         <li>No species data available</li>
