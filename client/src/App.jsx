@@ -12,6 +12,7 @@ import MainFooter from './components/common/MainFooter';
 import LoginRegister from "./pages/LoginRegister";
 import Dashboard from './pages/Dashboard';
 import Detections from './pages/Detections';
+import Analytics from './pages/Analytics';
 import PageNotFound from './pages/PageNotFound';
 // wrap providers into single component
 
@@ -53,6 +54,14 @@ const App = () => {
                                               <Detections />
                                             </PrivateRoute>
                                           }
+                                        />
+                                        <Route
+                                            path="/analytics"
+                                            element={
+                                                <PrivateRoute>
+                                                    <Analytics />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route path="*" element={<PageNotFound />} />
                                     </Routes>

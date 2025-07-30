@@ -13,14 +13,14 @@ export async function getMediaBySpeciesCode(speciesCode) {
     const result = await db.query(sql, [speciesCode]);
     
     if (result.rowCount === 0) {
-        return [];
+        return null;
     }
 
     return result.rows[0];
 }
 
 // Posts new media links for a species code, or updates existing image and audio URLs if they are empty
-export async function postMedia(speciesCode, imageUrl, imageRights, audioUrl, audioRights) {
+export async function postSpeciesMedia(speciesCode, imageUrl, imageRights, audioUrl, audioRights) {
     const sql = `
         INSERT INTO species_media (species_code, image_url, image_rights, audio_url, audio_rights)
         VALUES ($1, $2, $3, $4, $5)

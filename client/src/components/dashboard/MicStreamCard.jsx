@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useContext } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard";
 import SocketContext from "../../contexts/SocketContext";
 import { Spinner } from "react-bootstrap";
 
@@ -96,7 +96,7 @@ const MicStreamCard = ({ onPlay, onPause, isPlaying, loading, error }) => {
     }, [socket, isPlaying, isConnected]);
 
     return (
-        <DashboardCard title="Station Stream">
+        <ComponentCard title="Station Stream">
             {error && (
                 <div className="alert alert-danger">
                     {error.message || "Error connecting to audio stream"}
@@ -127,7 +127,7 @@ const MicStreamCard = ({ onPlay, onPause, isPlaying, loading, error }) => {
                     </div>
                 )
             )}
-        </DashboardCard>
+        </ComponentCard>
     );
 };
 

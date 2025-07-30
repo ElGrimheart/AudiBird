@@ -1,24 +1,32 @@
 // Utility class for constructing SQL queries for detection data
 
 // Builds a WHERE clause based on the filters passed
-export function buildDetectionWhereClause(stationId, { from, to, species, minConfidence, maxConfidence }) {
+export function buildDetectionWhereClause(stationId, { startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
     const filters = [];
     const values = [stationId];
 
     let whereClause = 'WHERE station_id = $1';
 
-    if (from) {
-        values.push(from);
+    if (startDate) {
+        values.push(startDate);
         filters.push(`detection_timestamp >= $${values.length}`);
     }
-    if (to) {
-        values.push(to);
+
+    if (endDate) {
+        values.push(endDate);
         filters.push(`detection_timestamp <= $${values.length}`);
     }
-    if (species) {
-        values.push(`%${species}%`);
+
+    if (speciesName) {
+        values.push(`%${speciesName}%`);
         filters.push(`(common_name ILIKE $${values.length} OR scientific_name ILIKE $${values.length})`);
     }
+
+    if (speciesCode) {
+        values.push(`%${speciesCode}%`);
+        filters.push(`(species_code = $${values.length})`);
+    }
+
     if (minConfidence !== undefined && minConfidence !== '' && !isNaN(Number(minConfidence))) {
         values.push(Number(minConfidence) / 100);
         filters.push(`confidence >= $${values.length}`);

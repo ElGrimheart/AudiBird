@@ -1,7 +1,7 @@
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard";
 import { Spinner } from "react-bootstrap";
 
 // SummaryCard component to display overall detection statistics for a station
@@ -30,7 +30,7 @@ const SummaryCard = ({ summaryData, loading, error }) => {
     };
 
     return (
-        <DashboardCard title="Overall Detection Summary">
+        <ComponentCard title="Overall Detection Summary">
             {error && <div className="text-danger">Error: {error.message}</div>}
             {loading ? renderSkeleton() : (
                 summaryData && summaryData.length > 0 ? (
@@ -50,7 +50,7 @@ const SummaryCard = ({ summaryData, loading, error }) => {
                     </div>
                 )
             )}
-        </DashboardCard>
+        </ComponentCard>
     );
 };
 

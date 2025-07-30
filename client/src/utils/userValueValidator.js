@@ -53,32 +53,32 @@ export const loginRegisterSchema = (isRegister) =>
 
 
 export const detectionFiltersSchema = Yup.object().shape({
-    from: Yup.date()
+    startDate: Yup.date()
       .nullable()
       .transform((value, originalValue) => (originalValue === '' ? null : value))
       .typeError('From date must be a valid ISO8601 date')
-      .test('from-before-to', 'From date cannot be after To date', function (value) { // Ensure `from` is before or equal to `to`
-        const { to } = this.parent || {}; 
-        if (!value || !to) {
+      .test('start-before-end', 'From date cannot be after To date', function (value) { // Ensure `start` is before or equal to `end` date
+        const { endDate } = this.parent || {};
+        if (!value || !endDate) {
           return true; 
         }
-        return new Date(value) <= new Date(to);
+        return new Date(value) <= new Date(endDate);
       }),
 
-    to: Yup.date()
+    endDate: Yup.date()
       .nullable()
       .transform((value, originalValue) => (originalValue === '' ? null : value))
       .typeError('To date must be a valid ISO8601 date')
-      .test('is-not-in-future', 'To date cannot be in the future', function (value) { // Ensure `to` is not in the future
+      .test('is-not-in-future', 'To date cannot be in the future', function (value) { // Ensure `end` is not in the future
         if (!value) {
           return true; 
         }
         return value <= new Date(); 
       }),
 
-    species: Yup.string()
+    speciesName: Yup.string()
       .nullable()
-      .matches(speciesRegex, 'Species can only contain letters and spaces'),
+      .matches(speciesRegex, 'Species name can only contain letters and spaces'),
 
     minConfidence: Yup.number()
       .nullable()
@@ -91,12 +91,12 @@ export const detectionFiltersSchema = Yup.object().shape({
       .min(confidenceMinValue, `Maximum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
       .max(confidenceMaxValue, `Maximum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
       .typeError('Maximum confidence must be a number')
-      .test('min-less-than-max', 'Minimum confidence cannot be greater than maximum confidence', function (value) {
-        const { min_confidence } = this.parent || {};            // ensure min !> max
-        if (value === null || value === undefined || min_confidence === null || min_confidence === undefined) {
+      .test('min-less-than-max', 'Maximum confidence cannot be less than minimum confidence', function (value) {
+        const { minConfidence } = this.parent || {};            // ensure min !> max
+        if (value === null || value === undefined || minConfidence === null || minConfidence === undefined) {
           return true;
         }
-        return min_confidence <= value;
+        return minConfidence <= value;
       }),
       
     sortBy: Yup.string()

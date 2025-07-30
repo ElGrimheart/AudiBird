@@ -4,9 +4,9 @@ import DetectionFiltersContext from '../contexts/DetectionFiltersContext';
 // FiltersProvider component to manage state of detection filters
 const DetectionFiltersProvider = ({ children }) => {
     const [filters, setFilters] = useState({
-        from: '',
-        to: '',
-        species: '',
+        startDate: '',
+        endDate: '',
+        speciesName: '',
         minConfidence: '',
         maxConfidence: '',
         sortBy: 'detection_timestamp',

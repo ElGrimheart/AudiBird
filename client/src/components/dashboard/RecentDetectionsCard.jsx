@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard.jsx";
 import DetectionModal from '../common/DetectionModal.jsx';
 import AudioPlayer from "../common/AudioPlayer";
 import { Container, Spinner } from "react-bootstrap";
@@ -43,7 +43,7 @@ const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
     };
 
     return ( 
-            <DashboardCard title="Recent Detections">
+            <ComponentCard title="Recent Detections">
                 {error && <div className="text-danger">{error.message}</div>}
                 {loading ? renderSkeleton() : (
                     <ol className="list mb-0">
@@ -77,7 +77,7 @@ const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
                     onHide={handleCloseModal}
                     detection={selectedDetection}
                 />
-            </DashboardCard>
+            </ComponentCard>
     );
 }
 

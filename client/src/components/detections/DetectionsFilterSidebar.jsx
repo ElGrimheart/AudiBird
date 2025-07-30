@@ -32,52 +32,54 @@ const DetectionsFilterSidebar = ({ show, onHide, filters, onFilterSubmit, error 
           <Form.Group className="mb-3">
             <Form.Label>Date Range</Form.Label>
             <Row>
-              <Col>
+              <Col className="d-flex align-items-center">
+                <Form.Label htmlFor="startDate" className="me-2 mb-0">From:</Form.Label>
                 <Form.Control
-                  //Date input for filtering detections by FROM date
-                  type="date"
-                  name="from"
-                  value={values.from}
+                  //Date input for filtering detections by start date
+                  type="datetime-local"
+                  name="startDate"
+                  value={values.startDate}
                   onChange={handleChange}
-                  onBlur={() => setFieldTouched('from', true)}
-                  isInvalid={!!errors.from && touched.from}
-                  placeholder="From"
+                  onBlur={() => setFieldTouched('startDate', true)}
+                  isInvalid={!!errors.startDate && touched.startDate}
+                  placeholder="Start Date"
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.from}
+                  {errors.startDate}
                 </Form.Control.Feedback>
               </Col>
-              <Col>
+              <Col className="d-flex align-items-center">
+                <Form.Label htmlFor="endDate" className="me-4 mb-0">To:</Form.Label>
                 <Form.Control
-                  //Date input for filtering detections by TO date
-                  type="date"
-                  name="to"
-                  value={values.to}
+                  //Date input for filtering detections by end date
+                  type="datetime-local"
+                  name="endDate"
+                  value={values.endDate}
                   onChange={handleChange}
-                  onBlur={() => setFieldTouched('to', true)}
-                  isInvalid={!!errors.to && touched.to}
-                  placeholder="To"
+                  onBlur={() => setFieldTouched('endDate', true)}
+                  isInvalid={!!errors.endDate && touched.endDate}
+                  placeholder="End Date"
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.to}
+                  {errors.endDate}
                 </Form.Control.Feedback>
               </Col>
             </Row>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Species</Form.Label>
+            <Form.Label>Species Search</Form.Label>
             <Form.Control
               // Species search input
               type="text"
-              name="species"
-              value={values.species}
-              onBlur={() => setFieldTouched('species', true)}
+              name="speciesName"
+              value={values.speciesName}
+              onBlur={() => setFieldTouched('speciesName', true)}
               onChange={handleChange}
               placeholder="Species name"
-              isInvalid={!!errors.species && touched.species}
+              isInvalid={!!errors.speciesName && touched.speciesName}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.species}
+              {errors.speciesName}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3">

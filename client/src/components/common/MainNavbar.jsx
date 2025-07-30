@@ -39,6 +39,7 @@ const MainNavbar = () => {
             <Nav className="me-auto">
               <Nav.Link as={NavLink} to="/dashboard" end>Dashboard</Nav.Link>
               <Nav.Link as={NavLink} to="/detections">Detections</Nav.Link>
+              <Nav.Link as={NavLink} to="/analytics">Analytics</Nav.Link>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Account</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">System</NavDropdown.Item>

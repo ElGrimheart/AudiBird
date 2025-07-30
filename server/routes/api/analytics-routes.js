@@ -12,5 +12,19 @@ analyticsRouter.get('/average-detections/:stationId',
     analyticsController.getAverageDetectionWithinDates
 );
 
+analyticsRouter.get('/species-trends/:stationId',
+    authenticateJWT,
+    authenticateAccessPermission,
+    validateStationId,
+    analyticsController.getSpeciesTrends
+);
+
+analyticsRouter.get('/species-composition/:stationId',
+    authenticateJWT,
+    authenticateAccessPermission,
+    validateStationId,
+    analyticsController.getSpeciesComposition
+);
+
 
 export default analyticsRouter;   

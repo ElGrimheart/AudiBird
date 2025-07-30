@@ -1,16 +1,19 @@
 import db from "../config/db-conn.js";
+import { normaliseDateToStartOfDay, normaliseDateToEndOfDay } from "../utils/dateFormatter.js";
+import { buildDetectionWhereClause } from "../utils/sqlBuilder.js";
+import logAction from "../utils/logger.js";
+import handleError from "../utils/errorHandler.js";
 
 // Retrieves the average detections within a date range for a given station ID
 export async function getAverageDetectionWithinDates(stationId, { startDate, endDate }) {
     
-    startDate = startDate || new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(); // Default to 7 days ago
-    endDate = endDate || new Date(Date.now() - 1).toISOString();
+    // Default to the last 7 days if no dates are provided
+    startDate = startDate || new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
+    endDate = endDate || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-    // Correct hours to midnight
-    const start = new Date(startDate);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(endDate);
-    end.setHours(23, 59, 59, 999);
+    // Normalize dates to start and end of the day
+    const start = normaliseDateToStartOfDay(new Date(startDate));
+    const end = normaliseDateToEndOfDay(new Date(endDate));
     
     const sql = `
         SELECT
@@ -47,3 +50,34 @@ export async function getAverageDetectionWithinDates(stationId, { startDate, end
     return fullResult;
 }
 
+
+// Retrieves species trends for a given station ID
+export async function getSpeciesTrends(stationId, { startDate, endDate, speciesName, minConfidence }) {
+    // Default to the last 7 days if no dates are provided
+    startDate = startDate || new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
+    endDate = endDate || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+    // Correct hours to midnight
+    startDate = normaliseDateToStartOfDay(startDate);
+    endDate = normaliseDateToEndOfDay(endDate);
+
+    const filters = {startDate, endDate, speciesName, minConfidence};
+
+    const { whereClause, values } = buildDetectionWhereClause(stationId, filters);
+
+    const sql = `
+        SELECT DATE(detection_timestamp) AS DATE, common_name, COUNT(*) AS count
+        FROM detection
+        ${whereClause}
+        GROUP BY DATE, common_name
+        ORDER BY DATE;
+    `;
+
+    const result = await db.query(sql, values);
+    
+    return result.rows;
+}
+
+
+// Retrieves species composition for a given station ID
+//export async function getSpeciesComposition(stationId, { startDate, endDate, minConfidence }) {

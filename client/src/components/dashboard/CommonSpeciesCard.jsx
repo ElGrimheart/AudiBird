@@ -1,7 +1,7 @@
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard";
 import AvatarImage from "../common/Avatar";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
 import { Spinner } from "react-bootstrap";
@@ -30,7 +30,7 @@ const CommonSpeciesCard = ({ speciesData, loading, error }) => {
     };
 
     return (
-        <DashboardCard title="Most Common Species">
+        <ComponentCard title="Most Common Species">
             {error && <div className="text-danger">Error: {error.message}</div>}
             {loading ? renderSkeleton() : (
                 <ol className="list mb-0">
@@ -58,7 +58,7 @@ const CommonSpeciesCard = ({ speciesData, loading, error }) => {
                     }
                 </ol>
             )}
-        </DashboardCard>
+        </ComponentCard>
     );
 };
 

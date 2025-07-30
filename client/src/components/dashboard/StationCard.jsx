@@ -1,7 +1,7 @@
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard";
 import { Spinner } from "react-bootstrap";
 
 // StationCard component to display the status of a specific station
@@ -25,7 +25,7 @@ const StationCard = ({ station, loading, error }) => {
     };
 
     return (
-        <DashboardCard title="Station Status">
+        <ComponentCard title="Station Status">
             {error && <div className="text-danger">Error: {error.message}</div>}
             {loading ? renderSkeleton() : (
                 station ? (
@@ -42,7 +42,7 @@ const StationCard = ({ station, loading, error }) => {
                     </div>
                 )
             )}
-        </DashboardCard>
+        </ComponentCard>
     );
 };
 

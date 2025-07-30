@@ -9,7 +9,7 @@ import StationCard from './StationCard.jsx';
 import MicStreamCard from './MicStreamCard.jsx';
 import RecentDetectionsCard from './RecentDetectionsCard.jsx';
 import CommonSpeciesCard from './CommonSpeciesCard.jsx';
-import ActivityCard from './AverageDetectionsCard.jsx';
+import AverageDetectionsCard from './AverageDetectionsCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
 // DashboardContent component to manage the dashboard layout and pass data to cards
@@ -21,26 +21,6 @@ const DashboardContainer = () => {
     const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation);
     const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation);
     const { averageDetections, loading: averageLoading, error: averageError } = useAverageDetections(selectedStation, { startDate: "", endDate: "" });
-
-    // Prepare data for activity chart
-    const hours = Array.from({ length: 24 }, (_, i) => i); // [0, 1, ..., 23]
-    const labels = hours.map(h => h.toString().padStart(2, '0') + ":00");
-    const data = hours.map(h => {
-        const found = averageDetections.find(row => row.hour_of_day === h);
-        return found ? found.average_detections : 0;
-    });
-    const chartData = {
-        labels,
-        datasets: [
-            {
-                label: 'Average Detections',
-                data,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2,
-            }
-        ]
-    };
 
     // Mic stream handlers
     const [isStreamPlaying, setIsStreamPlaying] = useState(false);
@@ -96,8 +76,8 @@ const DashboardContainer = () => {
             {/* Row 4: Activity Chart */}
             <Row className="mb-4">
                 <Col>
-                    <ActivityCard 
-                        chartData={chartData}
+                    <AverageDetectionsCard 
+                        detectionData={averageDetections}
                         loading={averageLoading}
                         error={averageError}
                     />

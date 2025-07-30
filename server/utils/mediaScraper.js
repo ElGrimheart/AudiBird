@@ -24,11 +24,11 @@ export async function scrapeImgUrl(speciesCode) {
         // access asset page and scrape image/copyright
         const assetPage = await browser.newPage();
         await assetPage.goto(assetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-        await assetPage.waitForSelector('img', { timeout: 10000 });
+        await assetPage.waitForSelector('.center img', { timeout: 10000 });
 
         // scrape image URL
         const result = await assetPage.evaluate(() => {
-            const img = document.querySelector('img');
+            const img = document.querySelector('.center img');
             const imageUrl = img ? img.src : null;
 
             // scrape contributor rights

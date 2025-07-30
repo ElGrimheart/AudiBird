@@ -82,11 +82,11 @@ export const getMostCommonSpeciesByStationId = async (req, res) => {
 // GET /api/detections/summary/:stationId route - retrieves a summary of detections for a given station
 export const getDetectionSummaryByStationId = async (req, res) => {
     const { stationId } = req.params;
-    const { from, to, species } = req.query;
-    logAction("Retrieving detection summary for", { stationId, from, to, species });
+    const { startDate, endDate, speciesName } = req.query;
+    logAction("Retrieving detection summary for", { stationId, startDate, endDate, speciesName });
 
     try {
-        const detectionSummary = await detectionService.getDetectionSummaryByStationId(stationId, { from, to, species });
+        const detectionSummary = await detectionService.getDetectionSummaryByStationId(stationId, { startDate, endDate, speciesName });
         res.status(200).json({
             status: "success",
             message: `Retrieved detection summary data for Station ID: ${stationId}`,
@@ -100,11 +100,11 @@ export const getDetectionSummaryByStationId = async (req, res) => {
 // GET /api/detections/filtered/:stationId route - retrieves filtered detections for a given station
 export const getFilteredDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
-    const { from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy } = req.query;
-    logAction("Retrieving filtered detections for", { stationId, from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy });
+    const { startDate, endDate, speciesName, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy } = req.query;
+    logAction("Retrieving filtered detections for", { stationId, startDate, endDate, speciesName, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy });
 
     try {
-        const filteredDetections = await detectionService.getFilteredDetectionsByStationId(stationId,{ from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy });
+        const filteredDetections = await detectionService.getFilteredDetectionsByStationId(stationId,{ startDate, endDate, speciesName, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy });
         res.status(200).json({
             status: "success",
             message: `${filteredDetections.length} records retrieved`,
