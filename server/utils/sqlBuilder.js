@@ -1,5 +1,7 @@
 // Utility class for constructing SQL queries for detection data
 
+import { param } from "express-validator";
+
 // Builds a WHERE clause based on the filters passed
 export function buildDetectionWhereClause(stationId, { startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
     const filters = [];
@@ -52,4 +54,30 @@ export function buildDetectionSortClause(sortBy, sortOrder, allowedColumns = ['d
         return `${column} ${dir}`;
     });
     return orderByParts.length ? `ORDER BY ${orderByParts.join(', ')}` : '';
+}
+
+
+export function buildDeltaFilters(startIndex, { speciesName, minConfidence }) {
+  const filters = [];
+  const filterValues = [];
+  let paramIndex = startIndex;
+
+  if (speciesName) {
+    paramIndex++;
+    filterValues.push(speciesName);
+    filters.push(`(common_name ILIKE $${paramIndex} OR scientific_name ILIKE $${paramIndex})`);
+  }
+
+  if (minConfidence) {
+    paramIndex++;
+    filterValues.push(minConfidence);
+    filters.push(`AND confidence >= $${paramIndex}`);
+  }
+
+  const filterClause = filters.join(' ');
+
+  return {
+    filterClause,
+    filterValues
+  };
 }

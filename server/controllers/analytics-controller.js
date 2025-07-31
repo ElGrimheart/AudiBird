@@ -58,3 +58,21 @@ export const getSpeciesComposition = async (req, res) => {
     }
 };
 
+
+// GET /api/analytics/deltas/:stationId route - retrieves deltas for a given station
+export const getDeltas = async (req, res) => {
+    const { stationId } = req.params;
+    const { startDate, endDate, speciesName, minConfidence } = req.query;
+    logAction("Retrieving deltas for", { stationId });
+
+    try {
+        const deltas = await analyticsService.getDeltas(stationId, { startDate, endDate, speciesName, minConfidence });
+        res.status(200).json({
+            status: "success",
+            message: `Retrieved deltas data for Station ID: ${stationId} between ${startDate} and ${endDate}`,
+            result: deltas
+        });
+    } catch (error) {
+        handleError(res, error, `Error retrieving deltas data for Station ID: ${stationId}`);
+    }
+};

@@ -1,6 +1,6 @@
 import db from "../config/db-conn.js";
 import { normaliseDateToStartOfDay, normaliseDateToEndOfDay } from "../utils/dateFormatter.js";
-import { buildDetectionWhereClause } from "../utils/sqlBuilder.js";
+import { buildDetectionWhereClause, buildDeltaFilters } from "../utils/sqlBuilder.js";
 import logAction from "../utils/logger.js";
 import handleError from "../utils/errorHandler.js";
 
@@ -78,6 +78,105 @@ export async function getSpeciesTrends(stationId, { startDate, endDate, speciesN
     return result.rows;
 }
 
+// Retrieves deltas values for detections, species, confidence and most common species for a given station ID
+export async function getDeltas(stationId, { currentStartDate, currentEndDate, speciesName, minConfidence }) {
+    // Default to the last 7 days if no dates are provided
+    currentStartDate = currentStartDate || new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
+    currentEndDate = currentEndDate || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-// Retrieves species composition for a given station ID
-//export async function getSpeciesComposition(stationId, { startDate, endDate, minConfidence }) {
+    // Correct hours to midnight
+    currentStartDate = normaliseDateToStartOfDay(currentStartDate);
+    currentEndDate = normaliseDateToEndOfDay(currentEndDate);
+
+    // Calculate previous date range
+    const range = currentEndDate - currentStartDate;
+    const prevEndDate = new Date(currentEndDate - range);
+    const prevStartDate = new Date(currentStartDate - range);
+
+    // Build filters list
+    const initialValues = [stationId, currentStartDate, currentEndDate, prevStartDate, prevEndDate];
+    const {filterClause, filterValues} = buildDeltaFilters(initialValues.length, { speciesName, minConfidence });
+
+    const values = [...initialValues, ...filterValues];
+
+    const sql = `
+        SELECT
+            (SELECT COUNT(*) FROM detection
+                WHERE station_id = $1
+                AND detection_timestamp BETWEEN $2 AND $3
+                ${filterClause}
+            ) AS current_total_detections,
+            (SELECT COUNT(DISTINCT common_name) FROM detection
+                WHERE station_id = $1
+                AND detection_timestamp BETWEEN $2 AND $3
+                ${filterClause}
+            ) AS current_total_species,  
+            (SELECT AVG(confidence) FROM detection 
+                WHERE station_id = $1 
+                AND detection_timestamp BETWEEN $2 AND $3 
+                ${filterClause}
+            ) AS current_confidence,
+            (SELECT common_name FROM detection
+                WHERE station_id = $1 
+                AND detection_timestamp BETWEEN $2 AND $3 
+                ${filterClause}
+                GROUP BY common_name 
+                ORDER BY COUNT(*) DESC 
+                LIMIT 1
+            ) AS current_top_species,
+
+            (SELECT COUNT(*) FROM detection 
+                WHERE station_id = $1 
+                AND detection_timestamp BETWEEN $4 AND $5 
+                ${filterClause}
+            ) AS prev_total_detections,
+            (SELECT COUNT(DISTINCT common_name) FROM detection 
+                WHERE station_id = $1 AND detection_timestamp BETWEEN $4 AND $5 
+                ${filterClause}
+            ) AS prev_total_species,
+            (SELECT AVG(confidence) FROM detection 
+                WHERE station_id = $1 AND detection_timestamp BETWEEN $4 AND $5 
+                ${filterClause}
+            ) AS prev_confidence,
+            (SELECT common_name FROM detection
+                WHERE station_id = $1 
+                AND detection_timestamp BETWEEN $4 AND $5 
+                ${filterClause}
+                GROUP BY common_name 
+                ORDER BY COUNT(*) DESC 
+                LIMIT 1
+            ) AS previous_top_species
+        `;
+
+    const result = await db.query(sql, values);
+    const data = result.rows[0];
+
+    const totalDetectionsDelta = getDeltaValue(data.current_total_detections, data.prev_total_detections);
+    const totalSpeciesDelta = getDeltaValue(data.current_total_species, data.prev_total_species);
+    const confidenceDelta = getDeltaValue(data.current_confidence, data.prev_confidence);
+
+    return {
+        total_detections: {
+            current: data.current_total_detections,
+            delta: totalDetectionsDelta
+        },
+        total_species: {
+            current: data.current_total_species,
+            delta: totalSpeciesDelta
+        },
+        confidence: {
+            current: data.current_confidence,
+            delta: confidenceDelta
+        },
+        top_species: {
+            current: data.current_top_species,
+            previous: data.previous_top_species
+        }
+    };
+}
+
+// Helper function for calculating deltas
+function getDeltaValue(current, previous) {
+    if (previous === 0) return current; // Avoid division by zero
+    return ((current - previous) / previous) * 100; // Percentage change
+}

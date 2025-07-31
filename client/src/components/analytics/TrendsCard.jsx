@@ -6,7 +6,7 @@ import { Line } from "react-chartjs-2";
 import { Spinner } from "react-bootstrap";
 
 const TrendsCard = ({ trendData, loading, error }) => {
-    console.log("TrendsCard data:", trendData);
+   
     // Get days (x-axis)
     const dates = [...new Set(trendData.map(row => row.date))];
 

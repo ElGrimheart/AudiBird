@@ -8,7 +8,7 @@ import { Bar } from "react-chartjs-2";
 import { Spinner } from "react-bootstrap";
 
 const CompositionCard = ({ compositionData, loading, error }) => {
-    console.log("CompositionCard data:", compositionData);
+    
     const dates = [...new Set(compositionData.map(row => row.date))];
 
     const speciesData = {};

@@ -19,11 +19,11 @@ analyticsRouter.get('/species-trends/:stationId',
     analyticsController.getSpeciesTrends
 );
 
-analyticsRouter.get('/species-composition/:stationId',
+analyticsRouter.get('/deltas/:stationId',
     authenticateJWT,
     authenticateAccessPermission,
     validateStationId,
-    analyticsController.getSpeciesComposition
+    analyticsController.getDeltas
 );
 
 

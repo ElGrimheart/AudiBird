@@ -3,6 +3,7 @@ import { Line, Pie, Bar } from 'react-chartjs-2';
 import { Card, Row, Col, Spinner } from 'react-bootstrap';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
 import useSpeciesTrends from '../../hooks/useSpeciesTrends';
+import useDeltas from '../../hooks/useDeltas';
 import TrendsCard from './TrendsCard';
 import CompositionCard from './CompositionCard';
 import axios from 'axios';
@@ -11,22 +12,15 @@ import axios from 'axios';
 function AnalyticsDashboard({ stationId }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { speciesTrends, loading: speciesLoading, error: speciesError } = useSpeciesTrends(selectedStation);
+    const { deltas, loading: deltasLoading, error: deltasError } = useDeltas(selectedStation, {startDate: null, endDate: null, speciesName: null, minConfidence: null});
+    console.log("Deltas:", deltas); 
 
-    //const [compositionData, setCompositionData] = useState(null);
-    const [deltaStats, setDeltaStats] = useState(null);
+        //const [compositionData, setCompositionData] = useState(null);
     const [heatmapData, setHeatmapData] = useState(null);
     const [confidenceData, setConfidenceData] = useState(null);
 
     useEffect(() => {
         const headers = { Authorization: `Bearer ${localStorage.getItem('jwt')}` };
-
-        axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/composition/${stationId}`, { headers })
-        .then(res => setCompositionData(res.data))
-        .catch(console.error);
-
-        axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/delta/${stationId}`, { headers })
-        .then(res => setDeltaStats(res.data))
-        .catch(console.error);
 
         axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/heatmap/${stationId}`, { headers })
         .then(res => setHeatmapData(res.data))
@@ -39,41 +33,56 @@ function AnalyticsDashboard({ stationId }) {
 
     return (
         <div className="container-fluid mt-4">
-
-        {/*}
+        <h2 className="mb-4">This week in AudiBird</h2>
         <Row>
-            <Col md={3}>
-            <Card body className="text-center">
-                <h5>Total Detections</h5>
-                <p>{deltaStats.total_detections.current}</p>
-                <small className="text-muted">
-                {deltaStats.total_detections.delta > 0 ? '⬆️' : '⬇️'} {Math.abs(deltaStats.total_detections.delta)}%
-                </small>
-            </Card>
-            </Col>
-            <Col md={3}>
-            <Card body className="text-center">
-                <h5>Species Count</h5>
-                <p>{deltaStats.unique_species.current}</p>
-                <small className="text-muted">
-                {deltaStats.unique_species.delta > 0 ? '⬆️' : '⬇️'} {Math.abs(deltaStats.unique_species.delta)}%
-                </small>
-            </Card>
-            </Col>
-            <Col md={3}>
-            <Card body className="text-center">
-                <h5>Top Species</h5>
-                <p>{deltaStats.top_species.common_name}</p>
-            </Card>
-            </Col>
-            <Col md={3}>
-            <Card body className="text-center">
-                <h5>Avg Confidence</h5>
-                <p>{deltaStats.avg_confidence.toFixed(2)}</p>
-            </Card>
-            </Col>
+            {deltasLoading ? (
+                <Col>
+                <div className="text-center my-4">
+                    <Spinner animation="border" role="status" />
+                </div>
+                </Col>
+            ) : deltasError ? (
+                <Col>
+                <div className="text-danger text-center my-4">
+                    Error loading deltas.
+                </div>
+                </Col>
+            ) : (
+                <>
+                <Col md={3}>
+                    <Card body className="text-center">
+                    <h5>Total Detections</h5>
+                    <p>{deltas.total_detections?.current}</p>
+                    <small className="text-muted">
+                        {deltas.total_detections?.delta > 0 ? '⬆️' : '⬇️'} {Math.abs(deltas.total_detections?.delta).toFixed(0)}%
+                    </small>
+                    </Card>
+                </Col>
+                <Col md={3}>
+                    <Card body className="text-center">
+                    <h5>Species Count</h5>
+                    <p>{deltas.total_species?.current}</p>
+                    <small className="text-muted">
+                        {deltas.total_species?.delta > 0 ? '⬆️' : '⬇️'} {Math.abs(deltas.total_species?.delta).toFixed(0)}%
+                    </small>
+                    </Card>
+                </Col>
+                <Col md={3}>
+                    <Card body className="text-center">
+                    <h5>Top Species</h5>
+                    <p>{deltas.top_species?.current}</p>
+                    </Card>
+                </Col>
+                <Col md={3}>
+                    <Card body className="text-center">
+                    <h5>Avg Confidence</h5>
+                    <p>{(Number(deltas.confidence?.current).toFixed(2)*100).toFixed(0)}%</p>
+                    </Card>
+                </Col>
+                </>
+            )}
         </Row>
-        */}
+         
         <Row className="mt-4">
             <Col md={6}>
                 <TrendsCard 
