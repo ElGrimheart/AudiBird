@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import SocketContext from "../contexts/SocketContext";
 
 // SocketProvider component to manage socket connection and listen for events
-export const SocketProvider = ({ children }) => {
+export default function SocketProvider({ children }) {
     const socketRef = useRef();
     const [isConnected, setIsConnected] = useState(false);
 
@@ -39,4 +39,4 @@ export const SocketProvider = ({ children }) => {
             {children}
         </SocketContext.Provider>
     );
-};
+}

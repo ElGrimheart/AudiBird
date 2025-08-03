@@ -3,7 +3,7 @@ import { PlayFill, PauseFill } from "react-bootstrap-icons";
 import AudioPlayerContext from "../../contexts/AudioPlayerContext";
 
 // AudioPlayer component with minimal UI for playing audio files
-function AudioPlayer({ src, audioId }) {
+export default function AudioPlayer({ src, audioId }) {
     const audioRef = useRef(null);
     const { playingId, setPlayingId } = useContext(AudioPlayerContext);
 
@@ -49,5 +49,3 @@ function AudioPlayer({ src, audioId }) {
         </span>
     );
 }
-
-export default AudioPlayer;

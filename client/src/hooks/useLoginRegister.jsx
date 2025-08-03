@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 // Hook to handle user login/register and fetch users stations
-const useLoginRegister = (fetchUserStations) => {
+export default function useLoginRegister(fetchUserStations) {
     const navigate = useNavigate();
     const location = useLocation();
     const [generalError, setGeneralError] = useState(null);
@@ -41,6 +41,4 @@ const useLoginRegister = (fetchUserStations) => {
         };
 
     return { loginOrRegister, generalError, setGeneralError };
-};
-
-export default useLoginRegister;
+}

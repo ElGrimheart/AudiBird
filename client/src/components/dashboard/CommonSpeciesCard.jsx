@@ -7,7 +7,7 @@ import { BoxArrowUpRight } from "react-bootstrap-icons";
 import { Spinner } from "react-bootstrap";
 
 // CommonSpeciesCard component to display the most common species detected by a station
-const CommonSpeciesCard = ({ speciesData, loading, error }) => {
+export default function CommonSpeciesCard({ speciesData, loading, error }){
     
     const renderSkeleton = () => {
         return (
@@ -38,7 +38,7 @@ const CommonSpeciesCard = ({ speciesData, loading, error }) => {
                         speciesData.map((species, index) => (
                             <li key={index} className="mb-2">
                                 <AvatarImage 
-                                    src={species.image_url || "../../../public/bird_avatar_placeholder.png"} 
+                                    src={species.image_url} 
                                     alt={`${species.common_name} by ${species.image_rights}; ${import.meta.env.VITE_EXTERNAL_MEDIA_NAME}`}
                                     commonName={species.common_name}
                                     contributor={species.image_rights}
@@ -60,6 +60,4 @@ const CommonSpeciesCard = ({ speciesData, loading, error }) => {
             )}
         </ComponentCard>
     );
-};
-
-export default CommonSpeciesCard;
+}

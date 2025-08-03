@@ -32,7 +32,6 @@ export default function useDeltas(stationId, { startDate, endDate, speciesName, 
         };
 
         fetchDeltas();
-        console.log("Fetched deltas for station:", stationId);
     }, [stationId, startDate, endDate, speciesName, minConfidence]);
 
     return { deltas, loading, error };

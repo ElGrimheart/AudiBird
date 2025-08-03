@@ -3,7 +3,7 @@ import UserStationsContext from '../contexts/UserStationsContext';
 import axios from 'axios';
 
 // UserStationsProvider component to manage which stations the user has access to
-export const UserStationsProvider = ({ children }) => {
+export default function UserStationsProvider({ children }) {
     const [stations, setStations] = useState(() => {
         return JSON.parse(localStorage.getItem("userStations")) || [];
     });
@@ -34,6 +34,4 @@ export const UserStationsProvider = ({ children }) => {
           {children}
         </UserStationsContext.Provider>
     );
-};
-
-export default UserStationsProvider;
+}

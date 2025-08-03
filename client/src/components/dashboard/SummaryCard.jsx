@@ -5,29 +5,20 @@ import ComponentCard from "../common/ComponentCard";
 import { Spinner } from "react-bootstrap";
 
 // SummaryCard component to display overall detection statistics for a station
-const SummaryCard = ({ summaryData, loading, error }) => {
-    
-    const renderSkeleton = () => {
+export default function SummaryCard({ summaryData, loading, error }) {
+
+    function renderSkeleton() {
         return (
             <div>
-                <div className="text-center mb-3">
+                <div style={{ height: "200px", position: "relative" }}>
+                    <Skeleton height="100%" />
                     <Spinner animation="border" role="status" variant="primary">
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 </div>
-                <table className="table table-striped">
-                    <tbody>
-                        {Array(5).fill(0).map((_, index) => (
-                            <tr key={index}>
-                                <td><Skeleton width={150} /></td>
-                                <td><Skeleton width={100} /></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
             </div>
         );
-    };
+    }
 
     return (
         <ComponentCard title="Overall Detection Summary">
@@ -52,6 +43,4 @@ const SummaryCard = ({ summaryData, loading, error }) => {
             )}
         </ComponentCard>
     );
-};
-
-export default SummaryCard;
+}

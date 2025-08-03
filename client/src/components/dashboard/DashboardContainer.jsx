@@ -13,7 +13,7 @@ import AverageDetectionsCard from './AverageDetectionsCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
 // DashboardContent component to manage the dashboard layout and pass data to cards
-const DashboardContainer = () => {
+export default function DashboardContainer() {
     const { selectedStation } = useContext(SelectedStationContext);
 
     // Card data hooks
@@ -89,8 +89,5 @@ const DashboardContainer = () => {
         <Container className="text-center mt-5">
             <h2>Click here to register a station</h2>
         </Container>
-
     )
 }
-
-export default DashboardContainer;

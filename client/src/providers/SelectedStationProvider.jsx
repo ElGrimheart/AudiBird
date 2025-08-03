@@ -3,7 +3,7 @@ import SelectedStationContext from '../contexts/SelectedStationContext';
 import SocketContext from '../contexts/SocketContext';
 
 // Provider component to manage user switching between stations and update socket connections
-export const SelectedStationProvider = ({ children }) => {
+export default function SelectedStationProvider({ children }) {
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;
     const prevStationRef = useRef();
@@ -40,6 +40,4 @@ export const SelectedStationProvider = ({ children }) => {
             {children}
         </SelectedStationContext.Provider>
     );
-};
-
-export default SelectedStationProvider;
+}

@@ -4,7 +4,7 @@ import SocketContext from "../../contexts/SocketContext";
 import { formatStringToDate } from "../../utils/dateFormatter";
 
 // Toast component to display notifications whenever a newDetection event received from room socket
-const ToastNotification = () => {
+export default function ToastNotification() {
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;
 
@@ -31,6 +31,4 @@ const ToastNotification = () => {
     }, [socket, isConnected]);
 
     return null; 
-};
-
-export default ToastNotification;
+}

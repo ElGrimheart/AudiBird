@@ -12,11 +12,18 @@ analyticsRouter.get('/average-detections/:stationId',
     analyticsController.getAverageDetectionWithinDates
 );
 
-analyticsRouter.get('/species-trends/:stationId',
+analyticsRouter.get('/species-hourly-trends/:stationId',
     authenticateJWT,
     authenticateAccessPermission,
     validateStationId,
-    analyticsController.getSpeciesTrends
+    analyticsController.getSpeciesHourlyTrends
+);
+
+analyticsRouter.get('/species-daily-totals/:stationId',
+    authenticateJWT,
+    authenticateAccessPermission,
+    validateStationId,
+    analyticsController.getSpeciesDailyTotals
 );
 
 analyticsRouter.get('/deltas/:stationId',
@@ -26,5 +33,11 @@ analyticsRouter.get('/deltas/:stationId',
     analyticsController.getDeltas
 );
 
+analyticsRouter.get('/top-confidence/:stationId',
+    authenticateJWT,
+    authenticateAccessPermission,
+    validateStationId,
+    analyticsController.getTopConfidence
+);
 
 export default analyticsRouter;   

@@ -1,9 +1,9 @@
 import React from "react";
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ToastContainer } from "react-toastify";
-import { SocketProvider } from './providers/SocketProvider';
-import { UserStationsProvider } from "./providers/UserStationsProvider";
-import { SelectedStationProvider } from "./providers/SelectedStationProvider";
+import SocketProvider from './providers/SocketProvider';
+import UserStationsProvider from "./providers/UserStationsProvider";
+import SelectedStationProvider from "./providers/SelectedStationProvider";
 import AudioPlayerProvider from "./providers/AudioPlayerProvider";
 import ToastNotification from "./components/common/ToastNotification";
 import Container from 'react-bootstrap/Container';
@@ -24,8 +24,7 @@ const PrivateRoute = ({ children }) => {
     );
 };
 
-
-const App = () => {
+export default function App() {
     return (
         <Routes>
             <Route path="/" element={<LoginRegister />} />
@@ -75,6 +74,4 @@ const App = () => {
             />
         </Routes>
     );
-};
-
-export default App;
+}

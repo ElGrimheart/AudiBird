@@ -4,33 +4,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 import ComponentCard from "../common/ComponentCard";
 import { Line } from "react-chartjs-2";
 import { Spinner } from "react-bootstrap";
-import 'chartjs-adapter-date-fns';
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  TimeScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-ChartJS.register(
-        LineElement,
-        PointElement,
-        LinearScale,
-        TimeScale,
-        CategoryScale,
-        Tooltip,
-        Legend
-);
 
-export default function AverageDetectionsCard({ detectionData, loading, error }) {
-    // Prepare data for Line chart
-    const labels = detectionData.map(row => row.hour.toString().padStart(2, '0') + ":00");
-    const data = detectionData.map(row => row.average_detections);
+export default function DailyTotalsChart({ trendData, loading, error }) {
+    const labels = trendData.map(row => row.hour.toString().padStart(2, '0') + ":00");
+    const data = trendData.map(row => row.average_detections);
 
-    // Build chart data
     const chartData = {
         labels,
         datasets: [
@@ -40,6 +18,8 @@ export default function AverageDetectionsCard({ detectionData, loading, error })
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 2,
+                fill: true,
+                tension: 0.3
             }
         ]
     };

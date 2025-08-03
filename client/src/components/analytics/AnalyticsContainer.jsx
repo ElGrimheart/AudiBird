@@ -1,123 +1,123 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Line, Pie, Bar } from 'react-chartjs-2';
-import { Card, Row, Col, Spinner } from 'react-bootstrap';
+import React, { useContext } from 'react';
+import { Container, Row, Col, Tabs, Tab, Spinner } from 'react-bootstrap';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
-import useSpeciesTrends from '../../hooks/useSpeciesTrends';
 import useDeltas from '../../hooks/useDeltas';
-import TrendsCard from './TrendsCard';
-import CompositionCard from './CompositionCard';
-import axios from 'axios';
-//import HeatmapChart from './HeatmapChart'; // assume a custom component for heatmap
+import useSpeciesDailyTotals from '../../hooks/useSpeciesDailyTotals';
+import useSpeciesTrends from '../../hooks/useSpeciesTrends';
+import useTopConfidenceSpecies from '../../hooks/useTopConfidenceSpecies';
+import ComponentCard from '../common/ComponentCard';
+import DailyTotalsChart from './DailyTotalsChart';
+import CompositionChart from './CompositionChart';
+import SpeciesTrendsChart from './SpeciesTrendsChart';
+import TopConfidenceChart from './TopConfidenceChart';
 
-function AnalyticsDashboard({ stationId }) {
+export default function AnalyticsDashboard() {
     const { selectedStation } = useContext(SelectedStationContext);
-    const { speciesTrends, loading: speciesLoading, error: speciesError } = useSpeciesTrends(selectedStation);
+
+    // Card data hooks
     const { deltas, loading: deltasLoading, error: deltasError } = useDeltas(selectedStation, {startDate: null, endDate: null, speciesName: null, minConfidence: null});
-    console.log("Deltas:", deltas); 
-
-        //const [compositionData, setCompositionData] = useState(null);
-    const [heatmapData, setHeatmapData] = useState(null);
-    const [confidenceData, setConfidenceData] = useState(null);
-
-    useEffect(() => {
-        const headers = { Authorization: `Bearer ${localStorage.getItem('jwt')}` };
-
-        axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/heatmap/${stationId}`, { headers })
-        .then(res => setHeatmapData(res.data))
-        .catch(console.error);
-
-        axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/top-confidence/${stationId}`, { headers })
-        .then(res => setConfidenceData(res.data))
-        .catch(console.error);
-    }, [stationId]);
+    const { speciesDailyTotals, loading: speciesLoading, error: speciesError } = useSpeciesDailyTotals(selectedStation);
+    const { speciesTrends, loading: trendsLoading, error: trendsError } = useSpeciesTrends(selectedStation);
+    const { topConfidenceSpecies, loading: confidenceLoading, error: confidenceError } = useTopConfidenceSpecies(selectedStation, { startDate: null, endDate: null, limit: null });
 
     return (
-        <div className="container-fluid mt-4">
-        <h2 className="mb-4">This week in AudiBird</h2>
-        <Row>
-            {deltasLoading ? (
-                <Col>
-                <div className="text-center my-4">
-                    <Spinner animation="border" role="status" />
-                </div>
-                </Col>
-            ) : deltasError ? (
-                <Col>
-                <div className="text-danger text-center my-4">
-                    Error loading deltas.
-                </div>
-                </Col>
-            ) : (
-                <>
+        <Container className="p-4">
+            <Row>
                 <Col md={3}>
-                    <Card body className="text-center">
-                    <h5>Total Detections</h5>
-                    <p>{deltas.total_detections?.current}</p>
-                    <small className="text-muted">
+                    <ComponentCard title="Total Detections">
+                        <p>{deltas.total_detections?.current}</p>
+                        <small className="text-muted">
                         {deltas.total_detections?.delta > 0 ? '⬆️' : '⬇️'} {Math.abs(deltas.total_detections?.delta).toFixed(0)}%
-                    </small>
-                    </Card>
+                        </small>
+                    </ComponentCard>
                 </Col>
                 <Col md={3}>
-                    <Card body className="text-center">
-                    <h5>Species Count</h5>
+                <ComponentCard title="Species Count">
                     <p>{deltas.total_species?.current}</p>
                     <small className="text-muted">
-                        {deltas.total_species?.delta > 0 ? '⬆️' : '⬇️'} {Math.abs(deltas.total_species?.delta).toFixed(0)}%
+                    {deltas.total_species?.delta > 0 ? '⬆️' : '⬇️'} {Math.abs(deltas.total_species?.delta).toFixed(0)}%
                     </small>
-                    </Card>
+                </ComponentCard>
                 </Col>
                 <Col md={3}>
-                    <Card body className="text-center">
-                    <h5>Top Species</h5>
+                <ComponentCard title="Top Species">
                     <p>{deltas.top_species?.current}</p>
-                    </Card>
+                </ComponentCard>
                 </Col>
                 <Col md={3}>
-                    <Card body className="text-center">
-                    <h5>Avg Confidence</h5>
-                    <p>{(Number(deltas.confidence?.current).toFixed(2)*100).toFixed(0)}%</p>
-                    </Card>
+                <ComponentCard title="Avg Confidence">
+                    <p>
+                    {deltas.confidence?.current != null && !isNaN(Number(deltas.confidence.current))
+                        ? (Number(deltas.confidence.current) * 100).toFixed(0) + '%'
+                        : '--'}
+                    </p>
+                </ComponentCard>
                 </Col>
-                </>
-            )}
-        </Row>
-         
-        <Row className="mt-4">
-            <Col md={6}>
-                <TrendsCard 
-                    trendData={speciesTrends} 
-                    loading={speciesLoading} 
-                    error={speciesError} 
-                />
-            </Col>
-            <Col md={6}>
-                <CompositionCard 
-                    compositionData={speciesTrends} 
-                    loading={speciesLoading} 
-                    error={speciesError} 
-                />        
-            </Col>
-        </Row>
+            </Row>
+
+            <Row className="mt-4">
+                <Tabs defaultActiveKey="trends" id="species-analytics-tabs" className="mb-3" fill>
+                    <Tab eventKey="trends" title="Species Trends">
+                        <SpeciesTrendsChart 
+                            trendData={speciesTrends} 
+                            loading={trendsLoading} 
+                            error={trendsError} 
+                        />
+                    </Tab>
+                    <Tab eventKey="daily" title="Species Daily Totals">
+                        <DailyTotalsChart 
+                            dailyData={speciesDailyTotals} 
+                            loading={speciesLoading} 
+                            error={speciesError} 
+                    />
+                    </Tab>
+                    <Tab eventKey="composition" title="Composition">
+                        <CompositionChart 
+                            compositionData={speciesDailyTotals} 
+                            loading={speciesLoading} 
+                            error={speciesError} 
+                        />
+                    </Tab>
+                    <Tab eventKey="top" title="Top Species">
+                        <TopConfidenceChart 
+                            topConfidenceData={topConfidenceSpecies} 
+                            loading={confidenceLoading} 
+                            error={confidenceError} 
+                        />
+                    </Tab>
+                </Tabs>
+            </Row>
             
-            {/*
-        <Row className="mt-4">
-            <Col md={6}>
-            <Card body>
-                <h5>Top Species by Confidence</h5>
-                <Pie data={confidenceData.chartData} options={confidenceData.options} />
-            </Card>
-            </Col>
-            <Col md={6}>
-            <Card body>
-                <h5>Hourly Detection Heatmap</h5>
-                <HeatmapChart data={heatmapData} />
-            </Card>
-            </Col>
-        </Row>
-        */}
-        </div>
+            <Row className="mt-4">
+                <Col>
+                    <DailyTotalsChart 
+                        dailyData={speciesDailyTotals} 
+                        loading={speciesLoading} 
+                        error={speciesError} 
+                    />
+                </Col>
+            </Row>
+
+            <Row className="mt-4">
+                <Col>
+                    <CompositionChart 
+                        compositionData={speciesDailyTotals} 
+                        loading={speciesLoading} 
+                        error={speciesError} 
+                    />        
+                </Col>
+            </Row>
+                
+                
+            <Row className="mt-4">
+                <Col>
+                    <TopConfidenceChart 
+                        topConfidenceData={topConfidenceSpecies} 
+                        loading={confidenceLoading} 
+                        error={confidenceError} 
+                    />
+                </Col>
+            </Row>
+        </Container>
     );
 }
-
-export default AnalyticsDashboard;

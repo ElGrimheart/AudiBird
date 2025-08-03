@@ -2,35 +2,35 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 /* Hook to fetch species trends for a given station. Returns an array of trend objects. */
-export default function useSpeciesTrends(stationId) {
-    const [speciesTrends, setSpeciesTrends] = useState([]);
+export default function useSpeciesDailyTotals(stationId) {
+    const [speciesDailyTotals, setSpeciesDailyTotals] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!stationId) {
-            setSpeciesTrends([]);
+            setSpeciesDailyTotals([]);
             return;
         }
 
-        const fetchSpeciesTrends = async () => {
+        const fetchSpeciesDailyTotals = async () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/species-hourly-trends/${stationId}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/species-daily-totals/${stationId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
-                setSpeciesTrends(response.data.result || []);
+                setSpeciesDailyTotals(response.data.result || []);
             } catch (error) {
                 setError(error);
-                setSpeciesTrends([]);
+                setSpeciesDailyTotals([]);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchSpeciesTrends();
+        fetchSpeciesDailyTotals();
     }, [stationId]);
 
-    return { speciesTrends, loading, error };
+    return { speciesDailyTotals, loading, error };
 }

@@ -8,7 +8,7 @@ import { Container, Spinner } from "react-bootstrap";
 import { formatStringToDate } from "../../utils/dateFormatter";
 
 // RecentDetectionsCard component to display a list of recent detections by a station
-const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
+export default function RecentDetectionsCard({ detectionsData, loading, error }) {
     const [showModal, setShowModal] = useState(false);
     const [selectedDetection, setSelectedDetection] = useState(null);
 
@@ -22,25 +22,18 @@ const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
         setSelectedDetection(null);
     };
 
-    const renderSkeleton = () => {
+    function renderSkeleton() {
         return (
             <div>
-                <div className="text-center mb-3">
+                <div style={{ height: "200px", position: "relative" }}>
+                    <Skeleton height="100%" />
                     <Spinner animation="border" role="status" variant="primary">
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 </div>
-                <ol className="list mb-0">
-                    {Array(3).fill(0).map((_, index) => (
-                        <li key={index} className="mb-2">
-                            <strong><Skeleton width={120} /></strong> 
-                            <Skeleton width={180} />
-                        </li>
-                    ))}
-                </ol>
             </div>
         );
-    };
+    }
 
     return ( 
             <ComponentCard title="Recent Detections">
@@ -80,5 +73,3 @@ const RecentDetectionsCard = ({ detectionsData, loading, error }) => {
             </ComponentCard>
     );
 }
-
-export default RecentDetectionsCard;

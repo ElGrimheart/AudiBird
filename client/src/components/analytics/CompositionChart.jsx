@@ -7,10 +7,8 @@ Chart.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, F
 import { Bar } from "react-chartjs-2";
 import { Spinner } from "react-bootstrap";
 
-const CompositionCard = ({ compositionData, loading, error }) => {
-    
+export default function CompositionChart({ compositionData, loading, error }) {
     const dates = [...new Set(compositionData.map(row => row.date))];
-
     const speciesData = {};
 
     dates.forEach(date => {
@@ -21,7 +19,7 @@ const CompositionCard = ({ compositionData, loading, error }) => {
                 speciesData[row.common_name] = Array(dates.length).fill(0);
             }
             const dateIndex = dates.indexOf(date);
-            speciesData[row.common_name][dateIndex] += parseInt(row.count, 0) / total;
+            speciesData[row.common_name][dateIndex] += parseInt(row.count, 0)*100 / total;
         });
     });
 
@@ -40,44 +38,38 @@ const CompositionCard = ({ compositionData, loading, error }) => {
     const chartOptions = {
         responsive: true,
         plugins: {
-            legend: { position: 'top' },
-            title: { display: true, text: 'Species Composition' }
+            legend: { position: 'right' },
+            datalabels: { display: false }
         },
         scales: {
             x: { title: { display: true, text: 'Date' } },
-            y: { title: { display: true, text: 'Proportion' }, beginAtZero: true }
+            y: { title: { display: true, text: '% of Detections' }, beginAtZero: true }
         }
     };
 
-    if (error) {
+    function renderSkeleton() {
         return (
-            <ComponentCard title="Species Composition">
-                <div className="text-danger">Error loading chart data</div>
-            </ComponentCard>
-        );
-    }
-
-    if (loading) {
-        return (
-            <ComponentCard title="Species Composition">
-                <div className="text-center mb-3">
+            <div>
+                <div style={{ height: "200px", position: "relative" }}>
+                    <Skeleton height="100%" />
                     <Spinner animation="border" role="status" variant="primary">
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 </div>
-            </ComponentCard>
+            </div>
         );
     }
 
-    // Only render chart if there is data
     return (
         <ComponentCard title="Species Composition">
-            <Bar 
-                key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
-                data={chartData} 
-                options={chartOptions} />
+            {error && <div className="text-danger">{error.message}</div>}
+            {loading ? renderSkeleton() : (
+                <Bar
+                    key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
+                    data={chartData}
+                    options={chartOptions}
+                />
+            )}
         </ComponentCard>
     );
-};
-
-export default CompositionCard;
+}

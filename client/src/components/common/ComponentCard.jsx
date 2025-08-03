@@ -2,7 +2,7 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 
 // Generic DashboardCard component to encapsulate the common structure of cards used in the dashboard
-const ComponentCard = ({ title, children, footer }) => {
+export default function ComponentCard({ title, children, footer }) {
     return (
         <Card className="shadow-sm h-100">
             {title && <Card.Header className="fw-bold bg-light">{title}</Card.Header>}
@@ -11,5 +11,3 @@ const ComponentCard = ({ title, children, footer }) => {
         </Card>
     )
 }
-
-export default ComponentCard;
