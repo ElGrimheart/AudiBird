@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import { Spinner, Table, Button, Modal } from "react-bootstrap";
+import RenderSkeleton from '../common/SkeletonPlaceholder';
+import { Table } from "react-bootstrap";
 import { formatStringToDate } from "../../utils/dateFormatter";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
 import DetectionModal from "../common/DetectionModal";
@@ -11,35 +10,14 @@ export default function  FilteredDetections({ detections, loading, error }) {
     const [showModal, setShowModal] = useState(false);
     const [selectedDetection, setSelectedDetection] = useState(null);
 
-    const handleShowModal = (detection) => {
+    function handleShowModal(detection) {
         setSelectedDetection(detection);
         setShowModal(true);
-    };
+    }
 
-    const handleCloseModal = () => {
+    function handleCloseModal() {
         setShowModal(false);
         setSelectedDetection(null);
-    };
-
-    function renderSkeleton() {
-        return (
-            <div>
-                <div style={{ height: "200px", position: "relative" }}>
-                    <Skeleton height="100%" />
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return <div className="alert alert-danger">{error.message || "Error loading detections"}</div>;
-    }
-
-    if (loading) {
-        return renderSkeleton();
     }
 
     if (!detections || detections.length === 0) {
@@ -49,7 +27,7 @@ export default function  FilteredDetections({ detections, loading, error }) {
     return (
         <>
             {error && <div className="text-danger">{error.message}</div>}
-            {loading ? renderSkeleton() : (
+            {loading ? <RenderSkeleton /> : (
                 detections && detections.length > 0 ? (
                     <div>
                         <Table striped bordered hover responsive>

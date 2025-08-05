@@ -5,7 +5,7 @@ import axios from 'axios';
 export default function useLogout() {
     const navigate = useNavigate();
 
-    const handleLogout = async (event) => {
+    async function handleLogout(event) {
         if (event) event.preventDefault();
         try {
             await axios.post(`${import.meta.env.VITE_API_USER_URL}/logout`);

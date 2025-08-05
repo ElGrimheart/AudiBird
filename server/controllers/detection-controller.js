@@ -83,7 +83,7 @@ export const getMostCommonSpeciesByStationId = async (req, res) => {
 export const getDetectionSummaryByStationId = async (req, res) => {
     const { stationId } = req.params;
     const { startDate, endDate, speciesName } = req.query;
-    logAction("Retrieving detection summary for", { stationId, startDate, endDate, speciesName });
+    logAction("Retrieving detection summary for", { stationId });
 
     try {
         const detectionSummary = await detectionService.getDetectionSummaryByStationId(stationId, { startDate, endDate, speciesName });

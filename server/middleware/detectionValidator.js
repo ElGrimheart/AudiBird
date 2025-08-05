@@ -1,6 +1,8 @@
 import { param, query, body, validationResult } from 'express-validator';
 
-const nameRegex = /^[A-Za-z\s]+$/;
+const speciesRegex = /^[A-Za-z\s\-']+$/;
+const confidenceMinValue = 0;
+const confidenceMaxValue = 100;
 
 // Middleware to validate detection ID format
 export const validateDetectionId = [
@@ -36,16 +38,16 @@ export const validateDetectionFilters = [
     .withMessage('To date cannot be in the future'),
   query('speciesName')
     .optional()
-    .custom((value) => value === '' || /^[A-Za-z\s]+$/.test(value))
-    .withMessage('Species name can only contain letters and spaces'),
+    .custom((value) => value === '' || speciesRegex.test(value))
+    .withMessage('Species name can only contain letters, spaces or hyphens'),
   query('minConfidence')
     .optional()
-    .custom((value) => value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100))
-    .withMessage('Minimum confidence must be between 0 and 100'),
+    .custom((value) => value === '' || (parseFloat(value) >= confidenceMinValue && parseFloat(value) <= confidenceMaxValue))
+    .withMessage(`Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`),
   query('maxConfidence')
     .optional()
-    .custom((value) => value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100))
-    .withMessage('Maximum confidence must be between 0 and 100'),
+    .custom((value) => value === '' || (parseFloat(value) >= confidenceMinValue && parseFloat(value) <= confidenceMaxValue))
+    .withMessage(`Maximum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`),
   query('limit')
     .optional()
     .custom((value) => value === '' || parseInt(value) > 0)
@@ -98,11 +100,11 @@ export const validateNewDetection = [
   body('common_name')
     .exists().withMessage('Common name is required')
     .isString().withMessage('Common name must be a string')
-    .custom((value) => /^[A-Za-z\s\-']+$/.test(value)).withMessage('Common name can only contain letters and spaces'),
+    .custom((value) => speciesRegex.test(value)).withMessage('Common name can only contain letters, spaces and hyphens'),
   body('scientific_name')
     .exists().withMessage('Scientific name is required')
     .isString().withMessage('Scientific name must be a string')
-    .custom((value) => /^[A-Za-z\s\-']+$/.test(value)).withMessage('Scientific name can only contain letters and spaces'),
+    .custom((value) => speciesRegex.test(value)).withMessage('Scientific name can only contain letters, spaces and hyphens'),
   body('confidence')
     .exists().withMessage('Confidence is required')
     .isFloat({ min: 0, max: 1 }).withMessage('Confidence must be between 0 and 1'),

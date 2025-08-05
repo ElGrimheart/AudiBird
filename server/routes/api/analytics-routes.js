@@ -1,43 +1,40 @@
 import express from 'express';
 import { authenticateJWT, authenticateAccessPermission } from '../../middleware/authenticators.js';
 import { validateStationId } from '../../middleware/stationValidator.js';
+import { validateAnalyticsFilters } from '../../middleware/userFormValidator.js';
 import * as analyticsController from '../../controllers/analytics-controller.js';
 
 const analyticsRouter = express.Router();
 
-analyticsRouter.get('/average-detections/:stationId',
+analyticsRouter.get('/species-summary/:stationId',
     authenticateJWT,
     authenticateAccessPermission,
     validateStationId,
-    analyticsController.getAverageDetectionWithinDates
+    analyticsController.getSpeciesSummaryByStationId
 );
 
-analyticsRouter.get('/species-hourly-trends/:stationId',
+analyticsRouter.get('/average-hourly-trends/:stationId',
     authenticateJWT,
     authenticateAccessPermission,
     validateStationId,
-    analyticsController.getSpeciesHourlyTrends
+    validateAnalyticsFilters,
+    analyticsController.getAverageHourlyTrendsByStationId
 );
 
-analyticsRouter.get('/species-daily-totals/:stationId',
+analyticsRouter.get('/hourly-detection-totals/:stationId',
     authenticateJWT,
     authenticateAccessPermission,
     validateStationId,
-    analyticsController.getSpeciesDailyTotals
+    validateAnalyticsFilters,
+    analyticsController.getHourlyDetectionTotalsByStationId
 );
 
-analyticsRouter.get('/deltas/:stationId',
+analyticsRouter.get('/daily-detection-totals/:stationId',
     authenticateJWT,
     authenticateAccessPermission,
     validateStationId,
-    analyticsController.getDeltas
-);
-
-analyticsRouter.get('/top-confidence/:stationId',
-    authenticateJWT,
-    authenticateAccessPermission,
-    validateStationId,
-    analyticsController.getTopConfidence
+    validateAnalyticsFilters,
+    analyticsController.getDailyDetectionTotalsByStationId
 );
 
 export default analyticsRouter;   

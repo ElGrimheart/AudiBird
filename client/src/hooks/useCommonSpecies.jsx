@@ -18,7 +18,7 @@ export default function useCommonSpecies(stationId) {
             return;
         }
 
-        const fetchCommonSpecies = async () => {
+        async function fetchCommonSpecies() {
             setLoading(true);
             setError(null);
 
@@ -35,11 +35,11 @@ export default function useCommonSpecies(stationId) {
             }
         }
 
-        const handleNewDetection = (detection) => {
+        function handleNewDetection(detection) {
             if (detection.station_id === stationId) {
                 fetchCommonSpecies();
             }
-        };
+        }
 
         // Initial fetch of common species
         fetchCommonSpecies();

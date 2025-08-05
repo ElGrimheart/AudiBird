@@ -2,30 +2,30 @@ import React, { useContext } from "react";
 import { Line } from "react-chartjs-2";
 import ChartFilterBar from "./ChartFilterBar";
 import SelectedStationContext from "../../contexts/SelectedStationContext.jsx";
-import useDetectionDailyTotals from "../../hooks/useDetectionDailyTotals.jsx";
+import useDetectionHourlyTotals from "../../hooks/useDetectionHourlyTotals.jsx";
 import ComponentCard from "../common/ComponentCard";
 import SkeletonComponent from "../common/SkeletonPlaceholder";
 
-export default function DailyTotalsChart({ filters, setFilters }) {
+export default function HourlyTotalsChart({ filters, setFilters }) {
     const { selectedStation } = useContext(SelectedStationContext);
-    const { detectionDailyTotals, loading, error } = useDetectionDailyTotals(selectedStation, { filters });
+    const { detectionHourlyTotals, loading, error } = useDetectionHourlyTotals(selectedStation, { filters });
 
-    // Get days for x-axis labels
-    const dates = Array.from(new Set(detectionDailyTotals.map(row => row.date))).sort();
-    const speciesList = Array.from(new Set(detectionDailyTotals.map(row => row.common_name)));
+    // Get hours for x-axis labels
+    const hours = Array.from(new Set(detectionHourlyTotals.map(row => Number(row.hour)))).sort((a, b) => a - b);
+    const speciesList = Array.from(new Set(detectionHourlyTotals.map(row => row.common_name)));
 
     // Group counts by species
     const countMap = {};
-    detectionDailyTotals.forEach(row => {
-    countMap[`${row.date}|${row.common_name}`] = Number(row.count);
+    detectionHourlyTotals.forEach(row => {
+        countMap[`${row.hour}|${row.common_name}`] = Number(row.count);
     });
 
     // Build datasets for Chart.js
     const chartData = {
-        labels: dates.map(date => new Date(date).toLocaleDateString()),
+        labels: hours.map(hour => hour.toString().padStart(2, "0") + ":00"),
         datasets: speciesList.map((species, i) => ({
             label: species,
-            data: dates.map(date => countMap[`${date}|${species}`] || 0),
+            data: hours.map(hour => countMap[`${hour}|${species}`] || 0),
             borderColor: `hsl(${i * 40}, 70%, 50%)`,
             backgroundColor: `hsla(${i * 40}, 70%, 50%, 0.2)`,
             fill: false,
@@ -40,17 +40,17 @@ export default function DailyTotalsChart({ filters, setFilters }) {
             datalabels: { display: false }
         },
         scales: {
-            x: { title: { display: true, text: 'Date' } },
+            x: { title: { display: true, text: 'Hour' } },
             y: { title: { display: true, text: 'Detections' }, beginAtZero: true }
         }
-        };
+    };
 
     return (
-        <ComponentCard title="Daily Species Activity">
+        <ComponentCard title="Hourly Species Activity">
             <ChartFilterBar 
                 filters={filters}
                 setFilters={setFilters}
-                showDateRange={true}
+                showSingleDate={true}
                 showSpeciesSelect={true}
                 showMinConfidence={true}
             />

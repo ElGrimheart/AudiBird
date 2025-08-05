@@ -28,6 +28,49 @@ export const getStationById = async (req, res) => {
     }
 }
 
+// GET /api/stations/config/:stationId route - retrieves the configuration for a specific station
+export const getStationMetadataById = async (req, res) => {
+    const { stationId } = req.params;
+    const { authType } = req.authType;
+
+    logAction("Retrieving station metadata", { stationId });
+
+    try {
+         if (authType === "API") {  // If the request is authenticated via API key, fetch only the configuration
+            const config = await stationService.getStationConfigById(stationId);
+            if (config) {
+                res.status(200).json({
+                    status: "success",
+                    message: `Retrieved configuration for Station ID: ${stationId}`,
+                    result: config
+                });
+            } else {
+                res.status(404).json({
+                    status: "failure",
+                    message: `Configuration for Station ID: ${stationId} not found`
+                });
+            }
+         }
+
+        // else, fetch the full metadata including date range and species list
+        const metadata = await stationService.getStationMetadataById(stationId);
+        if (metadata) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved metadata for Station ID: ${stationId}`,
+                result: metadata
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `Metadata for Station ID: ${stationId} not found`
+            });
+        }
+    } catch (error) {
+        handleError(res, error, `Error retrieving metadata for Station ID: ${stationId}`);
+    }
+}
+
 // GET /api/stations/status/:stationId route - retrieves the status for a specific station
 export const getStationStatusById = async (req, res) => {
     const { stationId } = req.params;
@@ -50,31 +93,6 @@ export const getStationStatusById = async (req, res) => {
         }
     } catch (error) {
         handleError(res, error, `Error retrieving status for Station ID: ${stationId}`);
-    }
-}
-
-// GET /api/stations/config/:stationId route - retrieves the configuration for a specific station
-export const getStationConfigById = async (req, res) => {
-    const { stationId } = req.params;
-    
-    logAction("Retrieving station config", { stationId });
-
-    try {
-        const config = await stationService.getStationConfigById(stationId);
-        if (config) {
-            res.status(200).json({
-                status: "success",
-                message: `Retrieved configuration for Station ID: ${stationId}`,
-                result: config
-            });
-        } else {
-            res.status(404).json({
-                status: "failure",
-                message: `Configuration for Station ID: ${stationId} not found`
-            });
-        }
-    } catch (error) {
-        handleError(res, error, `Error retrieving configuration for Station ID: ${stationId}`);
     }
 }
 
@@ -112,24 +130,5 @@ export const createStationStatusById = async (req, res) => {
         });
     } catch (error) {
         handleError(res, error, `Error updating status for Station ID: ${stationId}`);
-    }
-}
-
-// POST /api/stations/config/:stationId route - updates the configuration for a specific station
-export const updateStationConfigById = async (req, res) => {
-    const { stationId } = req.params;
-    const configData = req.body;
-
-    logAction("Updating station config", { stationId, configData });
-
-    try {
-        const updatedConfig = await stationService.updateStationConfigById(stationId, configData);
-        res.status(200).json({
-            status: "success",
-            message: `Configuration for Station ID: ${stationId} updated successfully`,
-            result: updatedConfig
-        });
-    } catch (error) {
-        handleError(res, error, `Error updating configuration for Station ID: ${stationId}`);
     }
 }

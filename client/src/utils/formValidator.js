@@ -5,9 +5,9 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
 const nameRegex = /^[A-Za-z ]{2,}$/;
 const registerPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{12,}$/;
-const speciesRegex = /^[A-Za-z\s]*$/;
 const minNameLength = 2;
 const minUsernameLength = 3;
+const speciesRegex = /^[A-Za-z\s\-']+$/;
 const confidenceMinValue = 0;
 const confidenceMaxValue = 100;
 
@@ -73,17 +73,14 @@ export function detectionFiltersSchema() {
                 }
                 return value <= new Date(); 
             }),
-
         speciesName: Yup.string()
           .nullable()
-          .matches(speciesRegex, 'Species name can only contain letters and spaces'),
-
+          .matches(speciesRegex, 'Species name can only contain letters, spaces, or hyphens'),
         minConfidence: Yup.number()
           .nullable()
           .min(confidenceMinValue, `Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
           .max(confidenceMaxValue, `Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
           .typeError('Minimum confidence must be a number'),
-
         maxConfidence: Yup.number()
           .nullable()
           .min(confidenceMinValue, `Maximum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
@@ -96,7 +93,6 @@ export function detectionFiltersSchema() {
               }
               return minConfidence <= value;
           }),
-          
         sortBy: Yup.string()
           .required('Sort by is required') // Mark as required
           .oneOf(['detection_timestamp', 'common_name', 'confidence'], 'Sort by must be a valid field'),
@@ -104,5 +100,38 @@ export function detectionFiltersSchema() {
         sortOrder: Yup.string()
           .required('Sort is required') // Mark as required
           .oneOf(['asc', 'desc'], 'Sort must be either asc or desc'),
+    });
+}
+
+
+export function analyticsFiltersSchema() {
+    return Yup.object().shape({
+        singleDate: Yup.date()
+            .nullable(),
+        startDate: Yup.date()
+            .nullable()
+            .test('start-before-end', 'From date cannot be after To date', function (value) { // Ensure `start` is before or equal to `end` date
+                const { endDate } = this.parent || {};
+                if (!value || !endDate) {
+                    return true; 
+                }
+                return new Date(value) <= new Date(endDate);
+            }),    
+        endDate: Yup.date()
+            .nullable()
+            .test('is-not-in-future', 'To date cannot be in the future', function (value) { // Ensure `end` is not in the future
+                if (!value) {
+                    return true; 
+                }
+                return value <= new Date(); 
+            }),
+        species: Yup.string()
+          .nullable()
+          .matches(speciesRegex, 'Species name can only contain letters, spaces and hyphens'),
+        minConfidence: Yup.number()
+          .nullable()
+          .min(confidenceMinValue, `Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
+          .max(confidenceMaxValue, `Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`)
+          .typeError('Minimum confidence must be a number')
     });
 }

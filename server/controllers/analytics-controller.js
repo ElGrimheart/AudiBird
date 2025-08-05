@@ -2,35 +2,15 @@ import * as analyticsService from '../services/analytics-service.js';
 import handleError from '../utils/errorHandler.js';
 import logAction from '../utils/logger.js';
 
-
-// GET /api/analytics/peak-hours/:stationId route - retrieves peak hours for a given station
-export const getAverageDetectionWithinDates = async (req, res) => {
-    const { stationId } = req.params;
-    let { startDate, endDate } = req.query;
-    logAction("Retrieving peak hours for", { stationId });
-  
-    try {
-        const peakHours = await analyticsService.getAverageDetectionWithinDates(stationId, { startDate, endDate });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved peak hours data for Station ID: ${stationId} between ${startDate} and ${endDate}`,
-            result: peakHours
-        });
-    } catch (error) {
-        handleError(res, error, `Error retrieving peak hours data for Station ID: ${stationId}`);
-    }
-}
-
-
-// GET /api/analytics/species-hourly/:stationId route - retrieves hourly species data for a given station
-export const getSpeciesHourlyTrends = async (req, res) => {
+// GET /api/analytics/average-hourly-trends/:stationId route - retrieves average hourly trends for a given station
+export const getAverageHourlyTrendsByStationId = async (req, res) => {
     const { stationId } = req.params;
     const { startDate, endDate, speciesName, minConfidence } = req.query;
 
-    logAction("Retrieving species hourly data for", { stationId });
+    logAction("Retrieving species hourly data for", { stationId } );
 
     try {
-        const hourlyData = await analyticsService.getSpeciesHourlyTrends(stationId, { startDate, endDate, speciesName, minConfidence });
+        const hourlyData = await analyticsService.getAverageHourlyTrendsByStationId(stationId, { startDate, endDate, speciesName, minConfidence });
         res.status(200).json({
             status: "success",
             message: `Retrieved species hourly data for Station ID: ${stationId}`,
@@ -41,14 +21,55 @@ export const getSpeciesHourlyTrends = async (req, res) => {
     }
 };
 
-// GET /api/analytics/species-trends/:stationId route - retrieves species trends for a given station
-export const getSpeciesDailyTotals = async (req, res) => {
+
+// GET /api/analytics/species-summary/:stationId route - retrieves species summary for a given station
+export const getSpeciesSummaryByStationId = async (req, res) => {
+    const { stationId } = req.params;
+    const { speciesName } = req.query;
+    logAction("Retrieving species summary for", { stationId });
+
+    try {
+        const speciesSummary = await analyticsService.getSpeciesSummaryByStationId(stationId, { speciesName });
+        res.status(200).json({
+            status: "success",
+            message: `Retrieved species summary for Station ID: ${stationId}`,
+            result: speciesSummary
+        });
+    } catch (error) {
+        handleError(res, error, `Error retrieving species summary for Station ID: ${stationId}`);
+    }
+};
+
+
+// GET /api/analytics/hourly-detection-totals/:stationId route - retrieves hourly detection totals for a given station
+export const getHourlyDetectionTotalsByStationId = async (req, res) => {
+    const { stationId } = req.params;
+    const { singleDate, speciesName, minConfidence } = req.query;
+
+    logAction("Retrieving hourly detection totals for", { stationId });
+
+    try {
+        const hourlyTotals = await analyticsService.getHourlyDetectionTotalsByStationId(stationId, { singleDate, speciesName, minConfidence });
+        res.status(200).json({
+            status: "success",
+            message: `Retrieved hourly detection totals for Station ID: ${stationId}`,
+            result: hourlyTotals
+        });
+    } catch (error) {
+        handleError(res, error, `Error retrieving hourly detection totals for Station ID: ${stationId}`);
+    }
+};
+
+
+// GET /api/analytics/daily-detection-totals/:stationId route - retrieves daily detection totals for a given station
+export const getDailyDetectionTotalsByStationId = async (req, res) => {
     const { stationId } = req.params;
     const { startDate, endDate, speciesName, minConfidence } = req.query;
+
     logAction("Retrieving species trends for", { stationId });
 
     try {
-        const trends = await analyticsService.getSpeciesDailyTotals(stationId, { startDate, endDate, speciesName, minConfidence });
+        const trends = await analyticsService.getDailyDetectionTotalsByStationId(stationId, { startDate, endDate, speciesName, minConfidence });
         res.status(200).json({
             status: "success",
             message: `Retrieved species trends data for Station ID: ${stationId}`,
@@ -58,39 +79,3 @@ export const getSpeciesDailyTotals = async (req, res) => {
         handleError(res, error, `Error retrieving species trends data for Station ID: ${stationId}`);
     }
 };
-
-// GET /api/analytics/deltas/:stationId route - retrieves deltas for a given station
-export const getDeltas = async (req, res) => {
-    const { stationId } = req.params;
-    const { startDate, endDate, speciesName, minConfidence } = req.query;
-    logAction("Retrieving deltas for", { stationId });
-
-    try {
-        const deltas = await analyticsService.getDeltas(stationId, { startDate, endDate, speciesName, minConfidence });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved deltas data for Station ID: ${stationId} between ${startDate} and ${endDate}`,
-            result: deltas
-        });
-    } catch (error) {
-        handleError(res, error, `Error retrieving deltas data for Station ID: ${stationId}`);
-    }
-};
-
-// GET /api/analytics/top-confidence/:stationId route - retrieves top confidence species for a given station
-export const getTopConfidence = async (req, res) => {
-    const { stationId } = req.params;
-    const { startDate, endDate, limit } = req.query;
-    logAction("Retrieving top confidence species for", { stationId });
-
-    try {
-        const topConfidence = await analyticsService.getTopConfidence(stationId, { startDate, endDate, limit });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved top confidence species data for Station ID: ${stationId}`,
-            result: topConfidence
-        });
-    } catch (error) {
-        handleError(res, error, `Error retrieving top confidence species data for Station ID: ${stationId}`);
-    }
-}

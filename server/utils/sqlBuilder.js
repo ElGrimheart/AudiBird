@@ -3,11 +3,16 @@
 import { param } from "express-validator";
 
 // Builds a WHERE clause based on the filters passed
-export function buildDetectionWhereClause(stationId, { startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
+export function buildDetectionWhereClause(stationId, { singleDate, startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
     const filters = [];
     const values = [stationId];
 
     let whereClause = 'WHERE station_id = $1';
+
+    if (singleDate) {
+        values.push(singleDate);
+        filters.push(`DATE(detection_timestamp) = $${values.length}`);
+    }
 
     if (startDate) {
         values.push(startDate);

@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useContext } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import ComponentCard from "../common/ComponentCard";
+import SkeletonComponent from "../common/SkeletonPlaceholder";
 import SocketContext from "../../contexts/SocketContext";
-import { Spinner } from "react-bootstrap";
 
 // MicStreamCard component to play the live audio stream from the microphone
 export default function MicStreamCard({ onPlay, onPause, isPlaying, loading, error }) {
@@ -27,9 +25,9 @@ export default function MicStreamCard({ onPlay, onPause, isPlaying, loading, err
         }
 
         // Add chunk to buffer queue
-        const handleChunk = (chunk) => {
+        function handleChunk(chunk) {
             bufferQueueRef.current.push(chunk);
-        };
+        }
 
         socket.on("mic-audio-chunk", handleChunk);
 
@@ -79,25 +77,11 @@ export default function MicStreamCard({ onPlay, onPause, isPlaying, loading, err
         };
     }, [socket, isPlaying, isConnected]);
 
-
-    function renderSkeleton() {
-        return (
-            <div>
-                <div style={{ height: "200px", position: "relative" }}>
-                    <Skeleton height="100%" />
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <ComponentCard title="Station Stream">
             {error && (<div className="alert alert-danger">{error.message || "Error connecting to audio stream"}</div>)}
 
-            {loading ? renderSkeleton() : (
+            {loading ? <SkeletonComponent height={200} /> : (
                 isConnected ? (
                     <div className="mt-2">
                         <button

@@ -9,9 +9,9 @@ export default function LoginRegisterContainer() {
     const { fetchUserStations } = useContext(UserStationsContext);
     const { loginOrRegister, generalError } = useLoginRegister(fetchUserStations);
 
-    const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    async function handleSubmit(values, { setSubmitting, setErrors }) {
         loginOrRegister(values, isRegister, setSubmitting, setErrors);
-    };
+    }
 
     return (
         <LoginRegisterForm

@@ -16,19 +16,24 @@ export default function DetectionsContainer() {
     const [detections, fetchDetections, error, loading] = useFilteredDetections(selectedStation, filters);
     const [showSidebar, setShowSidebar] = useState(false);
 
-    const handleCloseSidebar = () => setShowSidebar(false);
-    const handleShowSidebar = () => setShowSidebar(true);
+    function handleCloseSidebar() {
+        setShowSidebar(false);
+    }
+
+    function handleShowSidebar() {
+        setShowSidebar(true);
+    }
 
     useEffect(() => {
         fetchDetections(filters);
     }, [fetchDetections, filters]);
 
-    const handleFilterSubmit = async(values, { setSubmitting }) => {
+    async function handleFilterSubmit(values, { setSubmitting }) {
         setFilters(values);
         await fetchDetections(values);
         setShowSidebar(false);
         setSubmitting(false);
-    };
+    }
 
     return (
         <Container className="p-4">

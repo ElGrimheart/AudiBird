@@ -6,3 +6,7 @@
   objectFit: "cover"; 
   border: "2px solid #eee"
 }
+
+img {
+  border-radius: 1rem;
+}

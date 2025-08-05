@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import ComponentCard from "../common/ComponentCard.jsx";
+import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import DetectionModal from '../common/DetectionModal.jsx';
 import AudioPlayer from "../common/AudioPlayer";
-import { Container, Spinner } from "react-bootstrap";
 import { formatStringToDate } from "../../utils/dateFormatter";
 
 // RecentDetectionsCard component to display a list of recent detections by a station
@@ -12,34 +10,21 @@ export default function RecentDetectionsCard({ detectionsData, loading, error })
     const [showModal, setShowModal] = useState(false);
     const [selectedDetection, setSelectedDetection] = useState(null);
 
-    const handleShowModal = (detection) => {
+    function handleShowModal(detection) {
         setSelectedDetection(detection);
         setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setSelectedDetection(null);
-    };
-
-    function renderSkeleton() {
-        return (
-            <div>
-                <div style={{ height: "200px", position: "relative" }}>
-                    <Skeleton height="100%" />
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-            </div>
-        );
     }
 
-    return ( 
-            <ComponentCard title="Recent Detections">
-                {error && <div className="text-danger">{error.message}</div>}
-                {loading ? renderSkeleton() : (
-                    <ol className="list mb-0">
+    function handleCloseModal() {
+        setShowModal(false);
+        setSelectedDetection(null);
+    }
+
+    return (
+        <ComponentCard title="Recent Detections">
+            {error && <div className="text-danger">{error.message}</div>}
+            {loading ? <SkeletonComponent height={200} /> : (
+                <ol className="list mb-0">
                         {detectionsData && detectionsData.length > 0 ? 
                             detectionsData.map((detection, index) => (
                                 <li key={index}

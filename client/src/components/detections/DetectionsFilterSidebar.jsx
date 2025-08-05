@@ -83,7 +83,7 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Confidence (%)</Form.Label>
+                        <Form.Label>Confidence</Form.Label>
                         <Row>
                             <Col>
                                 <Form.Control
@@ -93,11 +93,12 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                                     value={values.minConfidence}
                                     onChange={handleChange}
                                     onBlur={() => setFieldTouched('minConfidence', true)}
-                                    placeholder="Min"
+                                    placeholder="Min %"
                                     min={0}
                                     max={100}
                                     isInvalid={!!errors.minConfidence && touched.minConfidence}
                                 />
+                                
                                 <Form.Control.Feedback type="invalid">
                                     {errors.minConfidence}
                                 </Form.Control.Feedback>
@@ -110,7 +111,7 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                                     value={values.maxConfidence}
                                     onChange={handleChange}
                                     onBlur={() => setFieldTouched('maxConfidence', true)}
-                                    placeholder="Max"
+                                    placeholder="Max %"
                                     min={0}
                                     max={100}
                                     isInvalid={!!errors.maxConfidence && touched.maxConfidence}

@@ -8,11 +8,10 @@ export default function useLoginRegister(fetchUserStations) {
     const location = useLocation();
     const [generalError, setGeneralError] = useState(null);
 
-    const loginOrRegister = async (values, isRegister, setSubmitting, setErrors) => {
+    async function loginOrRegister(values, isRegister, setSubmitting, setErrors) {
         setGeneralError(null);
         try {
           const endpoint = isRegister ? `${import.meta.env.VITE_API_USER_URL}/register` : `${import.meta.env.VITE_API_USER_URL}/login`;
-
           const response = await axios.post(endpoint, values);
 
           if (response.status === 200 && response.data.result) {

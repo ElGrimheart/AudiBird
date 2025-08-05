@@ -4,7 +4,7 @@ import SelectedStationContext from '../../contexts/SelectedStationContext';
 import useRecentDetections from '../../hooks/useRecentDetections.jsx';
 import useCommonSpecies from '../../hooks/useCommonSpecies.jsx';
 import useSummaryStats from '../../hooks/useSummaryStats.jsx';
-import useAverageDetections from '../../hooks/useAverageDetections.jsx';
+import useHourlyTrends from '../../hooks/useHourlyTrends.jsx';
 import StationCard from './StationCard.jsx';
 import MicStreamCard from './MicStreamCard.jsx';
 import RecentDetectionsCard from './RecentDetectionsCard.jsx';
@@ -15,12 +15,13 @@ import SummaryCard from './SummaryCard.jsx';
 // DashboardContent component to manage the dashboard layout and pass data to cards
 export default function DashboardContainer() {
     const { selectedStation } = useContext(SelectedStationContext);
+    const [filters] = useState({ startDate: null, endDate: null, species: [] });
 
     // Card data hooks
     const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation);
     const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation);
     const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation);
-    const { averageDetections, loading: averageLoading, error: averageError } = useAverageDetections(selectedStation, { startDate: "", endDate: "" });
+    const { hourlyTrends, loading: trendsLoading, error: trendsError } = useHourlyTrends(selectedStation, { filters });
 
     // Mic stream handlers
     const [isStreamPlaying, setIsStreamPlaying] = useState(false);
@@ -77,9 +78,9 @@ export default function DashboardContainer() {
             <Row className="mb-4">
                 <Col>
                     <AverageDetectionsCard 
-                        detectionData={averageDetections}
-                        loading={averageLoading}
-                        error={averageError}
+                        detectionData={hourlyTrends}
+                        loading={trendsLoading}
+                        error={trendsError}
                     />
                 </Col>
             </Row>

@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import SocketProvider from './providers/SocketProvider';
 import UserStationsProvider from "./providers/UserStationsProvider";
 import SelectedStationProvider from "./providers/SelectedStationProvider";
+import StationMetadataProvider from "./providers/StationMetadataProvider";
 import AudioPlayerProvider from "./providers/AudioPlayerProvider";
 import ToastNotification from "./components/common/ToastNotification";
 import Container from 'react-bootstrap/Container';
@@ -32,41 +33,43 @@ export default function App() {
                 <SocketProvider>
                     <UserStationsProvider>
                         <SelectedStationProvider>
-                            <AudioPlayerProvider>
-                                <Container fluid className="p-2">
-                                    <MainNavbar />
-                                    <ToastContainer />
-                                    <ToastNotification />
-                                    <Routes>
-                                        <Route
-                                          path="/dashboard"
-                                          element={
-                                            <PrivateRoute>
-                                              <Dashboard />
-                                            </PrivateRoute>
-                                          }
-                                        />
-                                        <Route
-                                          path="/detections"
-                                          element={
-                                            <PrivateRoute>
-                                              <Detections />
-                                            </PrivateRoute>
-                                          }
-                                        />
-                                        <Route
-                                            path="/analytics"
+                            <StationMetadataProvider>
+                                <AudioPlayerProvider>
+                                    <Container fluid className="p-2">
+                                        <MainNavbar />
+                                        <ToastContainer />
+                                        <ToastNotification />
+                                        <Routes>
+                                            <Route
+                                            path="/dashboard"
                                             element={
                                                 <PrivateRoute>
-                                                    <Analytics />
+                                                <Dashboard />
                                                 </PrivateRoute>
                                             }
-                                        />
-                                        <Route path="*" element={<PageNotFound />} />
-                                    </Routes>
-                                    <MainFooter />
-                                </Container>
-                            </AudioPlayerProvider>
+                                            />
+                                            <Route
+                                            path="/detections"
+                                            element={
+                                                <PrivateRoute>
+                                                <Detections />
+                                                </PrivateRoute>
+                                            }
+                                            />
+                                            <Route
+                                                path="/analytics"
+                                                element={
+                                                    <PrivateRoute>
+                                                        <Analytics />
+                                                    </PrivateRoute>
+                                                }
+                                            />
+                                            <Route path="*" element={<PageNotFound />} />
+                                        </Routes>
+                                        <MainFooter />
+                                    </Container>
+                                </AudioPlayerProvider>
+                            </StationMetadataProvider>
                         </SelectedStationProvider>
                     </UserStationsProvider>
                 </SocketProvider> 

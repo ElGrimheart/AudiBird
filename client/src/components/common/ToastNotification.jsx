@@ -11,7 +11,7 @@ export default function ToastNotification() {
     useEffect(() => {
         if (!socket || !isConnected) return;
 
-        const handleNewDetection = (detection) => {
+        function handleNewDetection(detection) {
             toast.success(
                 `New detection: ${detection.species || detection.common_name} at ${formatStringToDate(detection.detection_timestamp)} (${Math.round(detection.confidence * 100)}%)`,
                 {

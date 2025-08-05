@@ -18,7 +18,7 @@ export default function useRecentDetections(stationId) {
             return;
         }
 
-        const fetchRecentDetections = async () => {
+        async function fetchRecentDetections() {
             setLoading(true);
             setError(null);
 
@@ -39,7 +39,7 @@ export default function useRecentDetections(stationId) {
         fetchRecentDetections();
 
         // Socket listener for new detections
-        const handleNewDetection = (detection) => {
+        function handleNewDetection(detection) {
             if (detection.station_id === stationId) {
                 fetchRecentDetections();
             }

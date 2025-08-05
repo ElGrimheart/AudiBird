@@ -27,3 +27,21 @@ export function formatDateToString(date) {
 
     return date.toISOString();
 }
+
+// Converts a Date object to a date input value format (YYYY-MM-DD)
+export function formatHtmlInputToDate(date) {
+    if (!date) 
+        return "";
+
+    const dateIso = (date instanceof Date) ? date : new Date(date);
+    return dateIso.toISOString().slice(0, 10);
+}
+
+
+export function formatHtmlDateToUTC(date) {
+    if (!date)
+        return "";
+
+    const dateUTC = new Date(date);
+    return dateUTC.toISOString()+"T00:00:00Z";
+}

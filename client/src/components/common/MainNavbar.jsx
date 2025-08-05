@@ -25,10 +25,10 @@ export default function MainNavbar() {
     }, [stations, setSelectedStation]);
     const handleLogout = useLogout();
 
-    const handleStationChange = (event) => {
+    function handleStationChange(event) {
         const stationId = event.target.value;
         setSelectedStation(stationId);
-    };
+    }
 
     return (
         <Navbar expand="sm" className="bg-body-tertiary">

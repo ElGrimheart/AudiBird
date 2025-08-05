@@ -18,7 +18,7 @@ export default function useSummaryStats(stationId) {
             return;
         }
 
-        const fetchSummaryStats = async () => {
+        async function fetchSummaryStats() {
             setLoading(true);
             setError(null);
 
@@ -37,13 +37,13 @@ export default function useSummaryStats(stationId) {
             } finally {
                 setLoading(false);
             }
-        };
+        }
 
-        const handleNewDetection = (detection) => {
+        function handleNewDetection(detection) {
             if (detection.station_id === stationId) {
                 fetchSummaryStats();
             }
-        };
+        }
 
         // Initial fetch of summary stats
         fetchSummaryStats();
