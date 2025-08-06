@@ -1,24 +1,39 @@
 // Utility class for constructing SQL queries for detection data
 
-// Builds a WHERE clause based on the filters passed
-export function buildDetectionWhereClause(stationId, { from, to, species, minConfidence, maxConfidence }) {
+import { param } from "express-validator";
+
+// Builds a WHERE clause based on the type and quantity of filters provided
+export function buildDetectionWhereClause(stationId, { singleDate, startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
     const filters = [];
     const values = [stationId];
 
     let whereClause = 'WHERE station_id = $1';
 
-    if (from) {
-        values.push(from);
+    if (singleDate) {
+        values.push(singleDate);
+        filters.push(`DATE(detection_timestamp) = $${values.length}`);
+    }
+
+    if (startDate) {
+        values.push(startDate);
         filters.push(`detection_timestamp >= $${values.length}`);
     }
-    if (to) {
-        values.push(to);
+
+    if (endDate) {
+        values.push(endDate);
         filters.push(`detection_timestamp <= $${values.length}`);
     }
-    if (species) {
-        values.push(`%${species}%`);
+
+    if (speciesName) {
+        values.push(`%${speciesName}%`);
         filters.push(`(common_name ILIKE $${values.length} OR scientific_name ILIKE $${values.length})`);
     }
+
+    if (speciesCode) {
+        values.push(`%${speciesCode}%`);
+        filters.push(`(species_code = $${values.length})`);
+    }
+
     if (minConfidence !== undefined && minConfidence !== '' && !isNaN(Number(minConfidence))) {
         values.push(Number(minConfidence) / 100);
         filters.push(`confidence >= $${values.length}`);
@@ -44,4 +59,30 @@ export function buildDetectionSortClause(sortBy, sortOrder, allowedColumns = ['d
         return `${column} ${dir}`;
     });
     return orderByParts.length ? `ORDER BY ${orderByParts.join(', ')}` : '';
+}
+
+// Builds a WHERE clause for delta filters based on the provided parameters
+export function buildDeltaFilters(startIndex, { speciesName, minConfidence }) {
+  const filters = [];
+  const filterValues = [];
+  let paramIndex = startIndex;
+
+  if (speciesName) {
+    paramIndex++;
+    filterValues.push(speciesName);
+    filters.push(`(common_name ILIKE $${paramIndex} OR scientific_name ILIKE $${paramIndex})`);
+  }
+
+  if (minConfidence) {
+    paramIndex++;
+    filterValues.push(minConfidence);
+    filters.push(`AND confidence >= $${paramIndex}`);
+  }
+
+  const filterClause = filters.join(' ');
+
+  return {
+    filterClause,
+    filterValues
+  };
 }

@@ -1,39 +1,18 @@
 import React from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
-import { Spinner } from "react-bootstrap";
+import ComponentCard from "../common/ComponentCard";
+import SkeletonComponent from "../common/SkeletonPlaceholder";
 
-// SummaryCard component to display overall detection statistics for a station
-const SummaryCard = ({ summaryData, loading, error }) => {
-    
-    const renderSkeleton = () => {
-        return (
-            <div>
-                <div className="text-center mb-3">
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-                <table className="table table-striped">
-                    <tbody>
-                        {Array(5).fill(0).map((_, index) => (
-                            <tr key={index}>
-                                <td><Skeleton width={150} /></td>
-                                <td><Skeleton width={100} /></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    };
+/* SummaryCard component to display a summary of detections for a station. */
+export default function SummaryCard({ summaryData, loading, error }) {
 
     return (
-        <DashboardCard title="Overall Detection Summary">
+        <ComponentCard title="Station Detection Summary">
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
-            {loading ? renderSkeleton() : (
+            {loading ? <SkeletonComponent height={200} /> : (
                 summaryData && summaryData.length > 0 ? (
+
+                    /* Summary table */
                     <table className="table table-striped">
                         <tbody>
                             {summaryData.map((stat, index) => (
@@ -50,8 +29,6 @@ const SummaryCard = ({ summaryData, loading, error }) => {
                     </div>
                 )
             )}
-        </DashboardCard>
+        </ComponentCard>
     );
-};
-
-export default SummaryCard;
+}

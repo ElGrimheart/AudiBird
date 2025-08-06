@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 // PageNotFound component to display a 404 error page
-const PageNotFound = () => {
+export default function PageNotFound() {
     return (
         <Container fluid className="p-4 d-flex align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
             <Row className="w-100 justify-content-center">
@@ -18,6 +18,4 @@ const PageNotFound = () => {
             </Row>
         </Container>
     );
-};
-
-export default PageNotFound;
+}

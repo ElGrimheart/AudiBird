@@ -5,6 +5,10 @@ db_api:
         audio: "/audio"
         station: "/stations"
 
+flask_server:
+    host: "0.0.0.0"
+    port: 4000
+
 paths:
     segments_dir: "data/segments"
     detections_dir: "data/detections"

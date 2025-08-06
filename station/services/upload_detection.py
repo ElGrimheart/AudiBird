@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 from utils.config_loader import load_yaml_config
 
@@ -25,15 +26,23 @@ def upload_detection(filename, detection, station_metadata, audio_metadata, proc
     station_api_key = remote_config['station']['api_key']
 
     post_detection_route = api_url + detections_route + "/new/" + station_id
+    headers = {
+        "Authorization": f"Bearer {station_api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    base = filename.replace('.wav', '')
+    timestamp = datetime.strptime(base, "%Y%m%d_%H%M%S_%f")
 
     try:
         response = requests.post(
             post_detection_route,
+            headers=headers,
             json={
                 "common_name": detection.get("common_name"),
                 "scientific_name": detection.get("scientific_name"),
                 "confidence": detection.get("confidence"),
-                "detection_timestamp": detection.get("detection_timestamp"),
+                "detection_timestamp": timestamp.isoformat(),
                 "station_metadata": station_metadata,
                 "audio_metadata": audio_metadata,
                 "processing_metadata": processing_metadata,
@@ -41,8 +50,12 @@ def upload_detection(filename, detection, station_metadata, audio_metadata, proc
             }
         )
         response.raise_for_status()
-        print(response.status_code, response.json())
         return response.json()
+    except requests.HTTPError as e:
+        print(f"Error posting detection: {e}")
+        if e.response is not None:
+            print("Response content:", e.response.text)
+        return None
     except requests.RequestException as e:
         print(f"Error posting detection: {e}")
         return None

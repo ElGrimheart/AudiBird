@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateJWT, authenticateAccessPermission } from '../../middleware/authenticators.js';
+import { authenticateJWT, authenticateAccessPermission, dualAuth } from '../../middleware/authenticators.js';
 import { validateStationId } from '../../middleware/stationValidator.js';
 import * as stationController from '../../controllers/station-controller.js';
 
@@ -7,12 +7,16 @@ const stationRouter = express.Router();
 
 // Station Routes
 // stationRouter.get('/status/:stationId', stationController.getStationStatusById);
-// stationRouter.get('/config/:stationId', stationController.getStationConfigById);
-stationRouter.get(
-    '/:stationId', 
-    validateStationId, 
+stationRouter.get('/metadata/:stationId', 
+    dualAuth,
+    authenticateAccessPermission,
+    validateStationId,
+    stationController.getStationMetadataById);
+
+stationRouter.get('/:stationId',
     authenticateJWT, 
     authenticateAccessPermission,
+    validateStationId,
     stationController.getStationById);
 
 // stationRouter.post('/status/:stationId', stationController.updateStationStatusById);

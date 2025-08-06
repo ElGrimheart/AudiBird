@@ -3,8 +3,11 @@ import { toast, Bounce } from "react-toastify";
 import SocketContext from "../../contexts/SocketContext";
 import { formatStringToDate } from "../../utils/dateFormatter";
 
-// Toast component to display notifications whenever a newDetection event received from room socket
-const ToastNotification = () => {
+/*
+Toast component to display notifications whenever a newDetection event is received from the socket
+Uses the SocketContext to listen for new detections on the station specific room
+*/
+export default function ToastNotification() {
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;
 
@@ -23,7 +26,7 @@ const ToastNotification = () => {
                     transition: Bounce
                 }
             );
-        }
+        };
 
         socket.on("newDetection", handleNewDetection);
 
@@ -31,6 +34,4 @@ const ToastNotification = () => {
     }, [socket, isConnected]);
 
     return null; 
-};
-
-export default ToastNotification;
+}

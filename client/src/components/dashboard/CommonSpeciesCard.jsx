@@ -1,44 +1,27 @@
 import React from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard";
+import SkeletonComponent from "../common/SkeletonPlaceholder";
 import AvatarImage from "../common/Avatar";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
-import { Spinner } from "react-bootstrap";
 
-// CommonSpeciesCard component to display the most common species detected by a station
-const CommonSpeciesCard = ({ speciesData, loading, error }) => {
-    
-    const renderSkeleton = () => {
-        return (
-            <div>
-                <div className="text-center mb-3">
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-                <ol className="list mb-0">
-                    {Array(5).fill(0).map((_, index) => (
-                        <li key={index} className="mb-2">
-                            <strong><Skeleton width={120} /></strong> 
-                            <Skeleton width={100} />
-                        </li>
-                    ))}
-                </ol>
-            </div>
-        );
-    };
+/* CommonSpeciesCard component to display the most common species detected by a station.
+Includes avatar images and external links to eBird for more information.
+*/
+export default function CommonSpeciesCard({ speciesData, loading, error }){
 
     return (
-        <DashboardCard title="Most Common Species">
+        <ComponentCard title="Most Common Species">
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
-            {loading ? renderSkeleton() : (
+            {loading ? <SkeletonComponent height={200} /> : (
+
+                /* Display species data */
                 <ol className="list mb-0">
                     {speciesData && speciesData.length > 0 ? 
                         speciesData.map((species, index) => (
                             <li key={index} className="mb-2">
                                 <AvatarImage 
-                                    src={species.image_url || "../../../public/bird_avatar_placeholder.png"} 
+                                    src={species.image_url} 
                                     alt={`${species.common_name} by ${species.image_rights}; ${import.meta.env.VITE_EXTERNAL_MEDIA_NAME}`}
                                     commonName={species.common_name}
                                     contributor={species.image_rights}
@@ -58,8 +41,6 @@ const CommonSpeciesCard = ({ speciesData, loading, error }) => {
                     }
                 </ol>
             )}
-        </DashboardCard>
+        </ComponentCard>
     );
-};
-
-export default CommonSpeciesCard;
+}

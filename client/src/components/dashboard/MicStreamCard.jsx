@@ -1,34 +1,16 @@
 import React, { useEffect, useRef, useContext } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard";
+import SkeletonComponent from "../common/SkeletonPlaceholder";
 import SocketContext from "../../contexts/SocketContext";
-import { Spinner } from "react-bootstrap";
 
 // MicStreamCard component to play the live audio stream from the microphone
-const MicStreamCard = ({ onPlay, onPause, isPlaying, loading, error }) => {
+export default function MicStreamCard({ onPlay, onPause, isPlaying, loading, error }) {
 
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;
     const audioContextRef = useRef(null);
     const bufferQueueRef = useRef([]); 
     const isPlayingRef = useRef(isPlaying);
-
-    const renderSkeleton = () => {
-        return (
-            <div>
-                <div className="text-center mb-3">
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-                <div className="d-flex justify-content-center">
-                    <Skeleton width={80} height={40} className="me-2" />
-                    <Skeleton width={80} height={40} />
-                </div>
-            </div>
-        );
-    };
 
     useEffect(() => {
         isPlayingRef.current = isPlaying;
@@ -96,39 +78,35 @@ const MicStreamCard = ({ onPlay, onPause, isPlaying, loading, error }) => {
     }, [socket, isPlaying, isConnected]);
 
     return (
-        <DashboardCard title="Station Stream">
-            {error && (
-                <div className="alert alert-danger">
-                    {error.message || "Error connecting to audio stream"}
-                </div>
-            )}
-            
-            {loading ? renderSkeleton() : (
-                !socket || !isConnected ? (
-                    <div className="alert alert-warning">
-                        Waiting for connection to station...
-                    </div>
-                ) : (
+        <ComponentCard title="Station Stream">
+            {/* Error handling and loading state */}
+            {error && (<div className="alert alert-danger">{error.message || "Error connecting to audio stream"}</div>)}
+            {loading ? <SkeletonComponent height={200} /> : (
+
+                /* Playback controls */
+                isConnected ? (
                     <div className="mt-2">
-                        <button 
-                            className="btn btn-primary" 
-                            onClick={onPlay} 
+                        <button
+                            className="btn btn-primary"
+                            onClick={onPlay}
                             disabled={isPlaying || !isConnected}
-                        >
-                            Play
-                        </button>
-                        <button 
-                            className="btn btn-secondary ms-2" 
-                            onClick={onPause} 
-                            disabled={!isPlaying || !isConnected}
-                        >
-                            Pause
-                        </button>
+                    >
+                        Play
+                    </button>
+                    <button 
+                        className="btn btn-secondary ms-2" 
+                        onClick={onPause} 
+                        disabled={!isPlaying || !isConnected}
+                    >
+                        Pause
+                    </button>
+                </div>
+                ) : (
+                    <div className="text-center text-muted">
+                        Not connected to audio stream
                     </div>
                 )
-            )}
-        </DashboardCard>
+            )}  
+        </ComponentCard>
     );
-};
-
-export default MicStreamCard;
+}

@@ -1,15 +1,15 @@
 import db from "../config/db-conn.js";
-import { getSpeciesCodeByName } from "./species-service.js";
-import { getMediaBySpeciesCode, postMedia } from "./media-service.js";
+import { getMediaBySpeciesCode, postSpeciesMedia } from "./media-service.js";
 import { scrapeImgUrl, scrapeAudioUrl } from "../utils/mediaScraper.js";
 import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sqlBuilder.js";
+import logAction from "../utils/logger.js";
+import errorHandler from "../utils/errorHandler.js";
 
 // Retrieves a detection by its ID
 export async function getDetectionById(detectionId) {
     const sql = `
         SELECT *
         FROM detection
-        LEFT JOIN
         WHERE detection_id = $1
         LIMIT 1
     `;
@@ -36,7 +36,7 @@ export async function getRecentDetectionsByStationId(stationId) {
         `SELECT * 
         FROM detection
         LEFT OUTER JOIN audio ON detection.audio_id = audio.audio_id
-        LEFT JOIN species_media ON detection.species_code = species_media.species_code
+        LEFT OUTER JOIN species_media ON detection.species_code = species_media.species_code
         WHERE station_id=$1 
         ORDER BY detection_timestamp DESC 
         LIMIT 10`;
@@ -63,10 +63,10 @@ export async function getMostCommonSpeciesByStationId(stationId) {
 // Retrieves a summary of detections for a given station ID
 // Includes total detections, total species, detections today, species today, detections last hour, species last hour
 export async function getDetectionSummaryByStationId(stationId, filters) {
-    const { from, to, species } = filters || {};
+    const { startDate, endDate, speciesName } = filters || {};
     
     // Build the WHERE clause based on filters
-    const { whereClause, values } = buildDetectionWhereClause(stationId, { from, to, species });
+    const { whereClause, values } = buildDetectionWhereClause(stationId, { startDate, endDate, speciesName });
 
     // Compile the summary statistics
     const totalDetectionsResult = await db.query(
@@ -104,9 +104,9 @@ export async function getDetectionSummaryByStationId(stationId, filters) {
 }
 
 // Retrieves filtered detections for a given station ID
-export async function getFilteredDetectionsByStationId(stationId, { from, to, species, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy }) {
+export async function getFilteredDetectionsByStationId(stationId, { startDate, endDate, speciesName, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy }) {
     // Build the WHERE clause based on filters
-    const { whereClause, values } = buildDetectionWhereClause(stationId, {from, to, species, minConfidence, maxConfidence});
+    const { whereClause, values } = buildDetectionWhereClause(stationId, { startDate, endDate, speciesName, minConfidence, maxConfidence });
 
     // Build the ORDER BY clause based on sort parameters
     const orderByClause = buildDetectionSortClause(sortBy, sortOrder);
@@ -132,9 +132,8 @@ export async function getFilteredDetectionsByStationId(stationId, { from, to, sp
 }
 
 
-// Creates a new detection in the database
+// Creates a new detection record in the database
 export async function createDetection(stationId, detectionData) {
-
     const audioSql = `
         INSERT INTO audio (file_name)
         VALUES ($1)
@@ -158,32 +157,14 @@ export async function createDetection(stationId, detectionData) {
         await db.query('BEGIN');
 
         // Insert audio file and get its ID
-        const audioResponse = await db.query(audioSql, [
-            detectionData.recording_file_name
-        ]);
-        const audioId = audioResponse.rows[0].audio_id;
+        const audioResult = await db.query(audioSql, [detectionData.recording_file_name]);
+        const audioId = audioResult.rows[0].audio_id;
 
         // Get species code from taxonomy table
-        const speciesCode = await getSpeciesCodeByName(detectionData.common_name, detectionData.scientific_name);
-        
-        // Check for cached media links for species in the database
-        let mediaLinks = await getMediaBySpeciesCode(speciesCode);
+        const speciesCodeResult = await db.query(speciesCodeSql, [detectionData.common_name, detectionData.scientific_name]);
+        const speciesCode = speciesCodeResult.rows[0]?.species_code || null;
 
-        // If no media links found, scrape eBird for media and insert into media table
-        if (!mediaLinks || !mediaLinks.image_url || !mediaLinks.audio_url) {
-            console.log(`Missing media links for species code: ${speciesCode}. Scraping eBird for media...`);
-            const { imageUrl, imageRights } = await scrapeImgUrl(speciesCode);
-            const { audioUrl, audioRights } = await scrapeAudioUrl(speciesCode);
-
-            console.log(`Scraped image URL: ${imageUrl} with rights: ${imageRights}`);
-            console.log(`Scraped audio URL: ${audioUrl} with rights: ${audioRights}`);
-
-            if (imageUrl) {
-                mediaLinks = await postMedia(speciesCode, imageUrl, imageRights, audioUrl, audioRights);
-            }
-        }
-
-        // Insert detection data
+        // Contruct the detection record
         const detectionValues = [
             detectionData.common_name,
             detectionData.scientific_name,
@@ -197,15 +178,30 @@ export async function createDetection(stationId, detectionData) {
             audioId
         ];
 
-        const detectionResponse = await db.query(detectionSql, detectionValues);
-        const newDetection = detectionResponse.rows[0];
-
+        // Insert the detection record and commit the transaction
+        const createDetectionResult = await db.query(detectionSql, detectionValues);
+        const newDetection = createDetectionResult.rows[0];
         await db.query('COMMIT');
-        return newDetection;
 
+
+        // Check for database for existing cached media links or attempt to scrape if not found
+        let mediaLinks = await getMediaBySpeciesCode(speciesCode);
+
+        if (!mediaLinks || !mediaLinks.image_url || !mediaLinks.audio_url) {
+            console.log(`missing media links for species code ${speciesCode}, scraping...`);
+            const { imageUrl, imageRights } = await scrapeImgUrl(speciesCode);
+            const { audioUrl, audioRights } = await scrapeAudioUrl(speciesCode);
+
+            console.log(`scraped image URL: ${imageUrl}, audio URL: ${audioUrl}`);
+            if (imageUrl || audioUrl) {
+                mediaLinks = await postSpeciesMedia(speciesCode, imageUrl, imageRights, audioUrl, audioRights);
+            }
+        }
+
+        return newDetection;
     } catch (error) {
         await db.query('ROLLBACK');
-        console.error("Error creating detection:", error);
-        throw error;
+        logAction("Error creating detection", { error });
+        errorHandler(error, "Failed to create detection");
     }
 }

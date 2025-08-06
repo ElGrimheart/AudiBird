@@ -1,6 +1,8 @@
 import { param, query, body, validationResult } from 'express-validator';
 
-const nameRegex = /^[A-Za-z\s]+$/;
+const speciesRegex = /^[A-Za-z\s\-']+$/;
+const confidenceMinValue = 0;
+const confidenceMaxValue = 100;
 
 // Middleware to validate detection ID format
 export const validateDetectionId = [
@@ -20,32 +22,32 @@ export const validateDetectionId = [
 ];
 
 export const validateDetectionFilters = [
-  query('from')
+  query('startDate')
     .optional()
     .custom((value) => value === '' || new Date(value).toString() !== 'Invalid Date')
-    .withMessage('From date must be a valid ISO8601 date'),
-  query('to')
+    .withMessage('Start date must be a valid ISO8601 date'),
+  query('endDate')
     .optional()
     .custom((value) => value === '' || new Date(value).toString() !== 'Invalid Date')
-    .withMessage('To date must be a valid ISO8601 date')
+    .withMessage('End date must be a valid ISO8601 date')
     .custom((value) => {
         if (value === '') return true;
         const toDate = new Date(value);
         return toDate <= new Date(); // Ensure `to` date is not in the future
     })
     .withMessage('To date cannot be in the future'),
-  query('species')
+  query('speciesName')
     .optional()
-    .custom((value) => value === '' || /^[A-Za-z\s]+$/.test(value))
-    .withMessage('Species can only contain letters and spaces'),
+    .custom((value) => value === '' || speciesRegex.test(value))
+    .withMessage('Species name can only contain letters, spaces or hyphens'),
   query('minConfidence')
     .optional()
-    .custom((value) => value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100))
-    .withMessage('Minimum confidence must be between 0 and 100'),
+    .custom((value) => value === '' || (parseFloat(value) >= confidenceMinValue && parseFloat(value) <= confidenceMaxValue))
+    .withMessage(`Minimum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`),
   query('maxConfidence')
     .optional()
-    .custom((value) => value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100))
-    .withMessage('Maximum confidence must be between 0 and 100'),
+    .custom((value) => value === '' || (parseFloat(value) >= confidenceMinValue && parseFloat(value) <= confidenceMaxValue))
+    .withMessage(`Maximum confidence must be between ${confidenceMinValue} and ${confidenceMaxValue}`),
   query('limit')
     .optional()
     .custom((value) => value === '' || parseInt(value) > 0)
@@ -64,19 +66,19 @@ export const validateDetectionFilters = [
     .withMessage('Sort by must be a valid field'),
   query()
     .custom((_, { req }) => {
-        const { from, to, minConfidence, maxConfidence } = req.query;
+        const { startDate, endDate, minConfidence, maxConfidence } = req.query;
 
         // Ensure `minConfidence` is not greater than `maxConfidence`
         if (minConfidence && maxConfidence && parseFloat(minConfidence) > parseFloat(maxConfidence)) {
             throw new Error('Minimum confidence cannot be greater than maximum confidence');
         }
 
-        // Ensure `from` date is not greater than `to` date
-        if (from && to) {
-              const fromDate = new Date(from);
-              const toDate = new Date(to);
-          if (fromDate > toDate) {
-              throw new Error('From date cannot be after To date');
+        // Ensure startDate is not greater than `endDate`
+        if (startDate && endDate) {
+              const startDateObj = new Date(startDate);
+              const endDateObj = new Date(endDate);
+          if (startDateObj > endDateObj) {
+              throw new Error('Start date cannot be after End date');
           }
         }
 
@@ -98,11 +100,11 @@ export const validateNewDetection = [
   body('common_name')
     .exists().withMessage('Common name is required')
     .isString().withMessage('Common name must be a string')
-    .custom((value) => /^[A-Za-z\s\-']+$/.test(value)).withMessage('Common name can only contain letters and spaces'),
+    .custom((value) => speciesRegex.test(value)).withMessage('Common name can only contain letters, spaces and hyphens'),
   body('scientific_name')
     .exists().withMessage('Scientific name is required')
     .isString().withMessage('Scientific name must be a string')
-    .custom((value) => /^[A-Za-z\s\-']+$/.test(value)).withMessage('Scientific name can only contain letters and spaces'),
+    .custom((value) => speciesRegex.test(value)).withMessage('Scientific name can only contain letters, spaces and hyphens'),
   body('confidence')
     .exists().withMessage('Confidence is required')
     .isFloat({ min: 0, max: 1 }).withMessage('Confidence must be between 0 and 1'),
@@ -111,7 +113,8 @@ export const validateNewDetection = [
     .custom((value) => {
         if (!value) return true; // Skip validation if null
         const detectionDate = new Date(value);
-        return detectionDate <= new Date(); // Ensure detection timestamp is not in the future
+        const timeSyncBuffer = 60000;
+        return detectionDate.getTime() <= Date.now() + timeSyncBuffer; // Ensure detection timestamp is not in the future
     }).withMessage('Detection timestamp cannot be in the future'),
   body('station_metadata')
     .exists().withMessage('Station metadata is required')

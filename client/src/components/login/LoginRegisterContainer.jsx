@@ -4,13 +4,13 @@ import useLoginRegister from '../../hooks/useLoginRegister';
 import UserStationsContext from '../../contexts/UserStationsContext';
 
 // LoginRegisterContainer component to handle user login and registration
-const LoginRegisterContainer = () => {
+export default function LoginRegisterContainer() {
     const [isRegister, setIsRegister] = useState(false);
     const { fetchUserStations } = useContext(UserStationsContext);
     const { loginOrRegister, generalError } = useLoginRegister(fetchUserStations);
 
     const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-        loginOrRegister(values, isRegister, setSubmitting, setErrors);
+        await loginOrRegister(values, isRegister, setSubmitting, setErrors);
     };
 
     return (
@@ -21,6 +21,4 @@ const LoginRegisterContainer = () => {
             setIsRegister={setIsRegister}
         />
     );
-};
-
-export default LoginRegisterContainer;
+}

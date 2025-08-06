@@ -2,8 +2,11 @@ import { useState, useEffect, useContext } from 'react';
 import SocketContext from '../contexts/SocketContext';
 import axios from 'axios';
 
-/* Hook to fetch common species for a given station. Returns an array of common species objects with common name and count.
-updates when a new detection is received via room socket.*/
+/* 
+Hook to fetch common species for a given station. 
+Returns an array of common species objects with common name and count.
+Re-fetches when a new detection is received on the room socket or stationId changes.
+*/
 export default function useCommonSpecies(stationId) {
     const [commonSpecies, setCommonSpecies] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -33,7 +36,7 @@ export default function useCommonSpecies(stationId) {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         const handleNewDetection = (detection) => {
             if (detection.station_id === stationId) {
@@ -41,10 +44,10 @@ export default function useCommonSpecies(stationId) {
             }
         };
 
-        // Initial fetch of common species
+        // Initial fetch
         fetchCommonSpecies();
 
-        // Socket listener for new detections
+        // Listener for new detections on the station's room
         if (!socket || !isConnected) return;
         socket.on("newDetection", handleNewDetection);
         return () => socket.off("newDetection", handleNewDetection);

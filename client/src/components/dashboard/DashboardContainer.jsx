@@ -4,43 +4,26 @@ import SelectedStationContext from '../../contexts/SelectedStationContext';
 import useRecentDetections from '../../hooks/useRecentDetections.jsx';
 import useCommonSpecies from '../../hooks/useCommonSpecies.jsx';
 import useSummaryStats from '../../hooks/useSummaryStats.jsx';
-import useAverageDetections from '../../hooks/useAverageDetections.jsx';
+import useHourlyTrends from '../../hooks/useHourlyTrends.jsx';
 import StationCard from './StationCard.jsx';
 import MicStreamCard from './MicStreamCard.jsx';
 import RecentDetectionsCard from './RecentDetectionsCard.jsx';
 import CommonSpeciesCard from './CommonSpeciesCard.jsx';
-import ActivityCard from './AverageDetectionsCard.jsx';
+import AverageDetectionsCard from './AverageDetectionsCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
-// DashboardContent component to manage the dashboard layout and pass data to cards
-const DashboardContainer = () => {
+/* Main DashboardContainer component that assembles and controls layout of the dashboard cards.
+Fetches data, loading and error states from the applicable hooks and passes it to the respective card components.
+*/
+export default function DashboardContainer() {
     const { selectedStation } = useContext(SelectedStationContext);
+    const [filters] = useState({ startDate: null, endDate: null, species: [] });
 
     // Card data hooks
     const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation);
     const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation);
     const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation);
-    const { averageDetections, loading: averageLoading, error: averageError } = useAverageDetections(selectedStation, { startDate: "", endDate: "" });
-
-    // Prepare data for activity chart
-    const hours = Array.from({ length: 24 }, (_, i) => i); // [0, 1, ..., 23]
-    const labels = hours.map(h => h.toString().padStart(2, '0') + ":00");
-    const data = hours.map(h => {
-        const found = averageDetections.find(row => row.hour_of_day === h);
-        return found ? found.average_detections : 0;
-    });
-    const chartData = {
-        labels,
-        datasets: [
-            {
-                label: 'Average Detections',
-                data,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2,
-            }
-        ]
-    };
+    const { hourlyTrends, loading: trendsLoading, error: trendsError } = useHourlyTrends(selectedStation, { filters });
 
     // Mic stream handlers
     const [isStreamPlaying, setIsStreamPlaying] = useState(false);
@@ -50,7 +33,7 @@ const DashboardContainer = () => {
     return (
         selectedStation != null ? 
             <Container className="p-4">
-            {/* Row 1: Station Status + Audio Player */}
+            {/* Row 1: Station Status + Detection Summary */}
             <Row className="mb-4">
                 <Col md={6}>
                     <StationCard station={{ name: "Station 1", description: "Main field station", isActive: true }} />
@@ -82,7 +65,7 @@ const DashboardContainer = () => {
                 </Col>
             </Row>
 
-            {/* Row 3: Summary Stats Cards */}
+            {/* Row 3: mic Stream */}
             <Row className="mb-4">
                 <Col>
                     <MicStreamCard
@@ -93,13 +76,13 @@ const DashboardContainer = () => {
                 </Col>
             </Row>
 
-            {/* Row 4: Activity Chart */}
+            {/* Row 4: Average Activity Chart */}
             <Row className="mb-4">
                 <Col>
-                    <ActivityCard 
-                        chartData={chartData}
-                        loading={averageLoading}
-                        error={averageError}
+                    <AverageDetectionsCard 
+                        detectionData={hourlyTrends}
+                        loading={trendsLoading}
+                        error={trendsError}
                     />
                 </Col>
             </Row>
@@ -109,8 +92,5 @@ const DashboardContainer = () => {
         <Container className="text-center mt-5">
             <h2>Click here to register a station</h2>
         </Container>
-
     )
 }
-
-export default DashboardContainer;

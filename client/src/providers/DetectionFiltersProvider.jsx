@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import DetectionFiltersContext from '../contexts/DetectionFiltersContext';
 
-// FiltersProvider component to manage state of detection filters
-const DetectionFiltersProvider = ({ children }) => {
+// FiltersProvider component to manage detection filter state and default values
+export default function DetectionFiltersProvider({ children }) {
     const [filters, setFilters] = useState({
-        from: '',
-        to: '',
-        species: '',
+        startDate: '',
+        endDate: '',
+        speciesName: '',
         minConfidence: '',
         maxConfidence: '',
         sortBy: 'detection_timestamp',
@@ -18,6 +18,4 @@ const DetectionFiltersProvider = ({ children }) => {
             {children}
         </DetectionFiltersContext.Provider>
     );
-};
-
-export default DetectionFiltersProvider;
+}

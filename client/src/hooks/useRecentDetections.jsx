@@ -2,8 +2,11 @@ import { useState, useEffect, useContext } from 'react';
 import SocketContext from '../contexts/SocketContext';
 import axios from 'axios';
 
-/* Hook to fetch recent detections for a given station. Returns an array of detection objects.
-Updates when a new detection is received via room socket. */
+/* 
+Hook to fetch recent detections for a given station. 
+Returns an array of detection objects.
+Ref-fetches when a new detection is received via room socket or when the stationId changes.
+*/
 export default function useRecentDetections(stationId) {
     const [recentDetections, setRecentDetections] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -35,21 +38,21 @@ export default function useRecentDetections(stationId) {
             }
         };
 
-        // Initial fetch of recent detections
-        fetchRecentDetections();
-
-        // Socket listener for new detections
         const handleNewDetection = (detection) => {
             if (detection.station_id === stationId) {
                 fetchRecentDetections();
             }
         };
 
+        // Initial fetch
+        fetchRecentDetections();
+
+        // Listener for new detections on the station's room
         if (!socket || !isConnected) return;
         socket.on("newDetection", handleNewDetection);
         return () => socket.off("newDetection", handleNewDetection);
 
-    }, [ stationId, socket, isConnected]);
+    }, [stationId, socket, isConnected]);
 
     return { recentDetections, loading, error };
 }

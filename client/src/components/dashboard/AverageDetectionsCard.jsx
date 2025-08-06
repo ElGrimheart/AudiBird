@@ -1,60 +1,36 @@
 import React from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import DashboardCard from "./DashboardCard";
+import ComponentCard from "../common/ComponentCard";
+import SkeletonComponent from "../common/SkeletonPlaceholder";
 import { Line } from "react-chartjs-2";
-import { Spinner } from "react-bootstrap";
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  TimeScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import 'chartjs-adapter-date-fns';
+import { Chart as ChartJS, LineElement, PointElement, LinearScale, TimeScale, CategoryScale, Tooltip, Legend } from 'chart.js';
+ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, CategoryScale, Tooltip, Legend);
 
-const ActivityCard = ({ chartData, loading, error }) => {
+/* AverageDetectionsCard component to display average detections per hour for the last 7 days */
+export default function AverageDetectionsCard({ detectionData, loading, error }) {
+    // Prepare data for Line chart
+    const labels = detectionData.map(row => row.hour.toString().padStart(2, '0') + ":00");
+    const data = detectionData.map(row => row.average_detections);
 
-    const renderSkeleton = () => {
-        return (
-            <div>
-                <div className="text-center mb-3">
-                    <Spinner animation="border" role="status" variant="primary">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-                <div style={{ height: "200px" }}>
-                    <Skeleton height="100%" />
-                </div>
-            </div>
-        );
+    // Assemble chart data
+    const chartData = {
+        labels,
+        datasets: [
+            {
+                label: 'Average Detections',
+                data,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+            }
+        ]
     };
-
-    if (error) {
-        return (
-            <DashboardCard title="Average Detections Per Hour (Last 7 Days)">
-                <div className="text-danger">Error loading chart data</div>
-            </DashboardCard>
-        );
-    }
-
-    ChartJS.register(
-        LineElement,
-        PointElement,
-        LinearScale,
-        TimeScale,
-        CategoryScale,
-        Tooltip,
-        Legend
-    );
 
     const options = {
         responsive: true,
         plugins: {
             legend: { display: false },
+            datalabels: { display: false },
             tooltip: {
                 callbacks: {
                     label: (context) => `${context.parsed.y} detections`
@@ -62,33 +38,30 @@ const ActivityCard = ({ chartData, loading, error }) => {
             }
         },
         scales: {
-            x: {
-                type: 'category',
-                title: {
-                    display: true,
-                    text: 'Hour of Day'
-                }
-            },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Number of Detections'
-                }
-            }
+            x: { type: 'category', title: { display: true, text: 'Hour of Day' } },
+            y: { title: { display: true, text: 'Number of Detections' } }
         }
-};
+    };
 
     return (
-        <DashboardCard title="Average Activity Per Hour (Last 7 Days)">
-            {loading ? renderSkeleton() : (
-                (!chartData || !chartData.datasets) ? (
-                    <div>No data available</div>
+        <ComponentCard title="Average Activity Per Hour (Last 7 Days)">
+            {/* Error handling and loading state */}
+            {error && <div className="text-danger">{error.message}</div>}
+            {loading ? <SkeletonComponent height={200} /> : (
+                (data.length > 0) ? (
+
+                    /* Render line chart */
+                    <Line
+                        key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
+                        data={chartData}
+                        options={options}
+                    />
                 ) : (
-                    <Line data={chartData} options={options} />
+                    <div className="text-center text-muted">
+                        No detection data available
+                    </div>
                 )
             )}
-        </DashboardCard>
+        </ComponentCard>
     );
-};
-
-export default ActivityCard;
+}
