@@ -12,6 +12,7 @@ export default function SocketProvider({ children }) {
             return;
         }
 
+        // Initialize socket connection
         socketRef.current = io(import.meta.env.VITE_SOCKET_URL, {
             auth: { token: localStorage.getItem("jwt") },
             reconnection: true,
@@ -19,6 +20,7 @@ export default function SocketProvider({ children }) {
             reconnectionDelay: 1000,
         });
 
+        // Listen for connection events and update state
         socketRef.current.on("connect", () => {
             console.log("Socket connected:", socketRef.current.id);
             setIsConnected(true);

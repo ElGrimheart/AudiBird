@@ -12,7 +12,9 @@ import CommonSpeciesCard from './CommonSpeciesCard.jsx';
 import AverageDetectionsCard from './AverageDetectionsCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
-// DashboardContent component to manage the dashboard layout and pass data to cards
+/* Main DashboardContainer component that assembles and controls layout of the dashboard cards.
+Fetches data, loading and error states from the applicable hooks and passes it to the respective card components.
+*/
 export default function DashboardContainer() {
     const { selectedStation } = useContext(SelectedStationContext);
     const [filters] = useState({ startDate: null, endDate: null, species: [] });
@@ -31,7 +33,7 @@ export default function DashboardContainer() {
     return (
         selectedStation != null ? 
             <Container className="p-4">
-            {/* Row 1: Station Status + Audio Player */}
+            {/* Row 1: Station Status + Detection Summary */}
             <Row className="mb-4">
                 <Col md={6}>
                     <StationCard station={{ name: "Station 1", description: "Main field station", isActive: true }} />
@@ -63,7 +65,7 @@ export default function DashboardContainer() {
                 </Col>
             </Row>
 
-            {/* Row 3: Summary Stats Cards */}
+            {/* Row 3: mic Stream */}
             <Row className="mb-4">
                 <Col>
                     <MicStreamCard
@@ -74,7 +76,7 @@ export default function DashboardContainer() {
                 </Col>
             </Row>
 
-            {/* Row 4: Activity Chart */}
+            {/* Row 4: Average Activity Chart */}
             <Row className="mb-4">
                 <Col>
                     <AverageDetectionsCard 

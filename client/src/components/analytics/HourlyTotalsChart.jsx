@@ -20,12 +20,12 @@ export default function HourlyTotalsChart({ filters, setFilters }) {
         countMap[`${row.hour}|${row.common_name}`] = Number(row.count);
     });
 
-    // Build datasets for Chart.js
+    // Assemble chart data and display options
     const chartData = {
         labels: hours.map(hour => hour.toString().padStart(2, "0") + ":00"),
-        datasets: speciesList.map((species, i) => ({
-            label: species,
-            data: hours.map(hour => countMap[`${hour}|${species}`] || 0),
+        datasets: speciesList.map((speciesName, i) => ({
+            label: speciesName,
+            data: hours.map(hour => countMap[`${hour}|${speciesName}`] || 0),
             borderColor: `hsl(${i * 40}, 70%, 50%)`,
             backgroundColor: `hsla(${i * 40}, 70%, 50%, 0.2)`,
             fill: false,
@@ -47,6 +47,7 @@ export default function HourlyTotalsChart({ filters, setFilters }) {
 
     return (
         <ComponentCard title="Hourly Species Activity">
+            {/* Filter bar */}
             <ChartFilterBar 
                 filters={filters}
                 setFilters={setFilters}
@@ -54,9 +55,12 @@ export default function HourlyTotalsChart({ filters, setFilters }) {
                 showSpeciesSelect={true}
                 showMinConfidence={true}
             />
+
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
 
+                /* Line chart */
                 <Line 
                     key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
                     data={chartData} 

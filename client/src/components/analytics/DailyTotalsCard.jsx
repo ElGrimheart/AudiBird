@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Button } from "react-bootstrap";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import SelectedStationContext from "../../contexts/SelectedStationContext";
 import StationMetadataContext from "../../contexts/StationMetadataContext";
 import DailyTotalsChart from "./DailyTotalsChart";
 
-// Component to display daily totals charts for the selected station. 
-// Allows adding multiple charts with independent filters.
+/*
+Component to display daily totals charts for the selected station.
+Allows adding multiple charts with independent filters.
+*/
 export default function DailyTotalsCard() {
     const { selectedStation } = useContext(SelectedStationContext);
     const { stationDateRange, stationSpeciesList } = useContext(StationMetadataContext);
@@ -16,6 +19,7 @@ export default function DailyTotalsCard() {
         startDate: stationDateRange?.startDate || "",
         endDate: stationDateRange?.endDate || ""
     });
+
 
     // State and hooks to manage multiple chart configurations
     const [chartConfigs, setChartConfigs] = useState([]);
@@ -35,37 +39,42 @@ export default function DailyTotalsCard() {
     };
 
     const updateFilters = (id, newFilters) => {
-    setChartConfigs(prev =>
-        prev.map(chart =>
-            chart.id === id ? { ...chart, filters: { ...newFilters } } : chart
-        )
-    );
-};
+        setChartConfigs(prev =>
+            prev.map(chart => chart.id === id ? { ...chart, filters: newFilters } : chart)
+        );
+    };
 
     const removeChart = (id) => {
         setChartConfigs(prev => prev.filter(chart => chart.id !== id));
     };
 
+
     return (
         <div>
             {chartConfigs.map((chart) => (
+                
                 <div key={chart.id} className="mb-4">
+                    {/* Remove button if there are multiple charts */}
+                    {chartConfigs.length > 1 && (
+                        <div className="text-end mb-1">
+                            <Button variant="danger" onClick={() => removeChart(chart.id)}>
+                                <i className="bi bi-x-lg"></i> Delete Chart
+                            </Button>
+                        </div>
+                    )}
+
+                    {/* Render the DailyTotalsChart with selected filters */}
                     <DailyTotalsChart
                         filters={chart.filters}
                         setFilters={(newFilters) => updateFilters(chart.id, newFilters)}
                     />
-                    {chartConfigs.length > 1 && (
-                        <div className="text-end mb-3">
-                            <Button variant="outline-danger" onClick={() => removeChart(chart.id)}>
-                                Remove Chart
-                            </Button>
-                        </div>
-                    )}
                 </div>
             ))}
+
+            {/* Button to add another chart */}
             <div className="text-center mt-4">
                 <Button variant="success" onClick={addChart}>
-                    ➕ Add Another Chart
+                    <i className="bi bi-plus-lg"></i> Add Another Chart
                 </Button>
             </div>
         </div>

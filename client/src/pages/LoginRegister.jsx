@@ -3,7 +3,7 @@ import { Container, Card } from 'react-bootstrap';
 import UserStationsProvider from '../providers/UserStationsProvider';
 import LoginRegisterContainer from '../components/login/LoginRegisterContainer';
 
-// Main LoginRegister component that wraps the login/register form the station provider
+// Main LoginRegister component that wraps the login/register section in the UserStationsProvider
 export default function LoginRegister() {
     return (
         <UserStationsProvider>

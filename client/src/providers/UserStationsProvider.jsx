@@ -14,7 +14,7 @@ export default function UserStationsProvider({ children }) {
         localStorage.setItem("userStations", JSON.stringify(stations));
     }, [stations]);
 
-    async function fetchUserStations() {
+    const fetchUserStations = async () => {
         try {
           setLoading(true);
           setError(null);
@@ -27,7 +27,7 @@ export default function UserStationsProvider({ children }) {
         } finally {
           setLoading(false);
         }
-    }
+    };
 
     return (
         <UserStationsContext.Provider value={{ stations, loading, error, fetchUserStations }}>

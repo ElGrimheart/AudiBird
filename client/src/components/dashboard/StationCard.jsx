@@ -7,9 +7,12 @@ export default function StationCard({ station, loading, error }) {
 
     return (
         <ComponentCard title="Station Status">
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
                 station ? (
+
+                /* Station information */
                 <div className="text-center">
                     <h2 className="display-5 mb-0">{station.name}</h2>
                     <p className="text-muted">{station.description}</p>

@@ -7,9 +7,11 @@ import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import ComponentCard from "../common/ComponentCard.jsx";
 import { formatStringToDate } from "../../utils/dateFormatter";
 
-// SpeciesStats component to display statistics of species detections
-// It uses a line chart to visualize the average number of detections per hour for the selected station
-// Filters can be applied to adjust the date range and species selection
+/*
+SpeciesStats component to display detailed statistics for a specific species
+It includes a filter bar for selecting species and displays a summary table with relevant
+information such as detection counts, first/last detection dates
+*/
 export default function SpeciesStats({ filters, setFilters }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { speciesSummary, loading, error } = useSpeciesSummary(selectedStation, { filters });
@@ -18,15 +20,20 @@ export default function SpeciesStats({ filters, setFilters }) {
     const image_rights = speciesSummary.find(stat => stat.key.toLowerCase() === "image rights")?.value || "Unknown";
 
     return (
-        <ComponentCard title="Average Activity Per Hour">
+        <ComponentCard>
+            {/* Filter bar for species selection */}
             <ChartFilterBar
                 filters={filters}
                 setFilters={setFilters}
                 showSpeciesSelect={true}
             />
+
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
                 speciesSummary && speciesSummary.length > 0 ? (
+
+                    /* Display species summary data */
                     <div>
                         <Row>
                             <Col md={4} className="mx-5">

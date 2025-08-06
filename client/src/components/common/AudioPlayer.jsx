@@ -14,7 +14,7 @@ export default function AudioPlayer({ src, audioId }) {
         }
     }, [playingId, audioId]);
 
-    function handlePlayPause() {
+    const handlePlayPause = () => {
         if (!audioRef.current) return;
         if (playingId === audioId) {
             audioRef.current.pause();

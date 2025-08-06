@@ -1,7 +1,7 @@
 import React from 'react';
 import { Offcanvas } from 'react-bootstrap';
 
-// Reusable collapsible sidebar component. Receives title and children to render inside the sidebar.
+// Reusable collapsible sidebar component.
 export default function Sidebar({ title, show, onHide, children }) {
     return (
         <Offcanvas show={show} onHide={onHide} placement="end" scroll={true} backdrop={true}>

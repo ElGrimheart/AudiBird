@@ -1,3 +1,4 @@
+// Database connection - creates a connection pool to the AudiBird postgres database
 import { Pool } from 'pg';
 
 const db = new Pool({

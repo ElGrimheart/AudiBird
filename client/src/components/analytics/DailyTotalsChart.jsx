@@ -6,11 +6,16 @@ import useDetectionDailyTotals from "../../hooks/useDetectionDailyTotals.jsx";
 import ComponentCard from "../common/ComponentCard";
 import SkeletonComponent from "../common/SkeletonPlaceholder";
 
+/*
+DailyTotalsChart component to display daily species activity in chart form
+Uses a line chart to visualize the number of detections per species per day
+Filters can be applied to adjust the date range and species selection
+*/
 export default function DailyTotalsChart({ filters, setFilters }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { detectionDailyTotals, loading, error } = useDetectionDailyTotals(selectedStation, { filters });
 
-    // Get days for x-axis labels
+    // Unique dates for x-axis labels
     const dates = Array.from(new Set(detectionDailyTotals.map(row => row.date))).sort();
     const speciesList = Array.from(new Set(detectionDailyTotals.map(row => row.common_name)));
 
@@ -20,12 +25,12 @@ export default function DailyTotalsChart({ filters, setFilters }) {
     countMap[`${row.date}|${row.common_name}`] = Number(row.count);
     });
 
-    // Build datasets for Chart.js
+    // Assemble chart data and display options
     const chartData = {
         labels: dates.map(date => new Date(date).toLocaleDateString()),
-        datasets: speciesList.map((species, i) => ({
-            label: species,
-            data: dates.map(date => countMap[`${date}|${species}`] || 0),
+        datasets: speciesList.map((speciesName, i) => ({
+            label: speciesName,
+            data: dates.map(date => countMap[`${date}|${speciesName}`] || 0),
             borderColor: `hsl(${i * 40}, 70%, 50%)`,
             backgroundColor: `hsla(${i * 40}, 70%, 50%, 0.2)`,
             fill: false,
@@ -47,6 +52,7 @@ export default function DailyTotalsChart({ filters, setFilters }) {
 
     return (
         <ComponentCard title="Daily Species Activity">
+            {/* Filter bar */}
             <ChartFilterBar 
                 filters={filters}
                 setFilters={setFilters}
@@ -54,9 +60,12 @@ export default function DailyTotalsChart({ filters, setFilters }) {
                 showSpeciesSelect={true}
                 showMinConfidence={true}
             />
+
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
 
+                /* Line chart */
                 <Line 
                     key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
                     data={chartData} 

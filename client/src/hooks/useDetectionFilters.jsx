@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import DetectionFiltersContext from '../contexts/DetectionFiltersContext';
 
-// Custom hook to access detection filters context
+// Custom hook to access detection filters context. Used to manage and retrieve detection filters in components.
 export default function useDetectionFilters() {
     const context = useContext(DetectionFiltersContext);
     if (!context) {

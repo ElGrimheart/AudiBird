@@ -2,14 +2,17 @@ import React from "react";
 import ComponentCard from "../common/ComponentCard";
 import SkeletonComponent from "../common/SkeletonPlaceholder";
 
-// SummaryCard component to display overall detection statistics for a station
+/* SummaryCard component to display a summary of detections for a station. */
 export default function SummaryCard({ summaryData, loading, error }) {
 
     return (
-        <ComponentCard title="Overall Detection Summary">
+        <ComponentCard title="Station Detection Summary">
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
                 summaryData && summaryData.length > 0 ? (
+
+                    /* Summary table */
                     <table className="table table-striped">
                         <tbody>
                             {summaryData.map((stat, index) => (

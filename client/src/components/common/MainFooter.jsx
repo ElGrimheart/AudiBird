@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 
-// MainFooter component for copyright information
+// MainFooter component containing copyright information
 export default function MainFooter() {
     return (
         <Navbar bg="body-tertiary" variant="light" className="mt-4">

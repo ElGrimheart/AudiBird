@@ -6,12 +6,13 @@ import 'chartjs-adapter-date-fns';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, TimeScale, CategoryScale, Tooltip, Legend } from 'chart.js';
 ChartJS.register(LineElement, PointElement, LinearScale, TimeScale, CategoryScale, Tooltip, Legend);
 
+/* AverageDetectionsCard component to display average detections per hour for the last 7 days */
 export default function AverageDetectionsCard({ detectionData, loading, error }) {
     // Prepare data for Line chart
     const labels = detectionData.map(row => row.hour.toString().padStart(2, '0') + ":00");
     const data = detectionData.map(row => row.average_detections);
 
-    // Build chart data
+    // Assemble chart data
     const chartData = {
         labels,
         datasets: [
@@ -44,9 +45,12 @@ export default function AverageDetectionsCard({ detectionData, loading, error })
 
     return (
         <ComponentCard title="Average Activity Per Hour (Last 7 Days)">
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
                 (data.length > 0) ? (
+
+                    /* Render line chart */
                     <Line
                         key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
                         data={chartData}

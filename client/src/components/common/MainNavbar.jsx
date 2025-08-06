@@ -8,11 +8,22 @@ import UserStationsContext from '../../contexts/UserStationsContext';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
 import useLogout from '../../hooks/useLogout';
 
-// MainNavbar component for top navigation bar on all pages - includes station selection and user settings
+/*
+MainNavbar component that provides navigation links and station selection
+It uses context to manage the selected station throughout the application.
+*/
 export default function MainNavbar() {
     const { selectedStation, setSelectedStation } = useContext(SelectedStationContext);
     const { stations } = useContext(UserStationsContext);
 
+    const handleLogout = useLogout();
+
+    const handleStationChange = (event) => {
+        const stationId = event.target.value;
+        setSelectedStation(stationId);
+    };
+
+    // Set the default station when the component mounts or when stations change
     useEffect(() => {
         if (stations && stations.length > 0) {
             const defaultStation = stations.find(station => station.station_user_type_id === 1);
@@ -23,12 +34,6 @@ export default function MainNavbar() {
             }
         }
     }, [stations, setSelectedStation]);
-    const handleLogout = useLogout();
-
-    function handleStationChange(event) {
-        const stationId = event.target.value;
-        setSelectedStation(stationId);
-    }
 
     return (
         <Navbar expand="sm" className="bg-body-tertiary">

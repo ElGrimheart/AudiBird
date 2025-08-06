@@ -25,9 +25,9 @@ export default function MicStreamCard({ onPlay, onPause, isPlaying, loading, err
         }
 
         // Add chunk to buffer queue
-        function handleChunk(chunk) {
+        const handleChunk = (chunk) => {
             bufferQueueRef.current.push(chunk);
-        }
+        };
 
         socket.on("mic-audio-chunk", handleChunk);
 
@@ -79,9 +79,11 @@ export default function MicStreamCard({ onPlay, onPause, isPlaying, loading, err
 
     return (
         <ComponentCard title="Station Stream">
+            {/* Error handling and loading state */}
             {error && (<div className="alert alert-danger">{error.message || "Error connecting to audio stream"}</div>)}
-
             {loading ? <SkeletonComponent height={200} /> : (
+
+                /* Playback controls */
                 isConnected ? (
                     <div className="mt-2">
                         <button

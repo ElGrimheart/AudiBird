@@ -4,13 +4,18 @@ import SkeletonComponent from "../common/SkeletonPlaceholder";
 import AvatarImage from "../common/Avatar";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
 
-// CommonSpeciesCard component to display the most common species detected by a station
+/* CommonSpeciesCard component to display the most common species detected by a station.
+Includes avatar images and external links to eBird for more information.
+*/
 export default function CommonSpeciesCard({ speciesData, loading, error }){
 
     return (
         <ComponentCard title="Most Common Species">
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
+
+                /* Display species data */
                 <ol className="list mb-0">
                     {speciesData && speciesData.length > 0 ? 
                         speciesData.map((species, index) => (

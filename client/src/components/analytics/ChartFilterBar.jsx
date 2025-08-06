@@ -5,8 +5,11 @@ import { formatHtmlInputToDate } from '../../utils/dateFormatter';
 import { Formik } from 'formik';
 import { analyticsFiltersSchema } from '../../utils/formValidator';
 
-// Filter bar component for analytics charts, allowing users to set date range, species, and confidence filters
-// Reused across different analytics components with options to show/hide specific filters
+/*
+Filter bar component for analytics charts, allowing users to set date range, species, and confidence filters
+Reused across different analytics components with options to show/hide specific filters
+Wrapped in Formik for validation, submission handling and error reporting
+*/
 export default function ChartFilterBar({ 
     filters, 
     setFilters, 
@@ -24,7 +27,8 @@ export default function ChartFilterBar({
             validationSchema={analyticsFiltersSchema}
             onSubmit={(values, { setSubmitting }) => {
                 setFilters(values);
-                if (onApplyFilters) onApplyFilters(values);
+                if (onApplyFilters) 
+                    onApplyFilters(values);     // Call parent handler to apply filters
                 setSubmitting(false);
                 }}
             enableReinitialize
@@ -37,16 +41,16 @@ export default function ChartFilterBar({
             touched,
             setFieldTouched,
             isSubmitting
-            }) => (
-                
+            }) => (   
                 <Form onSubmit={handleSubmit} className="p-3 border rounded bg-light mb-3 shadow-sm">
                     <Row className="mb-3">
+                        {/* General error message display */}
                         {errors.general && (
                             <div className="alert alert-danger">{errors.general}</div>
                         )}
 
+                        {/* Single date filter */}
                         {showSingleDate && (
-                            <>
                                 <Col md={2}>
                                     <Form.Label>Select Date:</Form.Label>
                                     <Form.Control
@@ -63,9 +67,9 @@ export default function ChartFilterBar({
                                         {errors.singleDate}
                                     </Form.Control.Feedback>
                                 </Col>
-                            </>
                         )}
 
+                        {/* Date range filter */}
                         {showDateRange && (
                             <>
                                 <Col md={2}>
@@ -98,27 +102,29 @@ export default function ChartFilterBar({
                             </>
                         )}
 
+                        {/* Species select filter */}
                         {showSpeciesSelect && (
                             <Col md={2}>
                                 <Form.Label>Species:</Form.Label>
                                 <Form.Select
-                                    name="species"
-                                    value={values.species}
+                                    name="speciesName"
+                                    value={values.speciesName}
                                     onChange={handleChange}
-                                    onBlur={() => setFieldTouched('species', true)}
-                                    isInvalid={!!errors.species && touched.species}
+                                    onBlur={() => setFieldTouched('speciesName', true)}
+                                    isInvalid={!!errors.speciesName && touched.speciesName}
                                 >
                                     <option value="">All Species</option>
-                                    {stationSpeciesList?.map(species => (
-                                        <option key={species} value={species}>{species}</option>
+                                    {stationSpeciesList?.map(speciesName => (
+                                        <option key={speciesName} value={speciesName}>{speciesName}</option>
                                     ))}
                                 </Form.Select>
                                 <Form.Control.Feedback type="invalid">
-                                        {errors.species}
+                                        {errors.speciesName}
                                     </Form.Control.Feedback>
                             </Col>
                         )}
 
+                        {/* Min confidence filter */}
                         {showMinConfidence && (
                             <Col md={2}>
                                 <Form.Label>Min Confidence (%):</Form.Label>
@@ -141,11 +147,13 @@ export default function ChartFilterBar({
                                 </InputGroup>
                             </Col>
                         )}
+
+                        {/* Apply button */}
                         <Col md={2} className="d-flex align-items-end">
                             <Button
                                 type="submit" 
                                 disabled={isSubmitting}
-                                variant='primary' 
+                                variant='success' 
                                 className="mt-3"
                             >
                                 Apply Filters

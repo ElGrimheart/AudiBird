@@ -6,18 +6,21 @@ import useHourlyTrends from "../../hooks/useHourlyTrends.jsx";
 import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import ComponentCard from "../common/ComponentCard.jsx";
 
-// SpeciesTrendsChart component to display trends of species detections over time
-// It uses a line chart to visualize the average number of detections per hour for the selected station
-// Filters can be applied to adjust the date range and species selection
+/*
+TrendsChart component to display hourly trends in species detections
+Uses a line chart to visualize average detections per hour
+Filters can be applied to adjust the date range and species selection
+*/
 export default function TrendsChart({ filters, setFilters }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { hourlyTrends, loading, error } = useHourlyTrends(selectedStation, { filters });
 
 
-    // Prepare data and display options for the line chart
+    // Get labels and data for the chart
     const labels = hourlyTrends.map(row => row.hour.toString().padStart(2, '0') + ":00");
     const data = hourlyTrends.map(row => row.average_detections);
 
+    // Assemble chart data and display options
     const chartData = {
         labels,
         datasets: [{
@@ -50,6 +53,7 @@ export default function TrendsChart({ filters, setFilters }) {
 
     return (
         <ComponentCard title="Average Activity Per Hour">
+            {/* Filter bar */}
             <ChartFilterBar
                 filters={filters}
                 setFilters={setFilters}
@@ -57,9 +61,13 @@ export default function TrendsChart({ filters, setFilters }) {
                 showSpeciesSelect={true}
                 showMinConfidence={true}
             />
+
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
                 data.length > 0 ? (
+
+                    /* Line chart displaying hourly trends */
                     <Line 
                         key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
                         data={chartData} 

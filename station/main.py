@@ -89,6 +89,8 @@ if __name__ == "__main__":
     # Callback function - handles when a segment is ready for analysis
     def on_segment_ready(filename):
         detections = analyser.analyse_segment(filename)
+        if detections == []:
+            segment_saver.delete_segment(filename)
         for detection in detections:
             detection_logger.log(filename, detection)
             upload_detection(filename, detection, station_metadata, audio_metadata, processing_metadata)

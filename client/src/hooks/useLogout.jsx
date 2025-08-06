@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// Hook to handle user logout
+// Hook to handle user logout. Clears user data and redirects to home.
 export default function useLogout() {
     const navigate = useNavigate();
 
-    async function handleLogout(event) {
+    const handleLogout = async (event) => {
         if (event) event.preventDefault();
         try {
             await axios.post(`${import.meta.env.VITE_API_USER_URL}/logout`);

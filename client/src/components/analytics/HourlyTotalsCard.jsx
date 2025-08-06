@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Button } from "react-bootstrap";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import SelectedStationContext from "../../contexts/SelectedStationContext";
 import StationMetadataContext from "../../contexts/StationMetadataContext";
 import HourlyTotalsChart from "./HourlyTotalsChart";
-import { formatDateToString } from "../../utils/dateFormatter";
 
-// Component to display hourly totals charts for the selected station. 
-// Allows adding multiple charts with independent filters.
+/*
+Component to display hourly totals charts for the selected station.
+Allows adding multiple charts with independent filters.
+*/
 export default function HourlyTotalsCard() {
     const { selectedStation } = useContext(SelectedStationContext);
     const { stationDateRange, stationSpeciesList } = useContext(StationMetadataContext);
@@ -14,7 +16,7 @@ export default function HourlyTotalsCard() {
     // Generate default filters based on the selected station and its date range
     const generateDefaultFilters = () => ({
         stationId: selectedStation,
-        singleDate: formatDateToString(new Date()) || ""
+        singleDate: stationDateRange?.endDate || ""
     });
 
     // State and hooks to manage multiple chart configurations
@@ -48,22 +50,27 @@ export default function HourlyTotalsCard() {
         <div>
             {chartConfigs.map((chart) => (
                 <div key={chart.id} className="mb-4">
+                    {/* Remove button if there are multiple charts */}
+                    {chartConfigs.length > 1 && (
+                        <div className="text-end mb-1">
+                            <Button variant="danger" onClick={() => removeChart(chart.id)}>
+                                <i className="bi bi-x-lg"></i> Remove Chart
+                            </Button>
+                        </div>
+                    )}
+
+                    {/* Hourly totals chart with selected filters */}
                     <HourlyTotalsChart
                         filters={chart.filters}
                         setFilters={(newFilters) => updateFilters(chart.id, newFilters)}
                     />
-                    {chartConfigs.length > 1 && (
-                        <div className="text-end mb-3">
-                            <Button variant="outline-danger" onClick={() => removeChart(chart.id)}>
-                                Remove Chart
-                            </Button>
-                        </div>
-                    )}
                 </div>
             ))}
+
+            {/* Button to add another chart */}
             <div className="text-center mt-4">
                 <Button variant="success" onClick={addChart}>
-                    ➕ Add Another Chart
+                    <i className="bi bi-plus-lg"></i> Add Another Chart
                 </Button>
             </div>
         </div>

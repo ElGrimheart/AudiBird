@@ -2,7 +2,7 @@
 
 import { param } from "express-validator";
 
-// Builds a WHERE clause based on the filters passed
+// Builds a WHERE clause based on the type and quantity of filters provided
 export function buildDetectionWhereClause(stationId, { singleDate, startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
     const filters = [];
     const values = [stationId];
@@ -61,7 +61,7 @@ export function buildDetectionSortClause(sortBy, sortOrder, allowedColumns = ['d
     return orderByParts.length ? `ORDER BY ${orderByParts.join(', ')}` : '';
 }
 
-
+// Builds a WHERE clause for delta filters based on the provided parameters
 export function buildDeltaFilters(startIndex, { speciesName, minConfidence }) {
   const filters = [];
   const filterValues = [];

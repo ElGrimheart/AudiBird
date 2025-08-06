@@ -5,20 +5,23 @@ import { formatStringToDate } from "../../utils/dateFormatter";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
 import DetectionModal from "../common/DetectionModal";
 
-// Display a list of filtered detections based on user-selected criteria
+/* 
+FilteredDetections component to display a list of detections based on applied filters.
+Includes a table view with detection details and a modal for more information on each detection. 
+*/
 export default function  FilteredDetections({ detections, loading, error }) {
     const [showModal, setShowModal] = useState(false);
     const [selectedDetection, setSelectedDetection] = useState(null);
 
-    function handleShowModal(detection) {
+    const handleShowModal = (detection) => {
         setSelectedDetection(detection);
         setShowModal(true);
-    }
+    };
 
-    function handleCloseModal() {
+    const handleCloseModal = () => {
         setShowModal(false);
         setSelectedDetection(null);
-    }
+    };
 
     if (!detections || detections.length === 0) {
         return <div className="alert alert-info">No detections found matching your criteria.</div>;
@@ -26,10 +29,13 @@ export default function  FilteredDetections({ detections, loading, error }) {
 
     return (
         <>
+            {/* Error and loading state handling */}
             {error && <div className="text-danger">{error.message}</div>}
             {loading ? <RenderSkeleton /> : (
                 detections && detections.length > 0 ? (
                     <div>
+
+                        {/* Render detections table */}
                         <Table striped bordered hover responsive>
                             <thead>
                                 <tr>

@@ -68,6 +68,7 @@ export const validateRegisterForm = [
     }
 ];
 
+// Middleware to validate analytics filters
 export const validateAnalyticsFilters = [
     query('singleDate')
         .optional()

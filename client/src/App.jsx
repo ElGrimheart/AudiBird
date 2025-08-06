@@ -25,6 +25,7 @@ const PrivateRoute = ({ children }) => {
     );
 };
 
+// Main App component that sets up the routing and context providers
 export default function App() {
     return (
         <Routes>

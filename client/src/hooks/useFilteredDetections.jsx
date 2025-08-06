@@ -1,7 +1,12 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
-// Hook to fetch filtered detections for a given station. Returns an array of detection objects
+/*
+Hook to fetch filtered detections for a given station. 
+Returns an array of detection objects.
+Filterable by date range, species, minimum and maximum confidence.
+Re-fetches when the stationId changes or new filters are applied.
+*/
 export default function useDetections(stationId) {
     const [detections, setDetections] = useState([]);
     const [error, setError] = useState(null)

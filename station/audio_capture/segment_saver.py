@@ -53,3 +53,20 @@ class SegmentSaver:
             return
             
         print(f"Saved segment: {filepath}")
+        
+        
+    def delete_segment(self, filename):
+        """Deletes a saved audio segment file.
+        
+        Args:
+            filename (str): Name of the file to delete, without extension.
+        """
+        filepath = self.segments_dir / f"{filename}.wav"
+        if filepath.exists():
+            try:
+                filepath.unlink()
+                print(f"Deleted segment: {filepath}")
+            except Exception as e:
+                print(f"Error deleting segment {filename}: {e}")
+        else:
+            print(f"Segment {filename} does not exist.")

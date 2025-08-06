@@ -1,4 +1,4 @@
-/* Utility functions to validate user input values */
+/* Utility functions to validate user input values using Yup */
 import * as Yup from 'yup';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -11,7 +11,7 @@ const speciesRegex = /^[A-Za-z\s\-']+$/;
 const confidenceMinValue = 0;
 const confidenceMaxValue = 100;
 
-// Validation schema for user registration and login
+// Validation schema for user registration and login forms
 export function loginRegisterSchema(isRegister) {
     return Yup.object().shape({
         name: isRegister
@@ -49,7 +49,7 @@ export function loginRegisterSchema(isRegister) {
     });
 }
 
-// Validation schema for Detections filter form
+// Validation schema for Detections filter sidebar
 export function detectionFiltersSchema() {
     return Yup.object().shape({
         startDate: Yup.date()
@@ -103,7 +103,7 @@ export function detectionFiltersSchema() {
     });
 }
 
-
+// Validation schema for Analytics filters
 export function analyticsFiltersSchema() {
     return Yup.object().shape({
         singleDate: Yup.date()
@@ -125,7 +125,7 @@ export function analyticsFiltersSchema() {
                 }
                 return value <= new Date(); 
             }),
-        species: Yup.string()
+        speciesName: Yup.string()
           .nullable()
           .matches(speciesRegex, 'Species name can only contain letters, spaces and hyphens'),
         minConfidence: Yup.number()

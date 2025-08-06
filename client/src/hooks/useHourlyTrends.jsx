@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-/* Hook to fetch species trends for a given station. Returns an array of trend objects. */
+/*
+Hook to fetch hourly trends for a given station. 
+Returns an array of hourly trend objects with hour and average count.
+Filterable by date range, species, and minimum confidence.
+Re-fetches when the stationId changes or new filters are received.
+*/
 export default function useHourlyTrends(stationId, { filters }) {
     const [hourlyTrends, setHourlyTrends] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -13,20 +18,13 @@ export default function useHourlyTrends(stationId, { filters }) {
             return;
         }
 
-        async function fetchHourlyTrends() {
+        const fetchHourlyTrends = async () => {
             setLoading(true);
             setError(null);
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/average-hourly-trends/${stationId}`, {
-                    params: {
-                        startDate: filters.startDate,
-                        endDate: filters.endDate,
-                        speciesName: filters.species,
-                        minConfidence: filters.minConfidence
-                    },
-                    headers: { 
-                        Authorization: `Bearer ${localStorage.getItem('jwt')}`
-                    },    
+                    params: filters,
+                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
                 setHourlyTrends(response.data.result || []);
             } catch (error) {
@@ -35,7 +33,7 @@ export default function useHourlyTrends(stationId, { filters }) {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         fetchHourlyTrends();
     }, [stationId, filters]);

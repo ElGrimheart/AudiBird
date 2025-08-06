@@ -5,25 +5,30 @@ import DetectionModal from '../common/DetectionModal.jsx';
 import AudioPlayer from "../common/AudioPlayer";
 import { formatStringToDate } from "../../utils/dateFormatter";
 
-// RecentDetectionsCard component to display a list of recent detections by a station
+/* RecentDetectionsCard component to display a list of recent detections by a station.
+Includes a modal for detailed detection information, and audio playback of detections.
+*/
 export default function RecentDetectionsCard({ detectionsData, loading, error }) {
     const [showModal, setShowModal] = useState(false);
     const [selectedDetection, setSelectedDetection] = useState(null);
 
-    function handleShowModal(detection) {
+    const handleShowModal = (detection) => {
         setSelectedDetection(detection);
         setShowModal(true);
-    }
+    };
 
-    function handleCloseModal() {
+    const handleCloseModal = () => {
         setShowModal(false);
         setSelectedDetection(null);
-    }
+    };
 
     return (
         <ComponentCard title="Recent Detections">
+            {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
             {loading ? <SkeletonComponent height={200} /> : (
+
+                /* Display recent detections */
                 <ol className="list mb-0">
                         {detectionsData && detectionsData.length > 0 ? 
                             detectionsData.map((detection, index) => (

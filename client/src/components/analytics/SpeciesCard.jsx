@@ -4,8 +4,10 @@ import SelectedStationContext from "../../contexts/SelectedStationContext";
 import StationMetadataContext from "../../contexts/StationMetadataContext";
 import SpeciesStats from "./SpeciesStats.jsx";
 
-// Component to display species trends charts for the selected station. 
-// Allows adding multiple charts with independent filters.
+/*
+Component to display species statistics for the selected station.
+Allows adding multiple species summary cards with independent filters.
+*/
 export default function SpeciesCard() {
     const { selectedStation } = useContext(SelectedStationContext);
     const { stationSpeciesList } = useContext(StationMetadataContext);
@@ -13,7 +15,7 @@ export default function SpeciesCard() {
     // Generate default filters based on the selected station and its date range
     const generateDefaultFilters = () => ({
         stationId: selectedStation,
-        species: stationSpeciesList[0] || ""
+        speciesName: stationSpeciesList[0] || ""
     });
 
 
@@ -44,26 +46,32 @@ export default function SpeciesCard() {
         setStatConfigs(prev => prev.filter(stat => stat.id !== id));
     };
 
+
     return (
         <div>
             {statConfigs.map((stat) => (
                 <div key={stat.id} className="mb-4">
+                    {/* Remove button for individual species stats */}
                     {statConfigs.length > 1 && (
-                        <div className="text-end mb-3">
-                            <Button variant="outline-danger" onClick={() => removeStats(stat.id)}>
-                                Remove Summary
+                        <div className="text-end mb-1">
+                            <Button variant="danger" onClick={() => removeStats(stat.id)}>
+                                <i className="bi bi-x-lg"></i> Remove Chart
                             </Button>
                         </div>
                     )}
-                    <SpeciesStats 
+
+                    {/* SpeciesStats component with selected filters */}
+                    <SpeciesStats
                         filters={stat.filters}
                         setFilters={(newFilters) => updateFilters(stat.id, newFilters)}
                     />
                 </div>
             ))}
+
+            {/* Button to add another species stats card */}
             <div className="text-center mt-4">
                 <Button variant="success" onClick={addStats}>
-                    ➕ Add Another Summary
+                    <i className="bi bi-plus-lg"></i> Add Another Chart
                 </Button>
             </div>
         </div>

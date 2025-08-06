@@ -2,8 +2,11 @@ import { useState, useEffect, useContext } from 'react';
 import SocketContext from '../contexts/SocketContext';
 import axios from 'axios';
 
-/*Hook to fetch summary statistics for a given station. Returns an array of summary stats objects (label and value).
-Updates when a new detection is received via room socket.*/
+/*
+Hook to fetch summary statistics for a given station.
+Returns an array of summary stats objects with label and value.
+Re-fetches when a new detection is received on the room socket or when the stationId changes.
+*/
 export default function useSummaryStats(stationId) {
     const [summaryStats, setSummaryStats] = useState([]);
     const [error, setError] = useState(null);
@@ -18,7 +21,7 @@ export default function useSummaryStats(stationId) {
             return;
         }
 
-        async function fetchSummaryStats() {
+        const fetchSummaryStats = async () => {
             setLoading(true);
             setError(null);
 
@@ -37,18 +40,18 @@ export default function useSummaryStats(stationId) {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
-        function handleNewDetection(detection) {
+        const handleNewDetection = (detection) => {
             if (detection.station_id === stationId) {
                 fetchSummaryStats();
             }
-        }
+        };
 
-        // Initial fetch of summary stats
+        // Initial fetch 
         fetchSummaryStats();
 
-        // Socket listener for new detections
+        // Listener for new detections on the station's room
         if (!socket || !isConnected) return;
         socket.on("newDetection", handleNewDetection);
         return () => socket.off("newDetection", handleNewDetection);

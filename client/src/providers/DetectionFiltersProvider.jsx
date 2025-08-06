@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DetectionFiltersContext from '../contexts/DetectionFiltersContext';
 
-// FiltersProvider component to manage state of detection filters
+// FiltersProvider component to manage detection filter state and default values
 export default function DetectionFiltersProvider({ children }) {
     const [filters, setFilters] = useState({
         startDate: '',

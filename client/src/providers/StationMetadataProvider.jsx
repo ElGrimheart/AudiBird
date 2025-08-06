@@ -18,7 +18,7 @@ export default function StationMetadataProvider({ children }) {
             return;
         }
 
-        async function fetchStationMetadata() {
+        const fetchStationMetadata = async () => {
             setLoading(true);
             setError(null);
             
@@ -37,7 +37,7 @@ export default function StationMetadataProvider({ children }) {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         fetchStationMetadata();
     }, [selectedStation]);
