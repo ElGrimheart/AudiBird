@@ -2,7 +2,7 @@
 import sounddevice as sd
 import queue
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
 
 class AudioCapture:
     """Captures audio from the microphone, segments it with the provided segmenter,
@@ -81,7 +81,7 @@ class AudioCapture:
                 # Append audio data to the segmenter
                 self.segmenter.append_audio(indata)  
                 for segment in self.segmenter.get_segments():
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+                    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
                     self.segments_queue.put((segment, timestamp))
                 
                 
@@ -101,9 +101,6 @@ class AudioCapture:
             ):
                 while self.running:
                     sd.sleep(1000)  # Keep the stream alive
-        except KeyboardInterrupt:
-            print("Audio capture interrupted by user.")
-            self.running = False
         except Exception as e:
             print(f"Error starting audio capture: {e}")
             self.running = False
