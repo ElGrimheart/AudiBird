@@ -26,7 +26,7 @@ export default function useRecentDetections(stationId) {
             setError(null);
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/recent/${stationId}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/recent/${stationId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
                 setRecentDetections(response.data.result || []);

@@ -77,7 +77,7 @@ export const validateAnalyticsFilters = [
         .custom((value) => {
             if (value === '') return true;
             const toSingleDate = new Date(value);
-            return toSingleDate <= new Date(); // Ensure `to` date is not in the future
+            return toSingleDate <= new Date(Date.now() + 24 * 60 * 60 * 1000); // Ensure `to` date is not in the future
         })
         .withMessage('Date cannot be in the future'),
     query('startDate')
@@ -91,7 +91,7 @@ export const validateAnalyticsFilters = [
         .custom((value) => {
             if (value === '') return true;
             const toDate = new Date(value);
-            return toDate <= new Date(); // Ensure `to` date is not in the future
+            return toDate <= new Date(Date.now() + 24 * 60 * 60 * 1000); // Ensure `to` date is not in the future
         })
         .withMessage('To date cannot be in the future'),
     query('speciesName')
@@ -119,6 +119,7 @@ export const validateAnalyticsFilters = [
     }),
     (req, res, next) => {
         const errors = validationResult(req);
+        console.log("Validation errors:", errors.array());
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 status: "failure",

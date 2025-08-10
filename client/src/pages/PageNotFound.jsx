@@ -11,7 +11,7 @@ export default function PageNotFound() {
                     <h1 className="display-3 mb-3">404</h1>
                     <h2 className="mb-3">Page Not Found</h2>
                     <p className="mb-4">The page you are looking for does not exist or has been moved.</p>
-                    <Button as={Link} to="/" variant="primary">
+                    <Button as={Link} to="/dashboard" variant="primary">
                         Go to Dashboard
                     </Button>
                 </Col>

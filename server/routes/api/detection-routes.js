@@ -6,7 +6,6 @@ import { validateDetectionFilters, validateNewDetection } from '../../middleware
 import * as detectionController from '../../controllers/detection-controller.js';
 
 
-
 const detectionRouter = express.Router();
 
 detectionRouter.get('/all/:stationId', 
@@ -15,24 +14,28 @@ detectionRouter.get('/all/:stationId',
     validateStationId, 
     detectionController.getAllDetectionsByStationId
 );
+
 detectionRouter.get('/recent/:stationId', 
     authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     detectionController.getRecentDetectionsByStationId
 );
+
 detectionRouter.get('/common/:stationId', 
     authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     detectionController.getMostCommonSpeciesByStationId
 );
+
 detectionRouter.get('/summary/:stationId', 
     authenticateJWT, 
     authenticateAccessPermission, 
     validateStationId, 
     detectionController.getDetectionSummaryByStationId
 );
+
 detectionRouter.get('/filtered/:stationId', 
     authenticateJWT, 
     authenticateAccessPermission, 
@@ -40,6 +43,7 @@ detectionRouter.get('/filtered/:stationId',
     validateDetectionFilters, 
     detectionController.getFilteredDetectionsByStationId
 );
+
 detectionRouter.get('/:stationId/:detectionId', 
     authenticateJWT, 
     authenticateAccessPermission, 

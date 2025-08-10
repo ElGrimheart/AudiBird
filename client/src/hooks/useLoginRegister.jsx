@@ -19,7 +19,7 @@ export default function useLoginRegister(fetchUserStations) {
         
         try {
           // Determine the endpoint based on whether it's a registration or login
-          const endpoint = isRegister ? `${import.meta.env.VITE_API_USER_URL}/register` : `${import.meta.env.VITE_API_USER_URL}/login`;
+          const endpoint = isRegister ? `${import.meta.env.VITE_API_USERS_URL}/register` : `${import.meta.env.VITE_API_USERS_URL}/login`;
           const response = await axios.post(endpoint, values);
 
           if (response.status === 200 && response.data.result) {

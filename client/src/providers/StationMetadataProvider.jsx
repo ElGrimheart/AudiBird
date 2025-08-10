@@ -23,7 +23,7 @@ export default function StationMetadataProvider({ children }) {
             setError(null);
             
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_STATION_URL}/metadata/${selectedStation}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_STATIONS_URL}/metadata/${selectedStation}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
                 setStationConfig(response.data.result.user_config || null);

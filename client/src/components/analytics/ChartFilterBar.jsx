@@ -108,7 +108,7 @@ export default function ChartFilterBar({
                                 <Form.Label>Species:</Form.Label>
                                 <Form.Select
                                     name="speciesName"
-                                    value={values.speciesName}
+                                    value={values.speciesName || ""}
                                     onChange={handleChange}
                                     onBlur={() => setFieldTouched('speciesName', true)}
                                     isInvalid={!!errors.speciesName && touched.speciesName}

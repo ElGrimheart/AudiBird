@@ -6,16 +6,14 @@ import { buildDetectionWhereClause, buildDeltaFilters } from "../utils/sqlBuilde
 Generates average hourly trends of detections for a given station.
 Returns an array of objects with hour and average_detections properties.
 Filterable by date range, species name, and minimum confidence level.
-If no filters are provided, returns to all species detections within the previous 7 days.
 */
 export async function getAverageHourlyTrendsByStationId(stationId, { startDate, endDate, speciesName, minConfidence }) {
-    // Default to the last 7 days if no dates are provided
-    startDate = startDate || new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
-    endDate = endDate || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    console.log("getAverageHourlyTrendsByStationId called with:", { stationId, startDate, endDate, speciesName, minConfidence });
 
     // Normalize dates to start and end of the day
     startDate = normaliseDateToStartOfDay(startDate);
     endDate = normaliseDateToEndOfDay(endDate);
+    console.log("Normalized dates:", { startDate, endDate });
 
     const filters = { startDate, endDate, speciesName, minConfidence };
     const { whereClause, values } = buildDetectionWhereClause(stationId, filters);
@@ -63,7 +61,7 @@ export async function getSpeciesSummaryByStationId(stationId, { speciesName }) {
     const sql = `
         WITH daily_counts AS (
             SELECT
-                DATE(detection_timestamp) AS day,
+                 DATE(detection_timestamp) AS day,
                 COUNT(*) AS total
             FROM detection
             ${whereClause}
@@ -73,7 +71,7 @@ export async function getSpeciesSummaryByStationId(stationId, { speciesName }) {
             (SELECT COUNT(*) FROM detection ${whereClause}) AS total_detections,
             (SELECT MIN(detection_timestamp) FROM detection ${whereClause}) AS first_detection,
             (SELECT MAX(detection_timestamp) FROM detection ${whereClause}) AS last_detection,
-            (SELECT day FROM daily_counts ORDER BY total DESC LIMIT 1) AS peak_day,
+            (SELECT day::date FROM daily_counts ORDER BY total DESC LIMIT 1) AS peak_day,
             (SELECT total FROM daily_counts ORDER BY total DESC LIMIT 1) AS peak_count,
             ROUND(AVG(total), 2) AS average_detections_per_day,
             (SELECT image_url FROM species_media WHERE species_code = (SELECT species_code FROM detection ${whereClause} LIMIT 1)) AS image_url,
@@ -93,11 +91,13 @@ Filterable by a single date, species name, and minimum confidence level.
 If no filters are provided, defaults to all species detections for current date
 */
 export async function getHourlyDetectionTotalsByStationId(stationId, { singleDate, speciesName, minConfidence }) {
-    // Default to the current date if no date is provided
+
+    console.log("getHourlyDetectionTotalsByStationId called with:", { stationId, singleDate, speciesName, minConfidence });
     singleDate = singleDate || new Date(Date.now()).toISOString();
 
     const filters = { singleDate, speciesName, minConfidence };
     const { whereClause, values } = buildDetectionWhereClause(stationId, filters);
+    console.log("Where clause:", whereClause, "Values:", values);
 
     const sql = `
         SELECT 
@@ -136,6 +136,8 @@ export async function getHourlyDetectionTotalsByStationId(stationId, { singleDat
         });
     });
 
+    console.log("Full Hourly Result:", fullResult); 
+
     return fullResult;
 }
 
@@ -146,13 +148,13 @@ Filterable by date range, species name, and minimum confidence level.
 If no filters are provided, returns all species detections within the previous 7 days.
 */
 export async function getDailyDetectionTotalsByStationId(stationId, { startDate, endDate, speciesName, minConfidence }) {
-    // Default to the last 7 days if no dates are provided
-    startDate = startDate || new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
-    endDate = endDate || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
-    // Correct hours to midnight
+    
+    console.log("getDailyDetectionTotalsByStationId called with:", { stationId, startDate, endDate, speciesName, minConfidence });
+    // Normalize dates to start and end of the day
     startDate = normaliseDateToStartOfDay(startDate);
     endDate = normaliseDateToEndOfDay(endDate);
+
+    console.log("Normalized dates:", { startDate, endDate });
 
     const filters = {startDate, endDate, speciesName, minConfidence};
     const { whereClause, values } = buildDetectionWhereClause(stationId, filters);
@@ -194,6 +196,8 @@ export async function getDailyDetectionTotalsByStationId(stationId, { startDate,
             });
         });
     });
+
+    console.log ("Full Daily Result:", fullResult);
 
     return fullResult;
 }

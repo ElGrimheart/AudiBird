@@ -1,5 +1,7 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
+import { BoxArrowUpRight } from "react-bootstrap-icons";
+import * as externalLink from '../../constants/externalLinks';
 import { formatStringToDate } from "../../utils/dateFormatter";
 
 // DetectionDetailsModal component to display detailed information about a detection
@@ -12,18 +14,27 @@ export default function DetectionModal({ show, onHide, detection }) {
             <Modal.Body>
                 {detection && (
                     <div>
-                        <img
-                            src={detection.image_url || "../../../public/bird_avatar_placeholder.png"}
-                            title={`${detection.common_name} by ${detection.image_rights}; ${import.meta.env.VITE_EXTERNAL_MEDIA_NAME}`}
-                            className="img-fluid mb-3"
-                            alt={detection.common_name}
-                        />
+                        <a href={detection.image_url} target="_blank" rel="noopener noreferrer">
+                            <img
+                                src={detection.image_url || "../../../public/bird_avatar_placeholder.png"}
+                                title={`${detection.common_name} by ${detection.image_rights}; ${externalLink.EXTERNAL_MEDIA_NAME}`}
+                                className="img-fluid mb-3"
+                                alt={detection.common_name}
+                            />
+                        </a>
                         {detection.audio_id ? (
                             <audio controls src={`${import.meta.env.VITE_API_AUDIO_URL}/${detection.audio_id}`} />
                         ) : (
                             <span className="text-muted">No audio</span>
                         )}
-                        <p><strong>Common Name:</strong> {detection.common_name}</p>
+                        <p>
+                            <strong>Common Name:</strong> 
+                            {" "}{detection.common_name}{" "}
+                            <a href={`${externalLink.EXTERNAL_SPECIES_URL}/${detection.species_code}`} target="_blank" rel="noopener noreferrer">
+                                See more
+                                <BoxArrowUpRight size={12} aria-label="external link" title="External link" style={{ marginLeft: 4 }} />
+                            </a>
+                        </p>
                         <p><em><strong>Scientific Name:</strong> {detection.scientific_name} </em></p>
                         <p><strong>Confidence:</strong> {Math.round(detection.confidence * 100)}%</p>
                         <p><strong>Date:</strong> {formatStringToDate(detection.detection_timestamp)}</p>

@@ -1,5 +1,4 @@
 import * as analyticsService from '../services/analytics-service.js';
-import handleError from '../utils/errorHandler.js';
 import logAction from '../utils/logger.js';
 
 // GET /api/analytics/species-summary/:stationId route - retrieves species summary for a given station
@@ -10,13 +9,25 @@ export const getSpeciesSummaryByStationId = async (req, res) => {
 
     try {
         const speciesSummary = await analyticsService.getSpeciesSummaryByStationId(stationId, { speciesName });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved species summary for Station ID: ${stationId}`,
-            result: speciesSummary
-        });
+        
+        if (speciesSummary) {
+                res.status(200).json({
+                status: "success",
+                message: `Retrieved species summary for Station ID: ${stationId}`,
+                result: speciesSummary
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `Species summary for Station ID: ${stationId} not found`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving species summary for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving species summary for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };
 
@@ -29,13 +40,25 @@ export const getAverageHourlyTrendsByStationId = async (req, res) => {
 
     try {
         const hourlyData = await analyticsService.getAverageHourlyTrendsByStationId(stationId, { startDate, endDate, speciesName, minConfidence });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved species hourly data for Station ID: ${stationId}`,
-            result: hourlyData
-        });
+        
+        if (hourlyData) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved species hourly data for Station ID: ${stationId}`,
+                result: hourlyData
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No hourly data found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving species hourly data for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving species hourly data for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };
 
@@ -48,13 +71,25 @@ export const getHourlyDetectionTotalsByStationId = async (req, res) => {
 
     try {
         const hourlyTotals = await analyticsService.getHourlyDetectionTotalsByStationId(stationId, { singleDate, speciesName, minConfidence });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved hourly detection totals for Station ID: ${stationId}`,
-            result: hourlyTotals
-        });
+        
+        if (hourlyTotals) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved hourly detection totals for Station ID: ${stationId}`,
+                result: hourlyTotals
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No hourly detection totals found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving hourly detection totals for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving hourly detection totals for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };
 
@@ -67,13 +102,25 @@ export const getDailyDetectionTotalsByStationId = async (req, res) => {
     logAction("Retrieving species trends for", { stationId });
 
     try {
-        const trends = await analyticsService.getDailyDetectionTotalsByStationId(stationId, { startDate, endDate, speciesName, minConfidence });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved species trends data for Station ID: ${stationId}`,
-            result: trends
-        });
+        const dailyTotals = await analyticsService.getDailyDetectionTotalsByStationId(stationId, { startDate, endDate, speciesName, minConfidence });
+        
+        if (dailyTotals) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved daily totals for Station ID: ${stationId}`,
+                result: dailyTotals
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No daily totals found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving species trends data for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving species trends data for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };

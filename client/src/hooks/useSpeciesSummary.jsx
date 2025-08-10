@@ -22,6 +22,7 @@ export default function useSpeciesSummary(stationId, { filters }) {
             setError(null);
 
             try {
+                console.log("Fetching species summary for station:", stationId, "with filters:", filters);
                 const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/species-summary/${stationId}`, {
                     params: filters,
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },

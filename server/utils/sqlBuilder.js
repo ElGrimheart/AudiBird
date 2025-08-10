@@ -24,7 +24,7 @@ export function buildDetectionWhereClause(stationId, { singleDate, startDate, en
         filters.push(`detection_timestamp <= $${values.length}`);
     }
 
-    if (speciesName) {
+    if (speciesName && speciesName.trim() != "All Species") {
         values.push(`%${speciesName}%`);
         filters.push(`(common_name ILIKE $${values.length} OR scientific_name ILIKE $${values.length})`);
     }

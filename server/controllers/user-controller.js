@@ -1,6 +1,5 @@
 import * as userService from "../services/user-service.js";
 import { generateJwtToken } from "../utils/jwt.js";
-import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
 
 
@@ -24,7 +23,11 @@ export const getUserById = async (req, res) => {
             });
         }
     } catch (error) {
-        handleError(res, error, `Error retrieving user ID: ${userId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving user ID: ${userId}`,
+            error: error.message
+        });
     }
 };
 
@@ -36,13 +39,25 @@ export const getUserStations = async (req, res) => {
 
     try {
         const stations = await userService.getUserStations(userId);
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved stations for user ID: ${userId}`,
-            result: stations
-        });
+
+        if (stations && stations.length > 0) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved stations for user ID: ${userId}`,
+                result: stations
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No stations found for user ID: ${userId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving stations for user ID: ${userId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving stations for user ID: ${userId}`,
+            error: error.message
+        });
     }
 };
 
@@ -56,7 +71,7 @@ export const loginUser = async (req, res) => {
         const validUser = await userService.loginUser(email, password);
 
         if (validUser) {
-            const token = generateJwtToken(validUser);
+            const token = await generateJwtToken(validUser.user_id);
 
             res.status(200).json({
                 status: "success",
@@ -65,8 +80,6 @@ export const loginUser = async (req, res) => {
                     jwt: token
                 }
             });
-        } else {
-            handleError(res, error, "Error logging in user");
         }
     } catch (error) {
         if (error.message === 'User not found' || error.message === 'Invalid password') {
@@ -75,7 +88,11 @@ export const loginUser = async (req, res) => {
                 message: "Invalid login credentials"
             });
         } else {
-            handleError(res, error, "Error logging in user");
+            res.status(500).json({
+                status: "error",
+                message: "Error logging in user",
+                error: error.message
+            });
         }
     }
 };
@@ -88,7 +105,11 @@ export const logoutUser = async (req, res) => {
             message: "User logged out successfully"
         });
     } catch (error) {
-        handleError(res, error);
+        res.status(500).json({
+            status: "error",
+            message: "Error logging out user",
+            error: error.message
+        });
     }
 };
 
@@ -102,7 +123,7 @@ export const registerUser = async (req, res) => {
     try {
         const newUser = await userService.registerUser(name, username, email, password);
         if (newUser) {
-            const token = generateJwtToken(newUser);
+            const token = await generateJwtToken(newUser.user_id);
             res.status(200).json({
                 status: "success",
                 message: "User registered successfully",
@@ -110,12 +131,7 @@ export const registerUser = async (req, res) => {
                     jwt: token
                 }
             });
-        } else {
-            res.status(400).json({
-                status: "failure",
-                message: "Error registering user"
-            });
-        }
+        } 
     } catch (error) {
         if (error.message === 'Email already exists') {
             res.status(409).json({
@@ -128,7 +144,11 @@ export const registerUser = async (req, res) => {
                 message: error.message
             });
         } else {
-            handleError(res, error, "Error registering user");
+            res.status(500).json({
+                status: "error",
+                message: "Error registering user",
+                error: error.message
+            });
         }
     }
 };

@@ -1,6 +1,5 @@
 import { io } from "../server.js";
 import * as detectionService from "../services/detection-service.js";
-import handleError from "../utils/errorHandler.js";
 import logAction from "../utils/logger.js";
 
 // GET /api/detections/:detectionId route - retrieves a detection by its ID
@@ -24,7 +23,11 @@ export const getDetectionById = async (req, res) => {
             });
         }
     } catch (error) {
-        handleError(res, error, `Error retrieving detection ID: ${detectionId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving detection ID: ${detectionId}`,
+            error: error.message
+        });
     }
 };
 
@@ -35,13 +38,25 @@ export const getAllDetectionsByStationId = async (req, res) => {
 
     try {
         const detections = await detectionService.getAllDetectionsByStationId(stationId);
-        res.status(200).json({
-            status: "success",
-            message: `${detections.length} detections retrieved for Station ID: ${stationId}`,
-            result: detections
-        });
+        
+        if (detections && detections.length > 0) {
+            res.status(200).json({
+                status: "success",
+                message: `${detections.length} detections retrieved for Station ID: ${stationId}`,
+                result: detections
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No detections found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving all detections for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving all detections for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };
 
@@ -52,13 +67,25 @@ export const getRecentDetectionsByStationId = async (req, res) => {
 
     try {
         const recentDetections = await detectionService.getRecentDetectionsByStationId(stationId);
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved recent detections data for Station ID: ${stationId}`,
-            result: recentDetections
-        });
+        
+        if (recentDetections && recentDetections.length > 0) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved recent detections data for Station ID: ${stationId}`,
+                result: recentDetections
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No recent detections found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving recent detections data for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving recent detections data for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };
 
@@ -69,31 +96,54 @@ export const getMostCommonSpeciesByStationId = async (req, res) => {
 
     try {
         const commonSpecies = await detectionService.getMostCommonSpeciesByStationId(stationId);
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved most common species data for Station ID: ${stationId}`,
-            result: commonSpecies
-        });
+        
+        if (commonSpecies && commonSpecies.length > 0) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved most common species data for Station ID: ${stationId}`,
+                result: commonSpecies
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No common species found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving most common species data for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving most common species data for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 }
 
 // GET /api/detections/summary/:stationId route - retrieves a summary of detections for a given station
 export const getDetectionSummaryByStationId = async (req, res) => {
     const { stationId } = req.params;
-    const { startDate, endDate, speciesName } = req.query;
     logAction("Retrieving detection summary for", { stationId });
 
     try {
-        const detectionSummary = await detectionService.getDetectionSummaryByStationId(stationId, { startDate, endDate, speciesName });
-        res.status(200).json({
-            status: "success",
-            message: `Retrieved detection summary data for Station ID: ${stationId}`,
-            result: detectionSummary
-        });
+        const detectionSummary = await detectionService.getDetectionSummaryByStationId(stationId);
+
+        if (detectionSummary) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved detection summary data for Station ID: ${stationId}`,
+                result: detectionSummary
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No detection summary found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving detection summary data for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving detection summary data for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };
 
@@ -105,15 +155,27 @@ export const getFilteredDetectionsByStationId = async (req, res) => {
 
     try {
         const filteredDetections = await detectionService.getFilteredDetectionsByStationId(stationId,{ startDate, endDate, speciesName, minConfidence, maxConfidence, limit, offset, sortOrder, sortBy });
-        res.status(200).json({
-            status: "success",
-            message: `${filteredDetections.length} records retrieved`,
-            result: filteredDetections
-        });
+        
+        if (filteredDetections && filteredDetections.length > 0) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved filtered detections data for Station ID: ${stationId}`,
+                result: filteredDetections
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No filtered detections found for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error retrieving filtered detections for Station ID: ${stationId}`);
-    };
-}
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving filtered detections data for Station ID: ${stationId}`,
+            error: error.message
+        });
+    }
+};
 
 // POST /api/detections/new/:stationId route - creates a new detection for a given station
 export const createDetection = async (req, res) => {
@@ -125,15 +187,26 @@ export const createDetection = async (req, res) => {
     try {
         const newDetection = await detectionService.createDetection(stationId, detectionData);
 
-        // Emit a socket event to notify clients of the new detection
-        io.to(stationId).emit("newDetection", newDetection);
+        if (newDetection) {
+            // Emit a socket event to notify clients of the new detection
+            io.to(stationId).emit("newDetection", newDetection);
 
-        res.status(201).json({
-            status: "success",
-            message: `New detection created with ID: ${newDetection.detection_id}`,
-            result: newDetection
-        });
+            res.status(201).json({
+                status: "success",
+                message: `New detection created with ID: ${newDetection.detection_id}`,
+                result: newDetection
+            });
+        } else {
+            res.status(400).json({
+                status: "failure",
+                message: `Failed to create detection for Station ID: ${stationId}`
+            });
+        }
     } catch (error) {
-        handleError(res, error, `Error creating detection for Station ID: ${stationId}`);
+        res.status(500).json({
+            status: "error",
+            message: `Error creating detection for Station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };

@@ -4,6 +4,7 @@ import { Table } from "react-bootstrap";
 import { formatStringToDate } from "../../utils/dateFormatter";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
 import DetectionModal from "../common/DetectionModal";
+import * as externalLink from '../../constants/externalLinks';
 
 /* 
 FilteredDetections component to display a list of detections based on applied filters.
@@ -55,7 +56,7 @@ export default function  FilteredDetections({ detections, loading, error }) {
                                             <td>{detection.common_name} 
                                                 <em> ({detection.scientific_name}) </em>{" "}
                                                 <a 
-                                                    href={`${import.meta.env.VITE_API_EBIRD_URL}/${detection.species_code}`} 
+                                                    href={`${externalLink.EXTERNAL_SPECIES_URL}/${detection.species_code}`} 
                                                     target="_blank" 
                                                     rel="noopener noreferrer">
                                                     <BoxArrowUpRight 

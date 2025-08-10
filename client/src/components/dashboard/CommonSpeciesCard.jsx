@@ -1,8 +1,9 @@
 import React from "react";
-import ComponentCard from "../common/ComponentCard";
-import SkeletonComponent from "../common/SkeletonPlaceholder";
 import AvatarImage from "../common/Avatar";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
+import ComponentCard from "../common/ComponentCard";
+import SkeletonComponent from "../common/SkeletonPlaceholder";
+import * as externalLink from '../../constants/externalLinks';
 
 /* CommonSpeciesCard component to display the most common species detected by a station.
 Includes avatar images and external links to eBird for more information.
@@ -22,7 +23,7 @@ export default function CommonSpeciesCard({ speciesData, loading, error }){
                             <li key={index} className="mb-2">
                                 <AvatarImage 
                                     src={species.image_url} 
-                                    alt={`${species.common_name} by ${species.image_rights}; ${import.meta.env.VITE_EXTERNAL_MEDIA_NAME}`}
+                                    alt={`${species.common_name} by ${species.image_rights}; ${externalLink.EXTERNAL_MEDIA_NAME}`}
                                     commonName={species.common_name}
                                     contributor={species.image_rights}
                                     size={72} 
@@ -30,7 +31,7 @@ export default function CommonSpeciesCard({ speciesData, loading, error }){
                                 />
                                 <strong> {species.common_name}</strong> 
                                 <em> ({species.scientific_name}) 
-                                    <a href={`${import.meta.env.VITE_API_EBIRD_URL}/${species.species_code}`} target="_blank" rel="noopener noreferrer">
+                                    <a href={`${externalLink.EXTERNAL_SPECIES_URL}/${species.species_code}`} target="_blank" rel="noopener noreferrer">
                                         <BoxArrowUpRight size={12} aria-label="external link" title="External link" style={{ marginLeft: 4 }} />
                                     </a>
                                 </em> 

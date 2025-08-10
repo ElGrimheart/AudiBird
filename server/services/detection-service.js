@@ -3,7 +3,6 @@ import { getMediaBySpeciesCode, postSpeciesMedia } from "./media-service.js";
 import { scrapeImgUrl, scrapeAudioUrl } from "../utils/mediaScraper.js";
 import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sqlBuilder.js";
 import logAction from "../utils/logger.js";
-import errorHandler from "../utils/errorHandler.js";
 
 // Retrieves a detection by its ID
 export async function getDetectionById(detectionId) {
@@ -62,35 +61,29 @@ export async function getMostCommonSpeciesByStationId(stationId) {
 
 // Retrieves a summary of detections for a given station ID
 // Includes total detections, total species, detections today, species today, detections last hour, species last hour
-export async function getDetectionSummaryByStationId(stationId, filters) {
-    const { startDate, endDate, speciesName } = filters || {};
-    
-    // Build the WHERE clause based on filters
-    const { whereClause, values } = buildDetectionWhereClause(stationId, { startDate, endDate, speciesName });
-
-    // Compile the summary statistics
+export async function getDetectionSummaryByStationId(stationId) {
     const totalDetectionsResult = await db.query(
-        `SELECT COUNT(*) FROM detection ${whereClause}`, values
+        `SELECT COUNT(*) FROM detection WHERE station_id = $1`, [stationId]
     );
 
     const totalSpeciesResult = await db.query(
-        `SELECT COUNT(DISTINCT common_name) FROM detection ${whereClause}`, values
+        `SELECT COUNT(DISTINCT common_name) FROM detection WHERE station_id = $1`, [stationId]
     );
 
     const detectionsTodayResult = await db.query(
-        `SELECT COUNT(*) FROM detection ${whereClause} AND detection_timestamp >= CURRENT_DATE`, values
+        `SELECT COUNT(*) FROM detection WHERE station_id = $1 AND detection_timestamp >= CURRENT_DATE`, [stationId]
     );
 
     const speciesTodayResult = await db.query(
-        `SELECT COUNT(DISTINCT common_name) FROM detection ${whereClause} AND detection_timestamp >= CURRENT_DATE`, values
+        `SELECT COUNT(DISTINCT common_name) FROM detection WHERE station_id = $1 AND detection_timestamp >= CURRENT_DATE`, [stationId]
     );
 
     const detectionsLastHourResult = await db.query(
-        `SELECT COUNT(*) FROM detection ${whereClause} AND detection_timestamp >= NOW() - INTERVAL '1 hour'`, values
+        `SELECT COUNT(*) FROM detection WHERE station_id = $1 AND detection_timestamp >= NOW() - INTERVAL '1 hour'`, [stationId]
     );
 
     const speciesLastHourResult = await db.query(
-        `SELECT COUNT(DISTINCT common_name) FROM detection ${whereClause} AND detection_timestamp >= NOW() - INTERVAL '1 hour'`, values
+        `SELECT COUNT(DISTINCT common_name) FROM detection WHERE station_id = $1 AND detection_timestamp >= NOW() - INTERVAL '1 hour'`, [stationId]
     );
 
     return {
@@ -141,7 +134,17 @@ export async function createDetection(stationId, detectionData) {
     `;
 
     const detectionSql = `
-        INSERT INTO detection (common_name, scientific_name, confidence, detection_timestamp, station_metadata, audio_metadata, processing_metadata, station_id, species_code, audio_id)
+        INSERT INTO detection (
+            common_name, 
+            scientific_name, 
+            confidence, 
+            detection_timestamp, 
+            station_metadata, 
+            audio_metadata, 
+            processing_metadata, 
+            station_id, 
+            species_code, 
+            audio_id)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
     `;
@@ -202,6 +205,5 @@ export async function createDetection(stationId, detectionData) {
     } catch (error) {
         await db.query('ROLLBACK');
         logAction("Error creating detection", { error });
-        errorHandler(error, "Failed to create detection");
     }
 }

@@ -13,7 +13,7 @@ export default function SocketProvider({ children }) {
         }
 
         // Initialize socket connection
-        socketRef.current = io(import.meta.env.VITE_SOCKET_URL, {
+        socketRef.current = io(import.meta.env.VITE_API_SOCKET_URL, {
             auth: { token: localStorage.getItem("jwt") },
             reconnection: true,
             reconnectionAttempts: 5,
