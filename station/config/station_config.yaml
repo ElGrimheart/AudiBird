@@ -1,5 +1,5 @@
 detection_config:
-  high_confidence_threshold: 0.5
+  high_confidence_threshold: 0.50
   min_confidence: 0.25
   segment_duration: 10
   segment_overlap: 0

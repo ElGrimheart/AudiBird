@@ -1,26 +1,38 @@
-from flask import Flask, config, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 import requests
 import time
 import os
-import subprocess
-import signal
 import psutil
 import threading
 import sys
+from datetime import datetime
+from controllers import DetectionController
 from utils.config_loader import load_yaml_config, write_yaml_config
 from dotenv import load_dotenv
 load_dotenv()
 
-STATIC_CONFIG = load_yaml_config('config/static_config.yaml')
 STATION_CONFIG_PATH = 'config/station_config.yaml'
+STATIC_CONFIG = load_yaml_config('config/static_config.yaml')
 ALLOWABLE_STATES = ["unannounced", "announced", "claimed", "configured"]
-
-PID_FILE = STATIC_CONFIG['temp']['process']
-
 
 app = Flask(__name__)
 
 # Helper functions for managing station state
+
+detection_controller = None
+controller_lock = threading.Lock()
+state_watcher_stop_event = threading.Event()
+
+def create_detection_controller():
+    """Returns the global detection controller instance."""
+    global detection_controller
+    with controller_lock:
+        if detection_controller is None:
+            station_config = load_yaml_config(STATION_CONFIG_PATH)
+            detection_controller = DetectionController(STATIC_CONFIG, station_config)
+        return detection_controller
+
+
 def get_station_state():
     """Get the current state of the station."""
     config = load_yaml_config(STATION_CONFIG_PATH)
@@ -43,7 +55,7 @@ def announce_station():
         return True
 
     payload = {
-        "station_name": "UNREGISTERED STATION",
+        "station_name": config["station"].get("station_name", "UNREGISTERED STATION"),
         "station_port": os.environ.get('FLASK_SERVER_PORT')
     }
 
@@ -56,6 +68,7 @@ def announce_station():
 
         if response.status_code == 201:
             new_station_config = response.json().get("result")
+            new_station_config["station"]["state"] = "announced"
             write_yaml_config(STATION_CONFIG_PATH, new_station_config)
             print(f"Station announced. Please login to the web interface and register the station")
             return True
@@ -64,83 +77,15 @@ def announce_station():
             return False
     except Exception as e:
         print(f"Error announcing station: {e}")
-        sys.exit(1)
         return False
     
 
-
-
-detection_lock = threading.Lock()
-
-def _read_pid():
-    """Read the PID of the station process from the PID file."""
-    if not os.path.exists(PID_FILE):
-        return None
-    try:
-        with open(PID_FILE, 'r') as f:
-            return int(f.read().strip())
-    except Exception as e:
-        print(f"Error reading PID file: {e}")
-        return None
-    
-def _pid_running(pid):
-    if pid is None:
+def detection_is_running():
+    detection_controller = create_detection_controller()
+    if not detection_controller:
         return False
-    try:
-        os.kill(pid, 0)
-        return True
-    except Exception as e:
-        print(f"Error checking if PID {pid} is running: {e}")
-        return False
+    return detection_controller.is_running()
 
-def is_detection_active():
-    pid = _read_pid()
-    return bool(pid and _pid_running(pid))
-
-def launch_detection():
-    with detection_lock:
-        # Check existing PID
-        pid = _read_pid()
-        if pid and _pid_running(pid):
-            print(f"Detection already running (PID {pid}).")
-            return False
-        
-        if pid and not _pid_running(pid) and os.path.exists(PID_FILE):
-            try:
-                os.remove(PID_FILE)
-            except OSError:
-                pass
-    
-    try:
-        process = subprocess.Popen(['python3', STATIC_CONFIG['scripts']['start_capture']])
-        with open(PID_FILE, 'w') as f:
-            f.write(str(process.pid))
-        print("Detection started successfully.")
-        return True
-    except Exception as e:
-        print(f"Error starting detection: {e}")
-        return False
-
-def stop_detection():
-    """Stop the audio detection process."""
-    if not is_detection_active():
-        print("Detection is not active.")
-        return False
-
-    try:
-        pid = _read_pid()
-        if pid and _pid_running(pid):
-            os.kill(pid, signal.SIGTERM)
-            os.remove(PID_FILE)
-            print("Detection stopped successfully.")
-            return True
-        else:
-            print("No active detection process found.")
-            return False
-    except Exception as e:
-        print(f"Error stopping detection: {e}")
-        return False
-    
     
 
 status_thread = None
@@ -149,7 +94,7 @@ status_thread_lock = threading.Lock()
 def get_hardware_status():
     """Get the current status of the station hardware."""
     return {
-        "is_recording": True if is_detection_active() else False,
+        "is_recording": detection_is_running(),
         "cpu_temp": psutil.sensors_temperatures()['cpu_thermal'][0].current if psutil.sensors_temperatures() else 'N/A',
         "memory_usage": psutil.virtual_memory().percent,
         "disk_usage": psutil.disk_usage('/').percent,
@@ -187,13 +132,14 @@ def start_status_status_thread():
         if status_thread and status_thread.is_alive():
             return
         if get_station_state() == "configured":
+            print("Starting status update thread...")
             status_thread = threading.Thread(target=post_status_updates)
             status_thread.start()
 
-
 def state_watcher():
+    global detection_controller
     last = None
-    while True:
+    while not state_watcher_stop_event.is_set():
         current_state = get_station_state()
         if current_state != last:
             print(f"Station state changed: {last} -> {current_state}")
@@ -205,7 +151,15 @@ def state_watcher():
                 print("Station is claimed. Please configure the station through the web interface.")
             if current_state == "configured":
                 start_status_status_thread()
+                # Signal to stop the watcher
+                detection_controller = create_detection_controller()
+                detection_controller.start()
+                state_watcher_stop_event.set()
+                print("Station configured. Stopping state watcher thread...")
+                break
+        last = current_state
         time.sleep(30)
+        
 
 
 
@@ -214,10 +168,8 @@ def state_watcher():
 def authenticate_api_key():
     """Authenticate the API key for incoming requests."""
     config = load_yaml_config(STATION_CONFIG_PATH)
-    
     request_api_key = request.headers.get('Authorization')
-    print(f"Request API Key: {request_api_key}")
-    print(f"Configured API Key: {config['station']['api_key']}")
+    
     if not request_api_key or request_api_key != f'Bearer {config["station"]["api_key"]}':
         return jsonify({
             "status": "failure",
@@ -246,6 +198,7 @@ def claim_station():
 @app.route('/update-config', methods=['POST'])
 def update_config():
     """Update the remote configuration file."""
+    global detection_controller
     new_config = request.get_json()
     if not new_config:
         return jsonify({
@@ -255,6 +208,16 @@ def update_config():
     
     try:
         write_yaml_config(f"{STATIC_CONFIG['paths']['configs_dir']}/station_config.yaml", new_config)
+        
+        # Recreate DetectionController with updated config
+        if detection_controller and detection_controller.is_running():
+            detection_controller.stop()
+            
+        with controller_lock:
+            station_config = load_yaml_config(STATION_CONFIG_PATH)
+            detection_controller = DetectionController(STATIC_CONFIG, station_config)
+            detection_controller.start()
+            
         return jsonify({
             "status": "success",
             "message": "Configuration updated successfully"
@@ -276,12 +239,12 @@ def start_recording():
             "status": "failure",
             "message": f"Cannot start in state: {current_state}"
         }), 400                         
-    if is_detection_active():
+    if detection_controller.is_running():
         return jsonify({
             "status": "failure",
             "message": "Station is already recording"
         }), 400
-    if launch_detection():
+    if detection_controller.start():
         start_status_status_thread()
         return jsonify({
             "status": "success",
@@ -297,12 +260,12 @@ def start_recording():
 @app.route('/stop', methods=['POST'])
 def stop_recording():
     """Stop the audio recording process."""
-    if not is_detection_active():
+    if not detection_controller or not detection_controller.is_running():
         return jsonify({
             "status": "failure", 
             "message": "Not active"
         }), 400
-    if stop_detection():
+    if detection_controller.stop():
         return jsonify({
             "status": "success",
             "state": get_station_state()
@@ -327,7 +290,7 @@ def serve_audio(file_name):
 
 # Start the Flask server
 if __name__ == '__main__':
-    
+
     # Announce station if required (first launch)
     if not announce_station():
         check_config = load_yaml_config(STATION_CONFIG_PATH)
@@ -347,10 +310,12 @@ if __name__ == '__main__':
         print("Station awaiting configuration...")
     elif current_state == "configured":
         print("Launching detection...")
-        launch_detection()
+        detection_controller = create_detection_controller()
+        detection_controller.start()
         start_status_status_thread()
 
     threading.Thread(target=state_watcher, daemon=True).start()
+    
         
     app.run(
         host=os.environ.get("FLASK_SERVER_HOST"), 

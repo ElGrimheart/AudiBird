@@ -3,12 +3,7 @@ import requests
 import os
 from utils.config_loader import load_yaml_config
 
-# Load configuration from YAML files
-STATIC_CONFIG = load_yaml_config('config/static_config.yaml')
-STATION_CONFIG = load_yaml_config('config/station_config.yaml')
-
-
-def upload_detection(filename, detection, station_metadata, audio_metadata, processing_metadata):
+def upload_detection(filename, detection, config, station_metadata, audio_metadata, processing_metadata):
     """Posts detection data to the remote database API.
 
     Args:
@@ -21,16 +16,22 @@ def upload_detection(filename, detection, station_metadata, audio_metadata, proc
     Returns:
         dict: The response from the API.
     """
+    print("Uploading detection for file:", filename)
+    
     detections_route = os.environ.get("API_DETECTIONS_ROUTE")
-    station_id = STATION_CONFIG['station']['id']
-    station_api_key = STATION_CONFIG['station']['api_key']
+    station_id = config['station_id']
+    station_api_key = config['station_api_key']
+    print("station_id:", station_id)
+    print("station_api_key:", station_api_key)
+    print("detections_route:", detections_route)
 
     post_detection_route = detections_route + "/new/" + station_id
+    print("post_detection_route:", post_detection_route)
     headers = {
         "Authorization": f"Bearer {station_api_key}",
         "Content-Type": "application/json"
     }
-    
+    print("filename:", filename)
     base = filename.replace('.wav', '')
     timestamp = datetime.strptime(base, "%Y%m%d_%H%M%S_%f")
 

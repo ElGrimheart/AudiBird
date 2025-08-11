@@ -25,10 +25,10 @@ class SegmentSaver:
             channels (int): Number of audio channels. Default is 1 (mono).
             sampwidth (int): Sample width in bytes. Default is 2 bytes (16-bit audio).
         """
-        self.segments_dir = Path(config.get("segments_dir", "pi/data/segments")).resolve()
-        self.sample_rate = config.get("sample_rate", 48000)
-        self.channels = config.get("channels", 1)
-        self.sampwidth = config.get("sample_width", 2)  
+        self._segments_dir = Path(config.get("segments_dir", "station/data/segments")).resolve()
+        self._sample_rate = config.get("sample_rate", 48000)
+        self._channels = config.get("channels", 1)
+        self._sampwidth = config.get("sample_width", 2)
 
 
     def save(self, segment, filename):
@@ -38,15 +38,13 @@ class SegmentSaver:
             segment (numpy.ndarray): Audio segment to be saved, expected to be a numpy array of int16 type.
             filename (str): Name of the file to save the segment as, without extension.
         """
-        
-        filepath = self.segments_dir / f"{filename}.wav"
-        print(f"Saving segment to {filepath}...")
-        
-        try :
+        filepath = self._segments_dir / f"{filename}.wav"
+
+        try:
             with wave.open(str(filepath), 'wb') as wf:
-                wf.setnchannels(self.channels)
-                wf.setsampwidth(self.sampwidth)
-                wf.setframerate(self.sample_rate)
+                wf.setnchannels(self._channels)
+                wf.setsampwidth(self._sampwidth)
+                wf.setframerate(self._sample_rate)
                 wf.writeframes(segment.tobytes())
         except Exception as e:
             print(f"Error saving segment {filename}: {e}")
@@ -61,7 +59,7 @@ class SegmentSaver:
         Args:
             filename (str): Name of the file to delete, without extension.
         """
-        filepath = self.segments_dir / f"{filename}.wav"
+        filepath = self._segments_dir / f"{filename}.wav"
         if filepath.exists():
             try:
                 filepath.unlink()
