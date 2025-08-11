@@ -1,3 +1,5 @@
+"""Handles the Station Flask Server and processes incoming requests."""
+
 from flask import Flask, request, jsonify, send_from_directory
 import requests
 import time
@@ -17,11 +19,14 @@ ALLOWABLE_STATES = ["unannounced", "announced", "claimed", "configured"]
 
 app = Flask(__name__)
 
-# Helper functions for managing station state
-
+# Global variables for maintaining single instance of DetectionController
 detection_controller = None
-controller_lock = threading.Lock()
-state_watcher_stop_event = threading.Event()
+controller_lock = threading.Lock()              # Prevents race conditions when accessing the detection controller
+state_watcher_stop_event = threading.Event()    # Event to stop the state watcher thread once station is configured
+status_thread = None
+status_thread_lock = threading.Lock()           # Prevents race conditions when accessing the status thread
+
+
 
 def create_detection_controller():
     """Returns the global detection controller instance."""
@@ -38,6 +43,7 @@ def get_station_state():
     config = load_yaml_config(STATION_CONFIG_PATH)
     return config["station"]["state"]
 
+
 def set_station_state(new_state):
     """Set the current state of the station."""
     if new_state not in ALLOWABLE_STATES:
@@ -47,8 +53,10 @@ def set_station_state(new_state):
     config["station"]["state"] = new_state
     write_yaml_config(STATION_CONFIG_PATH, config)
 
+
 def announce_station():
-    """Announce the station to the backend server."""
+    """Announces the station to the backend server. 
+    Updates the station's state if announcement is successful."""
     config = load_yaml_config(STATION_CONFIG_PATH)
 
     if (config["station"]["state"] != "unannounced"):
@@ -81,15 +89,15 @@ def announce_station():
     
 
 def detection_is_running():
+    """Checks if the detection controller is running.
+
+    Returns:
+        bool: True if the detection controller is running, False otherwise.
+    """
     detection_controller = create_detection_controller()
     if not detection_controller:
         return False
     return detection_controller.is_running()
-
-    
-
-status_thread = None
-status_thread_lock = threading.Lock()
 
 def get_hardware_status():
     """Get the current status of the station hardware."""
@@ -127,6 +135,7 @@ def post_status_updates():
 
 
 def start_status_status_thread():
+    """Starts the status update thread if not already running."""
     global status_thread
     with status_thread_lock:
         if status_thread and status_thread.is_alive():
@@ -137,6 +146,7 @@ def start_status_status_thread():
             status_thread.start()
 
 def state_watcher():
+    """Watches for changes in the station state and takes appropriate action."""
     global detection_controller
     last = None
     while not state_watcher_stop_event.is_set():
@@ -163,7 +173,7 @@ def state_watcher():
 
 
 
-# Flask routes for the station control server
+##################### Flask routes for the server ####################
 @app.before_request
 def authenticate_api_key():
     """Authenticate the API key for incoming requests."""
@@ -175,7 +185,6 @@ def authenticate_api_key():
             "status": "failure",
             "message": "Forbidden: Invalid token"
         }), 403
-    
     
     
 @app.route('/claim', methods=['POST'])
@@ -194,6 +203,7 @@ def claim_station():
             "status": "failure",
             "message": "Station can not be claimed"
         }), 400
+
 
 @app.route('/update-config', methods=['POST'])
 def update_config():
@@ -277,6 +287,7 @@ def stop_recording():
 
 @app.route('/recordings/<path:file_name>')
 def serve_audio(file_name):
+    """Serve an audio recording file."""
     file_path = os.path.join(STATIC_CONFIG['paths']['segments_dir'], file_name)
 
     if not os.path.exists(file_path):
@@ -299,6 +310,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
 
+    # Monitor station state until configured, then launch detection process
     current_state = get_station_state()
     
     if current_state == "announced":
@@ -315,8 +327,9 @@ if __name__ == '__main__':
         start_status_status_thread()
 
     threading.Thread(target=state_watcher, daemon=True).start()
-    
-        
+
+
+    # Launch the Flask server
     app.run(
         host=os.environ.get("FLASK_SERVER_HOST"), 
         port=os.environ.get("FLASK_SERVER_PORT")
