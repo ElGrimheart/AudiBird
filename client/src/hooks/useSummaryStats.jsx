@@ -26,7 +26,7 @@ export default function useSummaryStats(stationId) {
             setError(null);
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_DETECTION_URL}/summary/${stationId}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/summary/${stationId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
                 const statsArray = Object.entries(response.data.result || {}).map(([key, value]) => ({

@@ -1,27 +1,39 @@
 import db from "../config/db-conn.js";
+import { getStationById } from "./station-service.js";
 import axios from 'axios';
 
-export async function getAudioById(audioId, rangeHeader) {
+// Retrieves the filename and station ID for a given audio ID
+export async function getAudioById(audioId) {
     const sql = `
-        SELECT file_name
+        SELECT file_name, station.station_id
         FROM audio
-        WHERE audio_id = $1
+        JOIN detection ON audio.audio_id = detection.audio_id
+        JOIN station ON detection.station_id = station.station_id
+        WHERE audio.audio_id = $1
     `;
 
     const result = await db.query(sql, [audioId]);
-    
-    if (result.rowCount === 0) {
-        throw new Error('Audio not found');
+
+    return result.rows[0] || null;
+}
+
+// Sends request to fetch audio from a station and relays the stream
+export async function relayAudioFromStation(stationId, path, filename) {
+    const station = await getStationById(stationId);
+
+    if (!station) {
+        throw new Error(`Station with ID ${stationId} not found`);
     }
 
-    // return the audio stream from the station server
-    const { file_name } = result.rows[0];
-    const stationUrl = `http://192.168.0.47:4000/recordings/${file_name}`;
+    const { station_host, station_port, api_key } = station;
+    const url = `http://${station_host}:${station_port}/${path}/${filename}`;
 
-    const streamResponse = await axios.get(stationUrl, {
-        responseType: "stream",
-        headers: rangeHeader ? { Range: rangeHeader } : {}
+    const response = await axios({
+        method: "GET",
+        url,
+        headers: { 'Authorization': `Bearer ${api_key}` },
+        responseType: 'stream'
     });
 
-    return streamResponse;
+    return response;
 }

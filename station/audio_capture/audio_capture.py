@@ -2,7 +2,7 @@
 import sounddevice as sd
 import queue
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
 
 class AudioCapture:
     """Captures audio from the microphone, segments it with the provided segmenter,
@@ -36,24 +36,24 @@ class AudioCapture:
         """
         
         # Initializing with configuration parameters
-        self.sample_rate = config.get("sample_rate", 48000)
-        self.channels = config.get("channels", 1)
-        self.dtype = config.get("dtype", "int16")
-        
-        self.segmenter = segmenter
-        self.segment_saver = segment_saver
-        self.segments_queue = queue.Queue()
-       
-        self.on_segment_ready = on_segment_ready
-        self.listeners = []     
-        
-        self.running = False   
-      
+        self._sample_rate = config.get("sample_rate", 48000)
+        self._channels = config.get("channels", 1)
+        self._dtype = config.get("dtype", "int16")
+
+        self._segmenter = segmenter
+        self._segment_saver = segment_saver
+        self._segments_queue = queue.Queue()
+
+        self._on_segment_ready = on_segment_ready
+        self._listeners = []     
+
+        self._running = False
+
       
     def add_listener(self, callback):
         """Adds a listener to receive live audio blocks."""
-        self.listeners.append(callback)
-    
+        self._listeners.append(callback)
+
         
     def start(self, device=None):
         """Starts continuous audio capture from the microphone.
@@ -64,49 +64,49 @@ class AudioCapture:
         Attributes:
             running (bool): Flag to indicate if the audio capture is currently running.
         """
-        
-        self.running = True
+
+        self._running = True
         print(f"Starting audio capture...")
-        print("Press Ctrl+C to stop capture.")
         
         
         def callback(indata, frames, time, status):
             """Callback function to process audio data in real-time."""
-            if self.running:
+            if self._running:
                 
                 # Notify listeners with the live audio block
-                for listener in self.listeners:
+                for listener in self._listeners:
                     listener(indata.copy())
                 
                 # Append audio data to the segmenter
-                self.segmenter.append_audio(indata)  
-                for segment in self.segmenter.get_segments():
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-                    self.segments_queue.put((segment, timestamp))
-                
-                
+                self._segmenter.append_audio(indata)
+                for segment in self._segmenter.get_segments():
+                    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
+                    self._segments_queue.put((segment, timestamp))
+
+
         # Thread to save segments in the background
-        save_thread = threading.Thread(target=self._save_segments, daemon=True)     # True means the thread will exit when the main program exit
-        save_thread.start()
+        self._save_thread = threading.Thread(
+            target=self._save_segments, 
+            daemon=True,
+            name=f"AudioCaptureSaveThread {id(self)}"
+        )    
+        self._save_thread.start()
         
         
         # Starting the audio stream
         try:
             with sd.InputStream(
                 device=device,
-                samplerate=self.sample_rate, 
-                channels=self.channels, 
-                dtype=self.dtype,
+                samplerate=self._sample_rate, 
+                channels=self._channels, 
+                dtype=self._dtype,
                 callback=callback
             ):
-                while self.running:
+                while self._running:
                     sd.sleep(1000)  # Keep the stream alive
-        except KeyboardInterrupt:
-            print("Audio capture interrupted by user.")
-            self.running = False
         except Exception as e:
             print(f"Error starting audio capture: {e}")
-            self.running = False
+            self._running = False
         finally:
             self.stop()
             print("Audio capture stopped.")
@@ -124,20 +124,20 @@ class AudioCapture:
             running (bool): Flag to indicate if the audio capture is currently running.         
         """
      
-        while self.running:
+        while self._running:
             try:
-                segment, timestamp = self.segments_queue.get(timeout=1) #timeout to prevent blocking indefinitely
-                self.segment_saver.save(segment, timestamp)
-                if self.on_segment_ready:
-                    self.on_segment_ready(timestamp)  # Notify listeners that a segment is ready
-                self.segments_queue.task_done()
+                segment, timestamp = self._segments_queue.get(timeout=1) #timeout to prevent blocking indefinitely
+                self._segment_saver.save(segment, timestamp)
+                if self._on_segment_ready:
+                    self._on_segment_ready(timestamp)  # Notify listeners that a segment is ready
+                self._segments_queue.task_done()
             except queue.Empty:
                 continue
             except Exception as e:
                 print(f"Error saving segment: {e}")
 
     def stop(self):
-        """Stops the audio capture and processes any remaining segments in the queue.
+        """Stops the audio capture and processes
         
         Args:
             None
@@ -145,15 +145,10 @@ class AudioCapture:
         Attributes:
             running (bool): Flag to indicate if the audio capture is currently running.
         """
-        self.running = False
-        
-        while not self.segments_queue.empty():
-            try:
-                segment, timestamp = self.segments_queue.get_nowait()
-                self.segment_saver.save(segment, timestamp)
-                self.segments_queue.task_done()
-            except queue.Empty:
-                break
+        self._running = False
+
+        if hasattr(self, '_save_thread') and self._save_thread.is_alive():
+            self._save_thread.join(timeout=5)
         
         print("Audio capture stopped")
 

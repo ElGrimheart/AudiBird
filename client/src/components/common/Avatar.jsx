@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "react-bootstrap/Image";
+import * as externalLink from '../../constants/externalLinks';
 
 // AvatarImage component displays a circular bird image with common name and contributor
 export default function AvatarImage({ src, alt, commonName, contributor, size, className}) {
@@ -7,7 +8,7 @@ export default function AvatarImage({ src, alt, commonName, contributor, size, c
         <Image
             src={src || "/bird_avatar_placeholder.png"}
             alt={alt}
-            title={`${commonName} by ${contributor}; ${import.meta.env.VITE_EXTERNAL_MEDIA_NAME}`}
+            title={`${commonName} by ${contributor}; ${externalLink.EXTERNAL_MEDIA_NAME}`}
             width={size}
         height={size}
         className={className}

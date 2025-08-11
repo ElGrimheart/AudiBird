@@ -1,6 +1,7 @@
 import React, { useState, useContext} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
+import useStationStatus from '../../hooks/useStationStatus.jsx';
 import useRecentDetections from '../../hooks/useRecentDetections.jsx';
 import useCommonSpecies from '../../hooks/useCommonSpecies.jsx';
 import useSummaryStats from '../../hooks/useSummaryStats.jsx';
@@ -12,14 +13,23 @@ import CommonSpeciesCard from './CommonSpeciesCard.jsx';
 import AverageDetectionsCard from './AverageDetectionsCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
+const dateYesterday = new Date();
+dateYesterday.setDate(dateYesterday.getDate() - 1);
+dateYesterday.toUTCString();
+
+const dateOneWeekAgo = new Date();
+dateOneWeekAgo.setDate(dateOneWeekAgo.getDate() - 7);
+dateOneWeekAgo.toUTCString();
+
 /* Main DashboardContainer component that assembles and controls layout of the dashboard cards.
 Fetches data, loading and error states from the applicable hooks and passes it to the respective card components.
 */
 export default function DashboardContainer() {
     const { selectedStation } = useContext(SelectedStationContext);
-    const [filters] = useState({ startDate: null, endDate: null, species: [] });
+    const [filters] = useState({ startDate: dateOneWeekAgo, endDate: dateYesterday, species: [] });
 
     // Card data hooks
+    const { stationStatus, loading: statusLoading, error: statusError } = useStationStatus(selectedStation);
     const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation);
     const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation);
     const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation);
@@ -36,7 +46,11 @@ export default function DashboardContainer() {
             {/* Row 1: Station Status + Detection Summary */}
             <Row className="mb-4">
                 <Col md={6}>
-                    <StationCard station={{ name: "Station 1", description: "Main field station", isActive: true }} />
+                    <StationCard 
+                        stationStatus={stationStatus} 
+                        loading={statusLoading} 
+                        error={statusError} 
+                    />
                 </Col>
                 <Col md={6}>
                     <SummaryCard 

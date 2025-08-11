@@ -18,7 +18,7 @@ export default function UserStationsProvider({ children }) {
         try {
           setLoading(true);
           setError(null);
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/stations`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_USERS_URL}/stations`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
           });
           setStations(response.data.result || []);

@@ -4,7 +4,7 @@ import { getStationById } from "../services/station-service.js";
 // Authenticates user supplied JWT token. Adds user info to request object if valid.
 export const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
-
+    
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({
             status: "failure",

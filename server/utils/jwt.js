@@ -1,12 +1,26 @@
 import jwt from "jsonwebtoken";
+import * as userService from "../services/user-service.js";
 
 // Generates a JWT token with the provided user information
-export function generateJwtToken(user) {
+export async function generateJwtToken(userId) {
+    // Get the user's stations and their permissions
+    const user = await userService.getUserById(userId);
+    const userStations = await userService.getUserStations(user.user_id);
+
+    const stationPermissions = {};
+    userStations.forEach(station => {
+        console.log(`Station ID: ${station.station_id}, User Type: ${station.station_user_type_id}`);
+        stationPermissions[station.station_id] = station.station_user_type_id;
+    });
+
+    // Create the JWT payload
     const payload = {
-        userId: user.userId,
+        userId: user.user_id,
         userTypeId: user.user_type_id,
-        stations: user.stations || {}
+        stations: stationPermissions || {}
     };
+
+    console.log(payload)
     
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '2h' });
 }

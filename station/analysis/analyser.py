@@ -21,15 +21,15 @@ class Analyser:
     """
     
     def __init__(self, config):
-        self.lat = config.get("lat", None)
-        self.lon = config.get("lon", None)
-        self.min_conf = config.get("min_conf", 0.25)
-        
-        self.birdnet_analyzer = BirdnetAnalyzer()  
-        self.analysis_queue = queue.Queue()
-        self.segments_dir = Path(config.get("segments_dir", "pi/data/segments")).resolve()
-        
-        self.running = False
+        self._lat = config.get("lat", None)
+        self._lon = config.get("lon", None)
+        self._min_conf = config.get("min_conf", 0.25)
+
+        self._birdnet_analyzer = BirdnetAnalyzer()
+        self._analysis_queue = queue.Queue()
+        self._segments_dir = Path(config.get("segments_dir", "pi/data/segments")).resolve()
+
+        self._running = False
 
 
     def analyse_segment(self, filename):
@@ -39,14 +39,14 @@ class Analyser:
             filename (str): Name of the audio segment file to analyze.
         """
 
-        filepath = self.segments_dir / f"{filename}.wav"
+        filepath = self._segments_dir / f"{filename}.wav"
         recording = Recording(
-            self.birdnet_analyzer,
+            self._birdnet_analyzer,
             str(filepath),
-            lat=self.lat,
-            lon=self.lon,
+            lat=self._lat,
+            lon=self._lon,
             date=datetime.strptime(filename, "%Y%m%d_%H%M%S_%f"),
-            min_conf=self.min_conf
+            min_conf=self._min_conf
         )
         recording.analyze()
         print(recording.detections)
@@ -60,8 +60,8 @@ class Analyser:
         Args:
             filename (str): Name of the audio segment file to add to the queue.
         """
-        
-        self.analysis_queue.put(filename)
+
+        self._analysis_queue.put(filename)
         print(f"Segment {filename} added to analysis queue.")
     
 
@@ -74,13 +74,16 @@ class Analyser:
         Atributes:
             running (bool): Flag to indicate if the analyser is currently running.
         """
-        
-        self.running = True
-        while self.running:
+
+        self._running = True
+        while self._running:
             try:
-                filename, audio_metadata, processing_metadata = self.analysis_queue.get(timeout=1)
+                filename, audio_metadata, processing_metadata = self._analysis_queue.get(timeout=1)
+                if not self._running:
+                    break
+
                 self.analyse_segment(filename, audio_metadata, processing_metadata)
-                self.analysis_queue.task_done()
+                self._analysis_queue.task_done()
             except queue.Empty:
                 continue
 
@@ -91,4 +94,4 @@ class Analyser:
         Atributes:
             running (bool): Flag to indicate if the analyser is currently running.
         """
-        self.running = False
+        self._running = False

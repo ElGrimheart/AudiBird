@@ -123,7 +123,7 @@ export function analyticsFiltersSchema() {
                 if (!value) {
                     return true; 
                 }
-                return value <= new Date(); 
+                return value <= new Date(Date.now() + 24 * 60 * 60 * 1000); 
             }),
         speciesName: Yup.string()
           .nullable()

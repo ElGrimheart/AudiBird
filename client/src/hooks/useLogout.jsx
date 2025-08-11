@@ -8,7 +8,7 @@ export default function useLogout() {
     const handleLogout = async (event) => {
         if (event) event.preventDefault();
         try {
-            await axios.post(`${import.meta.env.VITE_API_USER_URL}/logout`);
+            await axios.post(`${import.meta.env.VITE_API_USERS_URL}/logout`);
         } catch (err) {
             console.error("Logout failed:", err);
         }

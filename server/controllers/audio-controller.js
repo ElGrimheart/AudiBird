@@ -1,23 +1,34 @@
 import * as audioService from "../services/audio-service.js";
 import logAction from "../utils/logger.js";
 
-// GET /api/audio/:audioId route - retrieves audio by ID
+// GET /api/audio/:audioId route - retrieves audio by ID and relays the stream
 export const getAudioById = async (req, res) => {
     const { audioId } = req.params;
   
     logAction("Retrieving audio by ID", { audioId });
 
     try {
-        const streamResponse = await audioService.getAudioById(audioId, req.headers.range);
+        const { file_name, station_id } = await audioService.getAudioById(audioId);
 
-        // Setting response headers for audio streaming & piping stream to frontend
-        res.set(streamResponse.headers);
-        streamResponse.data.pipe(res);
-    } catch (error) {
-        if (error.message === "Audio not found") {
-            res.status(404).json({ error: "Audio not found" });
-        } else {
-            res.status(502).json({ error: "Failed to stream audio from station." });
+        if (file_name) {
+            const streamResponse = await audioService.relayAudioFromStation(station_id, "recordings", file_name);
+
+            if (streamResponse) {
+                // Setting response headers for audio streaming & piping stream to frontend
+                res.set(streamResponse.headers);
+                streamResponse.data.pipe(res);
+            } else {
+                res.status(404).json({
+                    status: "failure",
+                    message: "Audio not found"
+                });
+            }
         }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving audio ID: ${audioId}`,
+            error: error.message
+        });
     }
 };

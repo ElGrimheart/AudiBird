@@ -5,6 +5,7 @@ import SelectedStationContext from "../../contexts/SelectedStationContext.jsx";
 import useSpeciesSummary from "../../hooks/useSpeciesSummary.jsx";
 import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import ComponentCard from "../common/ComponentCard.jsx";
+import * as externalLink from '../../constants/externalLinks';
 import { formatStringToDate } from "../../utils/dateFormatter";
 
 /*
@@ -40,7 +41,7 @@ export default function SpeciesStats({ filters, setFilters }) {
                                 <img 
                                     src={image_url} 
                                     alt={image_rights} 
-                                    title={`${filters.species} by ${image_rights}; ${import.meta.env.VITE_EXTERNAL_MEDIA_NAME}`}
+                                    title={`${filters.speciesName} by ${image_rights}; ${externalLink.EXTERNAL_MEDIA_NAME}`}
                                     className="img-fluid mt-3" 
                                 />
                             </Col>
