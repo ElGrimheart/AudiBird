@@ -1,4 +1,3 @@
-import { io } from "../server.js";
 import * as detectionService from "../services/detection-service.js";
 import logAction from "../utils/logger.js";
 
@@ -188,9 +187,6 @@ export const createDetection = async (req, res) => {
         const newDetection = await detectionService.createDetection(stationId, detectionData);
 
         if (newDetection) {
-            // Emit a socket event to notify clients of the new detection
-            io.to(stationId).emit("newDetection", newDetection);
-
             res.status(201).json({
                 status: "success",
                 message: `New detection created with ID: ${newDetection.detection_id}`,

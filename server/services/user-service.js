@@ -126,3 +126,41 @@ export async function registerUser(name, username, email, password) {
         return newUser.rows[0];
     }
 }
+
+// Retrieves users details by their notification preferences
+export async function getUsersByPreferences(stationId, eventTypeId, channelTypeId, { confidence } = {}) {
+    const values = [stationId, eventTypeId, channelTypeId];
+    console.log("Retrieving users by preferences:", {
+        stationId,
+        eventTypeId,
+        channelTypeId,
+        confidence
+    });
+    
+    let whereClause = `
+        WHERE user_preferences.enabled = true
+        AND user_preferences.station_id = $1
+        AND user_preferences.event_type_id = $2
+        AND user_preferences.channel_type_id = $3
+    `;
+
+    if (confidence) {
+        values.push(confidence);
+        whereClause += ` AND user_preferences.confidence_threshold <= $4`;
+    }
+
+    const sql = `
+        SELECT users.name, users.email, station.station_name
+            FROM users
+            JOIN user_preferences ON users.user_id = user_preferences.user_id
+            JOIN station ON user_preferences.station_id = station.station_id
+            ${whereClause}
+        `;
+
+    const result = await db.query(sql, values);
+
+    if (result.rowCount === 0) {
+        return [];
+    }
+    return result.rows;
+}

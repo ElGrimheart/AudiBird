@@ -2,6 +2,7 @@ import db from "../config/db-conn.js";
 import { getMediaBySpeciesCode, postSpeciesMedia } from "./media-service.js";
 import { scrapeImgUrl, scrapeAudioUrl } from "../utils/mediaScraper.js";
 import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sqlBuilder.js";
+import { handleNewDetection } from "../handlers/detection-handler.js";
 import logAction from "../utils/logger.js";
 
 // Retrieves a detection by its ID
@@ -133,7 +134,7 @@ export async function createDetection(stationId, detectionData) {
         RETURNING audio_id
     `;
 
-    const detectionSql = `
+    const newDetectionSql = `
         INSERT INTO detection (
             common_name, 
             scientific_name, 
@@ -182,10 +183,12 @@ export async function createDetection(stationId, detectionData) {
         ];
 
         // Insert the detection record and commit the transaction
-        const createDetectionResult = await db.query(detectionSql, detectionValues);
+        const createDetectionResult = await db.query(newDetectionSql, detectionValues);
         const newDetection = createDetectionResult.rows[0];
         await db.query('COMMIT');
 
+        // Add the new detection to the queue for further processing
+        handleNewDetection(newDetection)
 
         // Check for database for existing cached media links or attempt to scrape if not found
         let mediaLinks = await getMediaBySpeciesCode(speciesCode);
