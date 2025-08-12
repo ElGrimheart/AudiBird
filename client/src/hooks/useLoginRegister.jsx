@@ -33,7 +33,7 @@ export default function useLoginRegister(fetchUserStations) {
           }
           } catch (error) {
 
-              // Handle API errors
+              // Handle API validation errors
               if (error.response?.data?.errors) {
                   const apiErrors = error.response.data.errors.reduce((acc, curr) => {
                     acc[curr.path] = curr.msg;
