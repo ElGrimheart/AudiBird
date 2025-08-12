@@ -62,10 +62,12 @@ export const getAllDetectionsByStationId = async (req, res) => {
 // GET /api/detections/recent/:stationId route - retrieves recent detections for a given station
 export const getRecentDetectionsByStationId = async (req, res) => {
     const { stationId } = req.params;
+    const { limit } = req.query;
+
     logAction("Retrieving recent detections for", { stationId });
 
     try {
-        const recentDetections = await detectionService.getRecentDetectionsByStationId(stationId);
+        const recentDetections = await detectionService.getRecentDetectionsByStationId(stationId, { limit });
         
         if (recentDetections && recentDetections.length > 0) {
             res.status(200).json({
@@ -83,64 +85,6 @@ export const getRecentDetectionsByStationId = async (req, res) => {
         res.status(500).json({
             status: "error",
             message: `Error retrieving recent detections data for Station ID: ${stationId}`,
-            error: error.message
-        });
-    }
-};
-
-// GET /api/detections/common/:stationId route - retrieves the most common species detected for a given station
-export const getMostCommonSpeciesByStationId = async (req, res) => {
-    const { stationId } = req.params;
-    logAction("Retrieving most common species for", { stationId });
-
-    try {
-        const commonSpecies = await detectionService.getMostCommonSpeciesByStationId(stationId);
-        
-        if (commonSpecies && commonSpecies.length > 0) {
-            res.status(200).json({
-                status: "success",
-                message: `Retrieved most common species data for Station ID: ${stationId}`,
-                result: commonSpecies
-            });
-        } else {
-            res.status(404).json({
-                status: "failure",
-                message: `No common species found for Station ID: ${stationId}`
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: `Error retrieving most common species data for Station ID: ${stationId}`,
-            error: error.message
-        });
-    }
-}
-
-// GET /api/detections/summary/:stationId route - retrieves a summary of detections for a given station
-export const getDetectionSummaryByStationId = async (req, res) => {
-    const { stationId } = req.params;
-    logAction("Retrieving detection summary for", { stationId });
-
-    try {
-        const detectionSummary = await detectionService.getDetectionSummaryByStationId(stationId);
-
-        if (detectionSummary) {
-            res.status(200).json({
-                status: "success",
-                message: `Retrieved detection summary data for Station ID: ${stationId}`,
-                result: detectionSummary
-            });
-        } else {
-            res.status(404).json({
-                status: "failure",
-                message: `No detection summary found for Station ID: ${stationId}`
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: `Error retrieving detection summary data for Station ID: ${stationId}`,
             error: error.message
         });
     }

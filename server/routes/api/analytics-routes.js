@@ -6,6 +6,20 @@ import * as analyticsController from '../../controllers/analytics-controller.js'
 
 const analyticsRouter = express.Router();
 
+analyticsRouter.get('/detection-summary/:stationId',
+    authenticateJWT,
+    authenticateAccessPermission,
+    validateStationId,
+    analyticsController.getDetectionSummaryByStationId
+);
+
+analyticsRouter.get('/common-species/:stationId',
+    authenticateJWT,
+    authenticateAccessPermission,
+    validateStationId,
+    analyticsController.getMostCommonSpeciesByStationId
+);
+
 analyticsRouter.get('/species-summary/:stationId',
     authenticateJWT,
     authenticateAccessPermission,

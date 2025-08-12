@@ -1,5 +1,6 @@
 import db from '../config/db-conn.js';
 import { hashPassword, comparePassword } from '../utils/hasher.js';
+import { newUserQueue } from '../queues/new-user-queue.js';
 
 
 // Retrieves a user by their email
@@ -122,6 +123,11 @@ export async function registerUser(name, username, email, password) {
         if (newUser.rowCount === 0) {
             throw new Error('User registration failed');
         }
+
+        await newUserQueue.add({
+            userEmail: email,
+            newUser: newUser.rows[0]
+        });
 
         return newUser.rows[0];
     }

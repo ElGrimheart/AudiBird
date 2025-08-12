@@ -1,6 +1,64 @@
 import * as analyticsService from '../services/analytics-service.js';
 import logAction from '../utils/logger.js';
 
+
+// GET /api/analytics/detection-summary/:stationId route - retrieves an overall summary of detections for a given station
+export const getDetectionSummaryByStationId = async (req, res) => {
+    const { stationId } = req.params;
+
+    logAction("Retrieving detection summary for", { stationId });
+    try {
+        const detectionSummary = await analyticsService.getDetectionSummaryByStationId(stationId);
+        if (detectionSummary) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved detection summary for Station ID: ${stationId}`,
+                result: detectionSummary
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `Detection summary for Station ID: ${stationId} not found`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving detection summary for Station ID: ${stationId}`,
+            error: error.message
+        });
+    }
+};
+
+//GET /api/analytics/most-common-species/:stationId route - retrieve the most common species detected for a given station
+export const getMostCommonSpeciesByStationId = async (req, res) => {
+    const { stationId } = req.params;
+    const { limit } = req.query;
+
+    logAction("Retrieving most common species for", { stationId });
+    try {
+        const mostCommonSpecies = await analyticsService.getMostCommonSpeciesByStationId(stationId, { limit });
+        if (mostCommonSpecies) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved most common species for Station ID: ${stationId}`,
+                result: mostCommonSpecies
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `Most common species for Station ID: ${stationId} not found`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving most common species for Station ID: ${stationId}`,
+            error: error.message
+        });
+    }
+};
+
 // GET /api/analytics/species-summary/:stationId route - retrieves species summary for a given station
 export const getSpeciesSummaryByStationId = async (req, res) => {
     const { stationId } = req.params;

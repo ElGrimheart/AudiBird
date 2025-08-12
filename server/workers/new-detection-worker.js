@@ -1,6 +1,7 @@
 import { newDetectionQueue } from "../queues/new-detection-queue.js";
 import { sendEmail } from "../services/email-service.js";
 
+// Processes new detection jobs and sending email notifications
 newDetectionQueue.process(async (job) => {
     const { userEmail, newDetection } = job.data;
     console.log("Processing new detection for user:", userEmail);
@@ -24,6 +25,7 @@ newDetectionQueue.process(async (job) => {
 });
 
 
+// Event listeners for job completion and failure
 newDetectionQueue.on('failed', (job, err) => {
     console.error('Job failed:', job.id, err);
 });

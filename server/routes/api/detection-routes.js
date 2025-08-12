@@ -22,20 +22,6 @@ detectionRouter.get('/recent/:stationId',
     detectionController.getRecentDetectionsByStationId
 );
 
-detectionRouter.get('/common/:stationId', 
-    authenticateJWT, 
-    authenticateAccessPermission, 
-    validateStationId, 
-    detectionController.getMostCommonSpeciesByStationId
-);
-
-detectionRouter.get('/summary/:stationId', 
-    authenticateJWT, 
-    authenticateAccessPermission, 
-    validateStationId, 
-    detectionController.getDetectionSummaryByStationId
-);
-
 detectionRouter.get('/filtered/:stationId', 
     authenticateJWT, 
     authenticateAccessPermission, 

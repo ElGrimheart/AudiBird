@@ -1,6 +1,52 @@
 import db from "../config/db-conn.js";
 import { normaliseDateToStartOfDay, normaliseDateToEndOfDay } from "../utils/dateFormatter.js";
-import { buildDetectionWhereClause, buildDeltaFilters } from "../utils/sqlBuilder.js";
+import { buildDetectionWhereClause } from "../utils/sqlBuilder.js";
+
+
+/*
+Retrieves an overall summary of detections for a given station ID
+Returns an object containing total detections, total species, detections today, species today, detections last hour, species last hour
+*/
+export async function getDetectionSummaryByStationId(stationId) {
+    const sql = `
+        SELECT
+            COUNT(*) AS total_detections,
+            COUNT(DISTINCT common_name) AS total_species,
+            COUNT(*) FILTER (WHERE detection_timestamp >= CURRENT_DATE) AS detections_today,
+            COUNT(DISTINCT common_name) FILTER (WHERE detection_timestamp >= CURRENT_DATE) AS species_today,
+            COUNT(*) FILTER (WHERE detection_timestamp >= NOW() - INTERVAL '1 hour') AS detections_last_hour,
+            COUNT(DISTINCT common_name) FILTER (WHERE detection_timestamp >= NOW() - INTERVAL '1 hour') AS species_last_hour
+        FROM detection
+        WHERE station_id = $1
+    `;
+    const result = await db.query(sql, [stationId]);
+    return result.rows[0];
+}
+
+
+/*
+Retrieves the most common species detected for a given station ID based on limit passed
+Returns an array of objects containing common name, scientific name, species code, image URL, image rights, and count.
+*/
+export async function getMostCommonSpeciesByStationId(stationId, { limit }) {
+    const sql = 
+        `SELECT 
+            detection.common_name, 
+            detection.scientific_name, 
+            detection.species_code, 
+            species_media.image_url, 
+            species_media.image_rights, 
+            COUNT(*) as count
+        FROM detection
+        LEFT JOIN species_media ON detection.species_code = species_media.species_code
+        WHERE detection.station_id = $1
+        GROUP BY detection.common_name, detection.scientific_name, detection.species_code, species_media.image_url, species_media.image_rights
+        ORDER BY count DESC
+        LIMIT $2`;
+
+    const result = await db.query(sql, [stationId, limit]);
+    return result.rows;
+}
 
 /* 
 Generates average hourly trends of detections for a given station.
@@ -54,6 +100,10 @@ export async function getAverageHourlyTrendsByStationId(stationId, { startDate, 
     return fullResult;
 }
 
+/*
+Generates a species summary for a given station ID.
+Returns an object containing total detections, first/last detection timestamps, peak detection day, and average detections per day.
+*/
 export async function getSpeciesSummaryByStationId(stationId, { speciesName }) {
     const filters = { speciesName };
     const { whereClause, values } = buildDetectionWhereClause(stationId, filters);
@@ -178,10 +228,10 @@ export async function getDailyDetectionTotalsByStationId(stationId, { startDate,
     // Build date-species : count map
     const countMap = {};
     result.rows.forEach(row => {
-        const dateStr = row.date instanceof Date
+        const date = row.date instanceof Date
             ? row.date.toISOString().slice(0, 10)
             : String(row.date).slice(0, 10);
-        countMap[`${dateStr}|${row.common_name}`] = Number(row.count);
+        countMap[`${date}|${row.common_name}`] = Number(row.count);
     });
 
     // Apply 0 values for date-species with no detections
@@ -200,6 +250,106 @@ export async function getDailyDetectionTotalsByStationId(stationId, { startDate,
     console.log ("Full Daily Result:", fullResult);
 
     return fullResult;
+}
+
+/*
+Generates a daily summary for a specific station on a given date.
+Returns an objec
+*/
+export async function getDailySummaryByStationId(stationId, singleDate) {
+    try {
+        const dailyDetections = await getTotalDetectionsByStationId(stationId, { startDate: singleDate, endDate: singleDate });
+        const dailySpecies = await getTotalSpeciesByStationId(stationId, { startDate: singleDate, endDate: singleDate });
+        const commonSpecies = await getCommonSpeciesByStationId(stationId, { startDate: singleDate, endDate: singleDate });
+        const newSpecies = await getNewSpeciesByStationId(stationId, singleDate);
+        console.log("Daily Summary Result:", {
+            dailyDetections,
+            dailySpecies,
+            commonSpecies,
+            newSpecies
+        });
+
+        return {
+        dailyDetections,
+        dailySpecies,
+        commonSpecies,
+        newSpecies
+        }
+    } catch (error) {
+        console.error("Error in getDailySummaryByStationId:", error);
+    }   
+    return null;
+}
+
+
+async function getTotalDetectionsByStationId(stationId, { startDate, endDate }) {
+    startDate = normaliseDateToStartOfDay(startDate);
+    endDate = normaliseDateToEndOfDay(endDate);
+    const { whereClause, values } = buildDetectionWhereClause(stationId, { startDate, endDate });
+
+    const sql = `
+        SELECT COUNT(*) AS total_detections
+        FROM detection
+        ${whereClause}
+    `;
+
+    const result = await db.query(sql, values);
+    return result.rows[0].total_detections || 0;
+}
+
+async function getTotalSpeciesByStationId(stationId, { startDate, endDate }) {
+    startDate = normaliseDateToStartOfDay(startDate);
+    endDate = normaliseDateToEndOfDay(endDate);
+    const { whereClause, values } = buildDetectionWhereClause(stationId, { startDate, endDate });
+
+    console.log("getTotalSpeciesByStationId called with:", { stationId, startDate, endDate });
+    console.log("where clause:", whereClause);
+    const sql = `
+        SELECT COUNT(DISTINCT common_name) AS total_species
+        FROM detection
+        ${whereClause}
+    `;
+
+    const result = await db.query(sql, values);
+    return result.rows[0].total_species || 0;
+}
+
+async function getCommonSpeciesByStationId(stationId, { startDate, endDate }) {
+    startDate = normaliseDateToStartOfDay(startDate);
+    endDate = normaliseDateToEndOfDay(endDate);
+    const { whereClause, values } = buildDetectionWhereClause(stationId, { startDate, endDate });
+
+    const sql = `
+        SELECT common_name, COUNT(*) AS count
+        FROM detection
+        ${whereClause}
+        GROUP BY common_name
+        ORDER BY count DESC
+        LIMIT 5
+    `;
+
+    const result = await db.query(sql, values);
+    return result.rows || [];
+}
+
+async function getNewSpeciesByStationId(stationId, singleDate) {
+    singleDate = singleDate || new Date(Date.now()).toISOString();
+    
+    const sql = `
+       SELECT DISTINCT d1.common_name
+        FROM detection d1
+        WHERE d1.station_id = $1
+        AND DATE(d1.detection_timestamp) = $2
+        AND NOT EXISTS (
+            SELECT 1 FROM detection d2
+            WHERE d2.station_id = $1
+                AND d2.common_name = d1.common_name
+                AND DATE(d2.detection_timestamp) < $2
+        );
+    `;
+
+    const result = await db.query(sql, [stationId, singleDate]);
+    return result.rows || [];
 }
 
 

@@ -1,8 +1,10 @@
+import app from './app.js';
 import http from 'http';
 import { Server } from "socket.io";
-import app from './app.js';
 import stationStreamHandler from './sockets/station-stream-handler.js';
 
+
+// Create HTTP server
 const server = http.createServer(app);
 export const io = new Server(server, { 
     cors: { 
@@ -11,6 +13,7 @@ export const io = new Server(server, {
     }
 });
 
+// Log socket connections
 io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id}`);
 
@@ -29,8 +32,11 @@ io.on('connection', (socket) => {
     });
 });
 
+// Handle station stream events
 stationStreamHandler(io);
 
+
+// Start server
 server.listen(process.env.PORT, '0.0.0.0', (error) => {
     if (error) {
         return console.log(`Error starting server: ${error.message}`);

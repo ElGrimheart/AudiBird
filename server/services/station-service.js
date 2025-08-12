@@ -175,7 +175,7 @@ export async function updateStationConfig(stationId, configData) {
     return result.rows[0].station_config || null;
 }
 
-// Creates a new station status entry
+// Creates a new station status record
 export async function createStationStatus(stationId, statusData) {
     const { is_recording, cpu_temp, memory_usage, disk_usage, battery } = statusData;
     const values = [is_recording, cpu_temp, memory_usage, disk_usage, battery, stationId];
@@ -195,6 +195,18 @@ export async function createStationStatus(stationId, statusData) {
 
     const result = await db.query(sql, values);
     return result.rows[0] || null;
+}
+
+// Retrieves active station IDs over the specified date range
+export async function getActiveStationIds(startDate, endDate) {
+    const sql = `
+        SELECT DISTINCT station_id
+        FROM detection
+        WHERE detection_timestamp BETWEEN $1 AND $2
+    `;
+
+    const result = await db.query(sql, [startDate, endDate]);
+    return result.rows || [];
 }
 
 // Relays a request to a specific station's flask API
