@@ -7,7 +7,7 @@ Hook to fetch common species for a given station.
 Returns an array of common species objects with common name and count.
 Re-fetches when a new detection is received on the room socket or stationId changes.
 */
-export default function useCommonSpecies(stationId) {
+export default function useCommonSpecies(stationId, limit) {
     const [commonSpecies, setCommonSpecies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -26,8 +26,9 @@ export default function useCommonSpecies(stationId) {
             setError(null);
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/common/${stationId}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/common-species/${stationId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
+                    params: { limit }
                 });
                 setCommonSpecies(response.data.result || []);
             } catch (error) {
@@ -52,7 +53,7 @@ export default function useCommonSpecies(stationId) {
         socket.on("newDetection", handleNewDetection);
         return () => socket.off("newDetection", handleNewDetection);
 
-    }, [stationId, socket, isConnected]);
+    }, [stationId, limit, socket, isConnected]);
 
     return { commonSpecies, loading, error };
 }

@@ -27,6 +27,8 @@ export default function useSpeciesSummary(stationId, { filters }) {
                     params: filters,
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
+
+                // format labels for readability
                 const statsArray = Object.entries(response.data.result || {}).map(([key, value]) => ({
                     key: key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
                     value

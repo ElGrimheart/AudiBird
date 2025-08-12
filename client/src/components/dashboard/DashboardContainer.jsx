@@ -30,8 +30,8 @@ export default function DashboardContainer() {
 
     // Card data hooks
     const { stationStatus, loading: statusLoading, error: statusError } = useStationStatus(selectedStation);
-    const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation);
-    const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation);
+    const { recentDetections, loading: detectionsLoading, error: detectionsError } = useRecentDetections(selectedStation, 10);
+    const { commonSpecies, loading: speciesLoading, error: speciesError } = useCommonSpecies(selectedStation, 5);
     const { summaryStats, loading: summaryLoading, error: summaryError } = useSummaryStats(selectedStation);
     const { hourlyTrends, loading: trendsLoading, error: trendsError } = useHourlyTrends(selectedStation, { filters });
 
