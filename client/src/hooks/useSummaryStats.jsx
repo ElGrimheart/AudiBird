@@ -26,11 +26,13 @@ export default function useSummaryStats(stationId) {
             setError(null);
 
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/summary/${stationId}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/detection-summary/${stationId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
+
+                // format labels for readability
                 const statsArray = Object.entries(response.data.result || {}).map(([key, value]) => ({
-                    label: key.replace(/\b\w/g, label => label.toUpperCase()),
+                    label: key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
                     value
                 }));
                 setSummaryStats(statsArray || []);

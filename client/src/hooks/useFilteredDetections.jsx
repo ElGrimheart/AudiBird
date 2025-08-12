@@ -28,7 +28,7 @@ export default function useDetections(stationId) {
         } catch (error) {
             setError.error('Failed to fetch detections:', error);
 
-            // API error response handling
+            // Handle API validation errors
             if (error.response && error.response.data.errors) {
                 const errorMessages = error.response.data.errors.map(err => `${err.path}: ${err.msg}`).join(', ');
                 setError({ general: `Request failed: ${errorMessages}` });

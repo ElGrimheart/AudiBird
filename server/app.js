@@ -22,6 +22,7 @@ app.use(cors({
 app.use(morgan('tiny'));
 app.use(express.json());
 
+
 app.use('/api/users', userRouter);
 app.use('/api/stations', stationRouter);
 app.use('/api/detections', detectionRouter);

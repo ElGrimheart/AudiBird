@@ -7,7 +7,7 @@ Hook to fetch recent detections for a given station.
 Returns an array of detection objects.
 Ref-fetches when a new detection is received via room socket or when the stationId changes.
 */
-export default function useRecentDetections(stationId) {
+export default function useRecentDetections(stationId, limit) {
     const [recentDetections, setRecentDetections] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -28,6 +28,7 @@ export default function useRecentDetections(stationId) {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/recent/${stationId}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
+                    params: { limit }
                 });
                 setRecentDetections(response.data.result || []);
             } catch (error) {
@@ -52,7 +53,7 @@ export default function useRecentDetections(stationId) {
         socket.on("newDetection", handleNewDetection);
         return () => socket.off("newDetection", handleNewDetection);
 
-    }, [stationId, socket, isConnected]);
+    }, [stationId, limit, socket, isConnected]);
 
     return { recentDetections, loading, error };
 }
