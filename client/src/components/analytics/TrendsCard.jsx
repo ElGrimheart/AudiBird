@@ -7,7 +7,7 @@ import TrendsChart from "./TrendsChart";
 
 /*
 TrendsCard component to display trends in species detections over time
-It allows adding multiple trend charts with independent filters.
+Allows adding multiple trend charts with independent filters.
 */
 export default function TrendsCard() {
     const { selectedStation } = useContext(SelectedStationContext);
@@ -53,7 +53,7 @@ export default function TrendsCard() {
             {chartConfigs.map((chart) => (
                 <div key={chart.id} className="mb-4">
 
-                    {/* Remove button for individual chart */}
+                    {/* Render remove chart button if there are multiple charts */}
                     {chartConfigs.length > 1 && (
                         <div className="text-end mb-1">
                             <Button variant="danger" onClick={() => removeChart(chart.id)}>

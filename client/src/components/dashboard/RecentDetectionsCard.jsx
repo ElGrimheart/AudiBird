@@ -3,9 +3,10 @@ import ComponentCard from "../common/ComponentCard.jsx";
 import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import DetectionModal from '../common/DetectionModal.jsx';
 import AudioPlayer from "../common/AudioPlayer";
-import { formatStringToDate } from "../../utils/dateFormatter";
+import { formatStringToDate } from "../../utils/date-formatter";
 
-/* RecentDetectionsCard component to display a list of recent detections by a station.
+/* 
+RecentDetectionsCard component to display a list of recent detections by a station.
 Includes a modal for detailed detection information, and audio playback of detections.
 */
 export default function RecentDetectionsCard({ detectionsData, loading, error }) {

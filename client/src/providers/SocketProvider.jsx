@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import SocketContext from "../contexts/SocketContext";
 
-// SocketProvider component to manage socket connection and listen for events
+// SocketProvider component to manage global socket connection
 export default function SocketProvider({ children }) {
     const socketRef = useRef();
     const [isConnected, setIsConnected] = useState(false);

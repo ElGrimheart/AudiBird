@@ -1,5 +1,4 @@
 import db from "../config/db-conn.js";
-import axios from 'axios';
 
 // Retrieves the image and audio media links for a given species code
 export async function getMediaBySpeciesCode(speciesCode) {

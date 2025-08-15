@@ -30,7 +30,7 @@ export const getDetectionSummaryByStationId = async (req, res) => {
     }
 };
 
-//GET /api/analytics/most-common-species/:stationId route - retrieve the most common species detected for a given station
+//GET /api/analytics/common-species/:stationId route - retrieve the most common species detected for a given station
 export const getMostCommonSpeciesByStationId = async (req, res) => {
     const { stationId } = req.params;
     const { limit } = req.query;

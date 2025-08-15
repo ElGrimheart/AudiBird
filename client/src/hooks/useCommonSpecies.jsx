@@ -39,14 +39,15 @@ export default function useCommonSpecies(stationId, limit) {
             }
         };
 
+        // Initial fetch
+        fetchCommonSpecies();
+
+        // Re-fetch on new detection
         const handleNewDetection = (detection) => {
             if (detection.station_id === stationId) {
                 fetchCommonSpecies();
             }
         };
-
-        // Initial fetch
-        fetchCommonSpecies();
 
         // Listener for new detections on the station's room
         if (!socket || !isConnected) return;

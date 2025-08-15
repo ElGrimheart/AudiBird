@@ -4,7 +4,7 @@ import axios from 'axios';
 /*
 Hook to handle starting and stopping a station recording.
 Submits a request to the API to start or stop recording for a specific station.
-Returns a function to start or stop the recording, and handles any errors that occur.
+Returns a function to start or stop the recording
 */
 export default function useStartStopStation() {
     const [loading, setLoading] = useState(false);

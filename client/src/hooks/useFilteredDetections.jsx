@@ -26,15 +26,16 @@ export default function useDetections(stationId) {
             setDetections(response.data.result || []);
             setError(null);
         } catch (error) {
-            setError.error('Failed to fetch detections:', error);
+
+            if (error.response && error.response.status === 404) {
+                setDetections([]);
+            }
 
             // Handle API validation errors
             if (error.response && error.response.data.errors) {
                 const errorMessages = error.response.data.errors.map(err => `${err.path}: ${err.msg}`).join(', ');
                 setError({ general: `Request failed: ${errorMessages}` });
-            } else {
-                setError({ general: 'An unexpected error occurred' }); // Fallback error
-            }
+            } 
             setDetections([]);
         } finally {
             setLoading(false);

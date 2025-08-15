@@ -3,7 +3,8 @@ import Skeleton from "react-loading-skeleton";
 import { Spinner } from "react-bootstrap";
 import "react-loading-skeleton/dist/skeleton.css";
 
-/*Renders a skeleton component with a spinner overlay. Used to indicate loading state in various components.
+/*
+Renders a skeleton component with a spinner overlay. Used to indicate loading state in various components.
 Can be customized with a height prop to adjust the size of the skeleton.
 */
 export default function SkeletonComponent({ height = 200 }) {

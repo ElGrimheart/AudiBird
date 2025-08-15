@@ -1,20 +1,21 @@
 import * as audioService from "../services/audio-service.js";
 import logAction from "../utils/logger.js";
 
-// GET /api/audio/:audioId route - retrieves audio by ID and relays the stream
+// GET /api/audio/:audioId route - retrieves the stationId, requests the audio stream from the station and relays to client
 export const getAudioById = async (req, res) => {
     const { audioId } = req.params;
   
     logAction("Retrieving audio by ID", { audioId });
 
     try {
+        // Fetch filename and stationId from the database
         const { file_name, station_id } = await audioService.getAudioById(audioId);
 
         if (file_name) {
+            // Request the audio stream from the station and relay it to the client
             const streamResponse = await audioService.relayAudioFromStation(station_id, "recordings", file_name);
 
             if (streamResponse) {
-                // Setting response headers for audio streaming & piping stream to frontend
                 res.set(streamResponse.headers);
                 streamResponse.data.pipe(res);
             } else {

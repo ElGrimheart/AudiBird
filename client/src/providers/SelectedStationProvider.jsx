@@ -2,7 +2,10 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import SelectedStationContext from '../contexts/SelectedStationContext';
 import SocketContext from '../contexts/SocketContext';
 
-// Provider to manage user switching between stations and update the socket room
+/*
+SelectedStationProvider component to manage user switching between stations.
+Used throughout the app to dynamically fetch station-specific data, and update socket to station-specific room
+*/
 export default function SelectedStationProvider({ children }) {
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;

@@ -1,7 +1,7 @@
 import db from "../config/db-conn.js";
 import { getMediaBySpeciesCode, postSpeciesMedia } from "./media-service.js";
-import { scrapeImgUrl, scrapeAudioUrl } from "../utils/mediaScraper.js";
-import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sqlBuilder.js";
+import { scrapeImgUrl, scrapeAudioUrl } from "../utils/media-scraper.js";
+import { buildDetectionWhereClause, buildDetectionSortClause } from "../utils/sql-builder.js";
 import { handleNewDetection } from "../handlers/detection-handler.js";
 import logAction from "../utils/logger.js";
 
@@ -43,39 +43,6 @@ export async function getRecentDetectionsByStationId(stationId, { limit }) {
 
     const result = await db.query(sql, [stationId, limit]);
     return result.rows;
-}
-
-// Retrieves the 5 most common species detected for a given station ID
-export async function getMostCommonSpeciesByStationId(stationId) {
-    const sql = 
-        `SELECT detection.common_name, detection.scientific_name, detection.species_code, species_media.image_url, species_media.image_rights, COUNT(*) as count
-        FROM detection
-        LEFT JOIN species_media ON detection.species_code = species_media.species_code
-        WHERE detection.station_id = $1
-        GROUP BY detection.common_name, detection.scientific_name, detection.species_code, species_media.image_url, species_media.image_rights
-        ORDER BY count DESC
-        LIMIT 5`;
-
-    const result = await db.query(sql, [stationId]);
-    return result.rows;
-}
-
-// Retrieves a summary of detections for a given station ID
-// Includes total detections, total species, detections today, species today, detections last hour, species last hour
-export async function getDetectionSummaryByStationId(stationId) {
-    const sql = `
-        SELECT
-            COUNT(*) AS total_detections,
-            COUNT(DISTINCT common_name) AS total_species,
-            COUNT(*) FILTER (WHERE detection_timestamp >= CURRENT_DATE) AS detections_today,
-            COUNT(DISTINCT common_name) FILTER (WHERE detection_timestamp >= CURRENT_DATE) AS species_today,
-            COUNT(*) FILTER (WHERE detection_timestamp >= NOW() - INTERVAL '1 hour') AS detections_last_hour,
-            COUNT(DISTINCT common_name) FILTER (WHERE detection_timestamp >= NOW() - INTERVAL '1 hour') AS species_last_hour
-        FROM detection
-        WHERE station_id = $1
-    `;
-    const result = await db.query(sql, [stationId]);
-    return result.rows[0];
 }
 
 // Retrieves filtered detections for a given station ID

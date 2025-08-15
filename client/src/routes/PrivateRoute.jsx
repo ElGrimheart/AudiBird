@@ -11,7 +11,7 @@ function isTokenValid(token) {
     }
 }
 
-// Private route component - checks if user has a valid token
+// Checks if user has a valid token before rendering protected routes, otherwise re-directs to landing page
 export default function PrivateRoute({ children }) {
     const token = localStorage.getItem('jwt');
     const location = useLocation();

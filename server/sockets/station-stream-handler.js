@@ -1,3 +1,4 @@
+// Handler for mic stream between station and client
 export default function stationStreamHandler(io) {
     io.on("connection", (socket) => {
         console.log("Socket connected:", socket.id);

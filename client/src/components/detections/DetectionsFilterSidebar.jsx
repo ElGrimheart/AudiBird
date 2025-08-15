@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
-import { detectionFiltersSchema } from '../../utils/formValidator';
+import { detectionFiltersSchema } from '../../utils/form-validator';
 import Sidebar from '../common/Sidebar';
 
 /* DetectionsFilterSidebar component to handle filtering options for detections
@@ -21,7 +21,7 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
 
             <Formik
                 initialValues={filters}
-                validationSchema={detectionFiltersSchema}
+                validationSchema={detectionFiltersSchema()}
                 onSubmit={onFilterSubmit}
                 enableReinitialize
             >
@@ -99,6 +99,7 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                                         onChange={handleChange}
                                         onBlur={() => setFieldTouched('minConfidence', true)}
                                         placeholder="Min %"
+                                        step="1"
                                         min={0}
                                         max={100}
                                         isInvalid={!!errors.minConfidence && touched.minConfidence}
@@ -118,6 +119,7 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                                         placeholder="Max %"
                                         min={0}
                                         max={100}
+                                        step="1"
                                         isInvalid={!!errors.maxConfidence && touched.maxConfidence}
                                     />
                                     <Form.Control.Feedback type="invalid">

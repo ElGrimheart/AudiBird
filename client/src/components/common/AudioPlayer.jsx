@@ -2,7 +2,7 @@ import React, { useRef, useContext, useEffect } from "react";
 import { PlayFill, PauseFill } from "react-bootstrap-icons";
 import AudioPlayerContext from "../../contexts/AudioPlayerContext";
 
-// AudioPlayer component with minimal UI for playing audio files
+// Custom AudioPlayer component with minimal UI for playing audio files
 export default function AudioPlayer({ src, audioId }) {
     const audioRef = useRef(null);
     const { playingId, setPlayingId } = useContext(AudioPlayerContext);

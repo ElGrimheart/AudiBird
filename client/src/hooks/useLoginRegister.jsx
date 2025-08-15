@@ -23,17 +23,18 @@ export default function useLoginRegister(fetchUserStations) {
           const response = await axios.post(endpoint, values);
 
           if (response.status === 200 && response.data.result) {
+            // set users jwt token
             const token = response.data.result.jwt;
             localStorage.setItem('jwt', token);
 
+            // fetch users station list and redirect to last visited page or dashboard
             await fetchUserStations();
-            
             const redirectTo = location.state?.from?.pathname || '/dashboard';
             navigate(redirectTo, { replace: true });
           }
           } catch (error) {
 
-              // Handle API validation errors
+              // Parsing API response errors for display incase of Formik failure
               if (error.response?.data?.errors) {
                   const apiErrors = error.response.data.errors.reduce((acc, curr) => {
                     acc[curr.path] = curr.msg;

@@ -1,46 +1,46 @@
 import express from 'express';
-import { authenticateJWT, authenticateApiKey, authenticateAccessPermission, authenticateWritePermission } from '../../middleware/authenticators.js';
-import { validateDetectionId } from '../../middleware/detectionValidator.js';
-import { validateStationId } from '../../middleware/stationValidator.js';
-import { validateDetectionFilters, validateNewDetection } from '../../middleware/detectionValidator.js';
+import { validateStationId, validateDetectionId, authenticateJWT, authenticateApiKey, authenticateAccessPermission, authenticateWritePermission } from '../../middleware/authenticator.js';
+import { validateDetectionFilters } from '../../middleware/client-request-validator.js';
+import { validateNewDetection } from '../../middleware/station-validator.js';
 import * as detectionController from '../../controllers/detection-controller.js';
-
 
 const detectionRouter = express.Router();
 
 detectionRouter.get('/all/:stationId', 
+    validateStationId,
     authenticateJWT, 
-    authenticateAccessPermission, 
-    validateStationId, 
+    authenticateAccessPermission,
     detectionController.getAllDetectionsByStationId
 );
 
 detectionRouter.get('/recent/:stationId', 
+    validateStationId,
     authenticateJWT, 
-    authenticateAccessPermission, 
-    validateStationId, 
+    authenticateAccessPermission,
     detectionController.getRecentDetectionsByStationId
 );
 
 detectionRouter.get('/filtered/:stationId', 
+    validateStationId,
     authenticateJWT, 
-    authenticateAccessPermission, 
-    validateStationId, 
+    authenticateAccessPermission,
     validateDetectionFilters, 
     detectionController.getFilteredDetectionsByStationId
 );
 
 detectionRouter.get('/:stationId/:detectionId', 
+    validateStationId,
     authenticateJWT, 
-    authenticateAccessPermission, 
+    authenticateAccessPermission,
     validateDetectionId, 
     detectionController.getDetectionById
 );
 
+
 detectionRouter.post('/new/:stationId', 
     validateStationId, 
-    validateNewDetection,
     authenticateApiKey, 
+    validateNewDetection,
     detectionController.createDetection
 );
 

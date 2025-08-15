@@ -15,7 +15,7 @@ export default function SpeciesCard() {
     // Generate default filters based on the selected station and its date range
     const generateDefaultFilters = () => ({
         stationId: selectedStation,
-        speciesName: stationSpeciesList[0] || ""
+        speciesName: stationSpeciesList[0] || "All Species"
     });
 
 
@@ -51,7 +51,7 @@ export default function SpeciesCard() {
         <div>
             {statConfigs.map((stat) => (
                 <div key={stat.id} className="mb-4">
-                    {/* Remove button for individual species stats */}
+                    {/* Render remove chart button if there are multiple charts */}
                     {statConfigs.length > 1 && (
                         <div className="text-end mb-1">
                             <Button variant="danger" onClick={() => removeStats(stat.id)}>

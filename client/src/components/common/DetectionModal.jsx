@@ -1,10 +1,13 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
-import * as externalLink from '../../constants/externalLinks';
-import { formatStringToDate } from "../../utils/dateFormatter";
+import * as externalLink from '../../constants/external-links.js';
+import { formatStringToDate } from "../../utils/date-formatter";
 
-// DetectionDetailsModal component to display detailed information about a detection
+/*
+DetectionDetailsModal component to display detailed information about a detection
+Includes audio player for playback of detection audio, external media and detailed detection metadata.
+*/
 export default function DetectionModal({ show, onHide, detection }) {
     return (
         <Modal show={show} onHide={onHide} centered>

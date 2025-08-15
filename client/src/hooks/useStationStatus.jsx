@@ -38,14 +38,15 @@ export default function useStationStatus(stationId) {
             }
         };
 
+        // Initial fetch
+        fetchStationStatus();
+
+        // Re-fetch on status update
         const handleStatusUpdate = (status) => {
             if (status.station_id === stationId) {
                 fetchStationStatus();
             }
         };
-
-        // Initial fetch
-        fetchStationStatus();
 
         // Listener for new detections on the station's room
         if (!socket || !isConnected) return;

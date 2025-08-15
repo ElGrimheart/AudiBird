@@ -44,14 +44,15 @@ export default function useSummaryStats(stationId) {
             }
         };
 
+        // Initial fetch 
+        fetchSummaryStats();
+
+        // Re-fetch on new detection
         const handleNewDetection = (detection) => {
             if (detection.station_id === stationId) {
                 fetchSummaryStats();
             }
         };
-
-        // Initial fetch 
-        fetchSummaryStats();
 
         // Listener for new detections on the station's room
         if (!socket || !isConnected) return;

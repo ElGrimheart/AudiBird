@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import RenderSkeleton from '../common/SkeletonPlaceholder';
 import { Table } from "react-bootstrap";
-import { formatStringToDate } from "../../utils/dateFormatter";
+import { formatStringToDate } from "../../utils/date-formatter";
 import { BoxArrowUpRight } from "react-bootstrap-icons";
 import DetectionModal from "../common/DetectionModal";
-import * as externalLink from '../../constants/externalLinks';
+import * as externalLink from '../../constants/external-links';
 
 /* 
 FilteredDetections component to display a list of detections based on applied filters.

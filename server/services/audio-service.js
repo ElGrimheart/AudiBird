@@ -17,7 +17,7 @@ export async function getAudioById(audioId) {
     return result.rows[0] || null;
 }
 
-// Sends request to fetch audio from a station and relays the stream
+// Sends request to fetch audio from a station
 export async function relayAudioFromStation(stationId, path, filename) {
     const station = await getStationById(stationId);
 

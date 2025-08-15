@@ -1,6 +1,6 @@
 import { io } from "../server.js";
 import * as stationService from '../services/station-service.js';
-import { generateDefaultStationConfig } from "../utils/stationConfigGenerator.js";
+import { generateDefaultStationConfig } from "../utils/station-config-generator.js";
 import logAction from "../utils/logger.js";
 import { generateJwtToken } from "../utils/jwt.js";
 
@@ -34,49 +34,30 @@ export const getStationById = async (req, res) => {
     }
 }
 
-// GET /api/stations/config/:stationId route - retrieves the configuration for a specific station
-export const getStationMetadataById = async (req, res) => {
-    const { stationId } = req.params;
-    const { authType } = req.authType;
 
-    logAction("Retrieving station metadata", { stationId });
+export const getStationConfigById = async (req, res) => {
+    const { stationId } = req.params;
+
+    logAction("Retrieving station config", { stationId });
 
     try {
-         if (authType === "API") {  // If the request is authenticated via API key, fetch only the configuration
-            const config = await stationService.getStationConfigById(stationId);
-            
-            if (config) {
-                res.status(200).json({
-                    status: "success",
-                    message: `Retrieved configuration for Station ID: ${stationId}`,
-                    result: config
-                });
-            } else {
-                res.status(404).json({
-                    status: "failure",
-                    message: `Configuration for Station ID: ${stationId} not found`
-                });
-            }
-        }
-
-        // else, fetch the full metadata including date range and species list
-        const metadata = await stationService.getStationMetadataById(stationId);
-        if (metadata) {
+        const config = await stationService.getStationConfigById(stationId);
+        if (config) {
             res.status(200).json({
                 status: "success",
-                message: `Retrieved metadata for Station ID: ${stationId}`,
-                result: metadata
+                message: `Retrieved config for Station ID: ${stationId}`,
+                result: config
             });
         } else {
             res.status(404).json({
                 status: "failure",
-                message: `Metadata for Station ID: ${stationId} not found`
+                message: `Config for Station ID: ${stationId} not found`
             });
         }
     } catch (error) {
         res.status(500).json({
             status: "error",
-            message: `Error retrieving metadata for Station ID: ${stationId}`,
+            message: `Error retrieving config for Station ID: ${stationId}`,
             error: error.message
         });
     }
@@ -111,7 +92,37 @@ export const getStationStatusById = async (req, res) => {
     }
 }
 
-// POST /api/stations/:stationId route - creates a new station
+// GET /api/stations/metadata/:stationId route - retrieves the metadata for a specific station
+export const getStationMetadataById = async (req, res) => {
+    const { stationId } = req.params;
+
+    logAction("Retrieving station metadata", { stationId });
+
+    try {
+        const metadata = await stationService.getStationMetadataById(stationId);
+        if (metadata) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved metadata for Station ID: ${stationId}`,
+                result: metadata
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `Metadata for Station ID: ${stationId} not found`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving metadata for Station ID: ${stationId}`,
+            error: error.message
+        });
+    }
+}
+
+
+// POST /api/stations/announce route - creates a new station
 export const createStation = async (req, res) => {
     const station_host = req.ip;
     const { station_name, station_port } = req.body;
@@ -120,9 +131,9 @@ export const createStation = async (req, res) => {
 
     try {
         const newStation = await stationService.createStation(station_name, station_host, station_port);
-
+        console.log("New Station:", newStation);
         if (newStation) {
-            const defaultConfig = generateDefaultStationConfig(newStation.station_id, newStation.api_key);
+            const defaultConfig = generateDefaultStationConfig(newStation.station_name, newStation.station_id, newStation.api_key);
             console.log("Default Config:", defaultConfig);
 
             res.status(201).json({
@@ -145,7 +156,7 @@ export const createStation = async (req, res) => {
     }
 }
 
-// POST /api/stations/register/:stationId route - registers the station to a user and updates access permissions
+// POST /api/stations/register route - registers the station to a user and updates access permissions
 export const registerStation = async (req, res) => {
     const userId = req.user.userId;
     const {stationId, stationApiKey} = req.body;
@@ -155,7 +166,6 @@ export const registerStation = async (req, res) => {
     try {
         const result = await stationService.registerStationToUser(userId, stationId, stationApiKey);
         if (result) {
-
             const stationResponse = await stationService.relayToStation(stationId, 'claim', 'POST');
             if (stationResponse.status === 200) {
                 // Update users JWT
@@ -190,7 +200,7 @@ export const registerStation = async (req, res) => {
 }
 
 // POST /api/stations/config/:stationId route - updates the config of the specified station
-export const updateStationConfigById = async (req, res) => {
+export const updateStationConfigByStationId = async (req, res) => {
     const { stationId } = req.params;
     const configData = req.body;
 
@@ -201,7 +211,6 @@ export const updateStationConfigById = async (req, res) => {
         console.log("New Config:", new_config);
 
         if (new_config) {
-
             const stationResponse = await stationService.relayToStation(stationId, 'update-config', 'POST', new_config);
             if (stationResponse.status === 200) {
                 res.status(200).json({
@@ -273,7 +282,6 @@ export const startStationRecording = async (req, res) => {
 
     try {
         const response = await stationService.relayToStation(stationId, 'start', 'POST');
-        console.log("Start Recording Response:", response);
 
         if (response.status === 200) {
             // Emit a socket event to notify clients of the recording status

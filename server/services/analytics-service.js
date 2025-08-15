@@ -1,6 +1,6 @@
 import db from "../config/db-conn.js";
-import { normaliseDateToStartOfDay, normaliseDateToEndOfDay } from "../utils/dateFormatter.js";
-import { buildDetectionWhereClause } from "../utils/sqlBuilder.js";
+import { normaliseDateToStartOfDay, normaliseDateToEndOfDay } from "../utils/date-formatter.js";
+import { buildDetectionWhereClause } from "../utils/sql-builder.js";
 
 
 /*
@@ -29,8 +29,8 @@ Retrieves the most common species detected for a given station ID based on limit
 Returns an array of objects containing common name, scientific name, species code, image URL, image rights, and count.
 */
 export async function getMostCommonSpeciesByStationId(stationId, { limit }) {
-    const sql = 
-        `SELECT 
+    const sql = `
+        SELECT 
             detection.common_name, 
             detection.scientific_name, 
             detection.species_code, 
@@ -42,10 +42,45 @@ export async function getMostCommonSpeciesByStationId(stationId, { limit }) {
         WHERE detection.station_id = $1
         GROUP BY detection.common_name, detection.scientific_name, detection.species_code, species_media.image_url, species_media.image_rights
         ORDER BY count DESC
-        LIMIT $2`;
+        LIMIT $2
+    `;
 
     const result = await db.query(sql, [stationId, limit]);
     return result.rows;
+}
+
+/*
+Generates a species summary for a given station ID.
+Returns an object containing total detections, first/last detection timestamps, peak detection day, and average detections per day.
+*/
+export async function getSpeciesSummaryByStationId(stationId, { speciesName }) {
+    const filters = { speciesName };
+    const { whereClause, values } = buildDetectionWhereClause(stationId, filters);
+
+    const sql = `
+        WITH daily_counts AS (
+            SELECT
+                 DATE(detection_timestamp) AS day,
+                COUNT(*) AS total
+            FROM detection
+            ${whereClause}
+            GROUP BY day
+        )
+        SELECT
+            (SELECT COUNT(*) FROM detection ${whereClause}) AS total_detections,
+            (SELECT MIN(detection_timestamp) FROM detection ${whereClause}) AS first_detection,
+            (SELECT MAX(detection_timestamp) FROM detection ${whereClause}) AS last_detection,
+            (SELECT day::date FROM daily_counts ORDER BY total DESC LIMIT 1) AS peak_day,
+            (SELECT total FROM daily_counts ORDER BY total DESC LIMIT 1) AS peak_count,
+            ROUND(AVG(total), 2) AS average_detections_per_day,
+            (SELECT image_url FROM species_media WHERE species_code = (SELECT species_code FROM detection ${whereClause} LIMIT 1)) AS image_url,
+            (SELECT image_rights FROM species_media WHERE species_code = (SELECT species_code FROM detection ${whereClause} LIMIT 1)) AS image_rights
+        FROM daily_counts
+    `;
+
+    const result = await db.query(sql, values);
+    console.log("Species Summary Result:", result.rows);
+    return result.rows[0];
 }
 
 /* 
@@ -98,40 +133,6 @@ export async function getAverageHourlyTrendsByStationId(stationId, { startDate, 
     }));
 
     return fullResult;
-}
-
-/*
-Generates a species summary for a given station ID.
-Returns an object containing total detections, first/last detection timestamps, peak detection day, and average detections per day.
-*/
-export async function getSpeciesSummaryByStationId(stationId, { speciesName }) {
-    const filters = { speciesName };
-    const { whereClause, values } = buildDetectionWhereClause(stationId, filters);
-
-    const sql = `
-        WITH daily_counts AS (
-            SELECT
-                 DATE(detection_timestamp) AS day,
-                COUNT(*) AS total
-            FROM detection
-            ${whereClause}
-            GROUP BY day
-        )
-        SELECT
-            (SELECT COUNT(*) FROM detection ${whereClause}) AS total_detections,
-            (SELECT MIN(detection_timestamp) FROM detection ${whereClause}) AS first_detection,
-            (SELECT MAX(detection_timestamp) FROM detection ${whereClause}) AS last_detection,
-            (SELECT day::date FROM daily_counts ORDER BY total DESC LIMIT 1) AS peak_day,
-            (SELECT total FROM daily_counts ORDER BY total DESC LIMIT 1) AS peak_count,
-            ROUND(AVG(total), 2) AS average_detections_per_day,
-            (SELECT image_url FROM species_media WHERE species_code = (SELECT species_code FROM detection ${whereClause} LIMIT 1)) AS image_url,
-            (SELECT image_rights FROM species_media WHERE species_code = (SELECT species_code FROM detection ${whereClause} LIMIT 1)) AS image_rights
-        FROM daily_counts
-    `;
-
-    const result = await db.query(sql, values);
-    console.log("Species Summary Result:", result.rows);
-    return result.rows[0];
 }
 
 /*
@@ -254,7 +255,7 @@ export async function getDailyDetectionTotalsByStationId(stationId, { startDate,
 
 /*
 Generates a daily summary for a specific station on a given date.
-Returns an objec
+Returns an object containing total detections, total species, common species, and new species for the date passed
 */
 export async function getDailySummaryByStationId(stationId, singleDate) {
     try {
@@ -282,6 +283,25 @@ export async function getDailySummaryByStationId(stationId, singleDate) {
 }
 
 
+// Helper functions for main analytics services
+
+// Returns all the dates in a given range
+function getAllDatesInRange(startDate, endDate) {
+    const start = new Date(String(startDate).slice(0, 10));
+    const end = new Date(String(endDate).slice(0, 10));
+    const dates = [];
+    let current = new Date(start);
+    while (current <= end) {
+        const yyyy = current.getFullYear();
+        const mm = String(current.getMonth() + 1).padStart(2, '0');
+        const dd = String(current.getDate()).padStart(2, '0');
+        dates.push(`${yyyy}-${mm}-${dd}`);
+        current.setDate(current.getDate() + 1);
+    }
+    return dates;
+}
+
+// Returns the total detections for a given station and date range
 async function getTotalDetectionsByStationId(stationId, { startDate, endDate }) {
     startDate = normaliseDateToStartOfDay(startDate);
     endDate = normaliseDateToEndOfDay(endDate);
@@ -297,6 +317,7 @@ async function getTotalDetectionsByStationId(stationId, { startDate, endDate }) 
     return result.rows[0].total_detections || 0;
 }
 
+// Returns the total species for a given station and date range
 async function getTotalSpeciesByStationId(stationId, { startDate, endDate }) {
     startDate = normaliseDateToStartOfDay(startDate);
     endDate = normaliseDateToEndOfDay(endDate);
@@ -314,6 +335,7 @@ async function getTotalSpeciesByStationId(stationId, { startDate, endDate }) {
     return result.rows[0].total_species || 0;
 }
 
+// Returns the common species for a given station and date range
 async function getCommonSpeciesByStationId(stationId, { startDate, endDate }) {
     startDate = normaliseDateToStartOfDay(startDate);
     endDate = normaliseDateToEndOfDay(endDate);
@@ -332,6 +354,7 @@ async function getCommonSpeciesByStationId(stationId, { startDate, endDate }) {
     return result.rows || [];
 }
 
+// Get new species detected for a given station and date
 async function getNewSpeciesByStationId(stationId, singleDate) {
     singleDate = singleDate || new Date(Date.now()).toISOString();
     
@@ -353,21 +376,6 @@ async function getNewSpeciesByStationId(stationId, singleDate) {
 }
 
 
-// Helper function to get all dates in a given range
-function getAllDatesInRange(startDate, endDate) {
-    const start = new Date(String(startDate).slice(0, 10));
-    const end = new Date(String(endDate).slice(0, 10));
-    const dates = [];
-    let current = new Date(start);
-    while (current <= end) {
-        const yyyy = current.getFullYear();
-        const mm = String(current.getMonth() + 1).padStart(2, '0');
-        const dd = String(current.getDate()).padStart(2, '0');
-        dates.push(`${yyyy}-${mm}-${dd}`);
-        current.setDate(current.getDate() + 1);
-    }
-    return dates;
-}
 
 /* Experimental: Deltas for detections, species, confidence and most common species. 
 Not carried forward to production at this stage

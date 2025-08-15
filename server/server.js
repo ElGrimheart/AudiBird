@@ -13,6 +13,7 @@ export const io = new Server(server, {
     }
 });
 
+
 // Log socket connections
 io.on('connection', (socket) => {
     console.log(`New client connected: ${socket.id}`);
@@ -32,7 +33,8 @@ io.on('connection', (socket) => {
     });
 });
 
-// Handle station stream events
+
+// Station mic stream handler
 stationStreamHandler(io);
 
 

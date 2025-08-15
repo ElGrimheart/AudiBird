@@ -54,7 +54,7 @@ export default function DailyTotalsCard() {
             {chartConfigs.map((chart) => (
                 
                 <div key={chart.id} className="mb-4">
-                    {/* Remove button if there are multiple charts */}
+                    {/* Render remove chart button if there are multiple charts */}
                     {chartConfigs.length > 1 && (
                         <div className="text-end mb-1">
                             <Button variant="danger" onClick={() => removeChart(chart.id)}>

@@ -3,7 +3,7 @@ import * as userService from "../services/user-service.js";
 
 // Generates a JWT token with the provided user information
 export async function generateJwtToken(userId) {
-    // Get the user's stations and their permissions
+    // Get the user's station list and their associated station permissions
     const user = await userService.getUserById(userId);
     const userStations = await userService.getUserStations(user.user_id);
 
@@ -19,13 +19,11 @@ export async function generateJwtToken(userId) {
         userTypeId: user.user_type_id,
         stations: stationPermissions || {}
     };
-
-    console.log(payload)
     
     return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || '2h' });
 }
 
-// Verifies the JWT token and returns the decoded payload
+// Validates a JWT token and returns the decoded payload
 export function verifyJwtToken(token) {
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);

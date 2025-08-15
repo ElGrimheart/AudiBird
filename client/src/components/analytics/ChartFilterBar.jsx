@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import StationMetadataContext from '../../contexts/StationMetadataContext';
-import { formatHtmlInputToDate } from '../../utils/dateFormatter';
+import { formatHtmlInputToDate } from '../../utils/date-formatter';
 import { Formik } from 'formik';
-import { analyticsFiltersSchema } from '../../utils/formValidator';
+import { analyticsFiltersSchema } from '../../utils/form-validator';
 
 /*
 Filter bar component for analytics charts, allowing users to set date range, species, and confidence filters
-Reused across different analytics components with options to show/hide specific filters
+Reused across different analytics components with options to show/hide specific filters based on chart type
 Wrapped in Formik for validation, submission handling and error reporting
 */
 export default function ChartFilterBar({ 
@@ -24,7 +24,7 @@ export default function ChartFilterBar({
     return (
         <Formik
             initialValues={filters}
-            validationSchema={analyticsFiltersSchema}
+            validationSchema={analyticsFiltersSchema()}
             onSubmit={(values, { setSubmitting }) => {
                 setFilters(values);
                 if (onApplyFilters) 
@@ -108,12 +108,12 @@ export default function ChartFilterBar({
                                 <Form.Label>Species:</Form.Label>
                                 <Form.Select
                                     name="speciesName"
-                                    value={values.speciesName || ""}
+                                    value={values.speciesName || ''}
                                     onChange={handleChange}
                                     onBlur={() => setFieldTouched('speciesName', true)}
                                     isInvalid={!!errors.speciesName && touched.speciesName}
                                 >
-                                    <option value="">All Species</option>
+                                    <option value={'All Species'}>All Species</option>
                                     {stationSpeciesList?.map(speciesName => (
                                         <option key={speciesName} value={speciesName}>{speciesName}</option>
                                     ))}

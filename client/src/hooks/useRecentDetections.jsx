@@ -5,7 +5,7 @@ import axios from 'axios';
 /* 
 Hook to fetch recent detections for a given station. 
 Returns an array of detection objects.
-Ref-fetches when a new detection is received via room socket or when the stationId changes.
+Re-fetches when a new detection is received via room socket or when the stationId changes.
 */
 export default function useRecentDetections(stationId, limit) {
     const [recentDetections, setRecentDetections] = useState([]);
@@ -39,14 +39,15 @@ export default function useRecentDetections(stationId, limit) {
             }
         };
 
+        // Initial fetch
+        fetchRecentDetections();
+
+        // Re-fetch on new detection
         const handleNewDetection = (detection) => {
             if (detection.station_id === stationId) {
                 fetchRecentDetections();
             }
         };
-
-        // Initial fetch
-        fetchRecentDetections();
 
         // Listener for new detections on the station's room
         if (!socket || !isConnected) return;

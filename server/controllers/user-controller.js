@@ -61,6 +61,35 @@ export const getUserStations = async (req, res) => {
     }
 };
 
+// GET /api/users/preferences/:stationId - retrieves users preferences for a station
+export const getUserPreferencesByStationId = async (req, res) => {
+    const { stationId } = req.params;
+    const userId = req.user.userId;
+    logAction("Getting user preferences", { userId, stationId });
+
+    try {
+        const preferences = await userService.getUserPreferencesByStationId(userId, stationId);
+        if (preferences) {
+            res.status(200).json({
+                status: "success",
+                message: `Retrieved preferences for station ID: ${stationId}`,
+                result: preferences
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No preferences found for station ID: ${stationId}`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving preferences for station ID: ${stationId}`,
+            error: error.message
+        });
+    }
+};
+
 // POST /api/users/login route - logs in a user
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -96,23 +125,6 @@ export const loginUser = async (req, res) => {
         }
     }
 };
-
-// POST /api/users/logout route - logs out a user
-export const logoutUser = async (req, res) => {
-    try {
-        res.status(200).json({
-            status: "success",
-            message: "User logged out successfully"
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: "Error logging out user",
-            error: error.message
-        });
-    }
-};
-
 
 // POST /api/users/register route - registers a new user
 export const registerUser = async (req, res) => {
@@ -150,5 +162,53 @@ export const registerUser = async (req, res) => {
                 error: error.message
             });
         }
+    }
+};
+
+// POST /api/users/logout route - logs out a user
+export const logoutUser = async (req, res) => {
+    try {
+        res.status(200).json({
+            status: "success",
+            message: "User logged out successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: "Error logging out user",
+            error: error.message
+        });
+    }
+};
+
+// POST /api/users/preferences/:stationId - update a users notification preferences for a station
+export const updateUserPreferencesByStationId = async (req, res) => {
+    const { stationId } = req.params;
+    const userId = req.user.userId;
+    const preferences = req.body;
+
+    logAction("Updating user preferences", { userId, stationId, preferences });
+
+    try {
+        const updatedPreferences = await userService.updateUserPreferencesByStationId(userId, stationId, preferences);
+
+        if (updatedPreferences) {
+            res.status(200).json({
+                status: "success",
+                message: `Updated preferences for station ID: ${stationId}`,
+                result: updatedPreferences
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: `No preferences found for station ID: ${stationId}`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error updating preferences for station ID: ${stationId}`,
+            error: error.message
+        });
     }
 };

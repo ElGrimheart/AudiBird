@@ -1,7 +1,5 @@
 // Utility class for constructing SQL queries for detection data
 
-import { param } from "express-validator";
-
 // Builds a WHERE clause based on the type and quantity of filters provided
 export function buildDetectionWhereClause(stationId, { singleDate, startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
     const filters = [];
@@ -61,6 +59,10 @@ export function buildDetectionSortClause(sortBy, sortOrder, allowedColumns = ['d
     return orderByParts.length ? `ORDER BY ${orderByParts.join(', ')}` : '';
 }
 
+
+/* Experimental: Deltas for detections, species, confidence and most common species. 
+Not carried forward to production at this stage
+
 // Builds a WHERE clause for delta filters based on the provided parameters
 export function buildDeltaFilters(startIndex, { speciesName, minConfidence }) {
   const filters = [];
@@ -86,3 +88,5 @@ export function buildDeltaFilters(startIndex, { speciesName, minConfidence }) {
     filterValues
   };
 }
+
+*/

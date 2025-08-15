@@ -27,7 +27,6 @@ export default function useDetectionDailyTotals(stationId, { filters} ) {
                     headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
                 });
                 setDetectionDailyTotals(response.data.result || []);
-                console.log("Daily detection totals fetched:", response.data.message);
             } catch (error) {
                 setError(error);
                 setDetectionDailyTotals([]);

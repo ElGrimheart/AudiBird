@@ -6,8 +6,12 @@ import HourlyTotalsCard from './HourlyTotalsCard';
 import DailyTotalsCard from './DailyTotalsCard';
 import CompositionCard from './CompositionCard';
 
-// Main container for the analytics section. Includes tabs for different analytics views
+/*
+Main container for the analytics section. Includes tabs for different analytics views
+Each chart and filter state is independent and managed separately by their respective components
+*/
 export default function AnalyticsContainer() {
+
     return (
         <Container className="p-4">
             <Row className="mt-4">

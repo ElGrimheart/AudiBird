@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
 import DetectionsFilterSidebar from './DetectionsFilterSidebar';
@@ -16,6 +16,7 @@ export default function DetectionsContainer() {
     const [detections, fetchDetections, error, loading] = useFilteredDetections(selectedStation, filters);
     const [showSidebar, setShowSidebar] = useState(false);
 
+    // Sidebar display toggle
     const handleCloseSidebar = () => {
         setShowSidebar(false);
     };
@@ -24,6 +25,7 @@ export default function DetectionsContainer() {
         setShowSidebar(true);
     };
 
+    // Fetch detections when filters change
     useEffect(() => {
         fetchDetections(filters);
     }, [fetchDetections, filters]);
@@ -37,23 +39,28 @@ export default function DetectionsContainer() {
 
     return (
         <Container className="p-4">
-            <div className="d-flex justify-content-end mb-2">
-                <Button variant="success" onClick={handleShowSidebar}>
-                    <i className="bi bi-filter-right"></i> Show Filters
-                </Button>
-            </div>
-            <DetectionsFilterSidebar
-                show={showSidebar}
-                onHide={handleCloseSidebar}
-                filters={filters}
-                onFilterSubmit={handleFilterSubmit}
-                error={error}
-            />
-            <FilteredDetections
-                detections={detections}
-                loading={loading}
-                error={error}
-            />
+            <Row>
+                <Col md={11}>
+                    <DetectionsFilterSidebar
+                        show={showSidebar}
+                        onHide={handleCloseSidebar}
+                        filters={filters}
+                        onFilterSubmit={handleFilterSubmit}
+                        error={error}
+                    />
+                    <FilteredDetections
+                        detections={detections}
+                        loading={loading}
+                        error={error}
+                    />
+                </Col>
+
+                <Col md={1}>
+                    <Button variant="success" onClick={handleShowSidebar}>
+                        <i className="bi bi-filter"></i>
+                    </Button>
+                </Col>
+            </Row>
         </Container>
     );
 }

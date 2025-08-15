@@ -6,6 +6,11 @@ import useDetectionHourlyTotals from "../../hooks/useDetectionHourlyTotals.jsx";
 import ComponentCard from "../common/ComponentCard";
 import SkeletonComponent from "../common/SkeletonPlaceholder";
 
+/*
+HourlyTotalsChart component displays a line chart of hourly detection totals for each species
+Uses a line chart to display number of detections per hour.
+Filterable by date and species
+*/
 export default function HourlyTotalsChart({ filters, setFilters }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { detectionHourlyTotals, loading, error } = useDetectionHourlyTotals(selectedStation, { filters });

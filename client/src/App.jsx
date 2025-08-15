@@ -3,6 +3,9 @@ import LoginRegister from "./pages/LoginRegister";
 import Dashboard from './pages/Dashboard';
 import Detections from './pages/Detections';
 import Analytics from './pages/Analytics';
+import StationSettings from './pages/StationSettings';
+import RegisterStation from './pages/RegisterStation';
+import UserPreferences from './pages/UserPreferences';
 import PageNotFound from './pages/PageNotFound';
 import AuthenticatedLayout from './layouts/AuthenticatedLayout'; 
 import PrivateRoute from './routes/PrivateRoute';
@@ -27,6 +30,18 @@ export default function App() {
                 <Route
                     path="/analytics"
                     element={<PrivateRoute><Analytics /></PrivateRoute>}
+                />
+                <Route
+                    path="/register-station"
+                    element={<PrivateRoute><RegisterStation /></PrivateRoute>}
+                />
+                <Route
+                    path="/station-settings"
+                    element={<PrivateRoute><StationSettings /></PrivateRoute>}
+                />
+                <Route
+                    path="/preferences"
+                    element={<PrivateRoute><UserPreferences /></PrivateRoute>}
                 />
                 <Route
                     path="*"

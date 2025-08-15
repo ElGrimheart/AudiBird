@@ -50,6 +50,8 @@ export async function scrapeImgUrl(speciesCode) {
     }
 }
 
+
+// Scrapes the Macaulay Library for an audio URL and copyright information for a given species code
 export async function scrapeAudioUrl(speciesCode) {
     const searchUrl = `${process.env.MACAULAY_LIBRARY_URL}/catalog?taxonCode=${speciesCode}&mediaType=audio&sort=rating_rank_desc`;
     const browser = await puppeteer.launch({

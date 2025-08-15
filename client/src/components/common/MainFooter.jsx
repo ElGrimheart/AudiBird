@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import * as externalLink from '../../constants/externalLinks'
+import * as externalLink from '../../constants/external-links'
 
 // MainFooter component containing copyright information
 export default function MainFooter() {

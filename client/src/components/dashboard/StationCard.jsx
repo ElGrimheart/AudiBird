@@ -7,7 +7,8 @@ import useStartStopStation from "../../hooks/useStartStopStation.jsx";
 import ComponentCard from "../common/ComponentCard";
 import SkeletonComponent from "../common/SkeletonPlaceholder";
 
-// StationCard component to display the status of a specific station
+// StationCard component to display the status of a specific station.
+// Includes functionality for starting/stopping the recording and field variants to highlight any abnormal states
 export default function StationCard({ stationStatus, loading, error }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { startStopRecording, loading: recordingLoading } = useStartStopStation();

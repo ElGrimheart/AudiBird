@@ -5,12 +5,12 @@ import SelectedStationContext from "../../contexts/SelectedStationContext.jsx";
 import useSpeciesSummary from "../../hooks/useSpeciesSummary.jsx";
 import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import ComponentCard from "../common/ComponentCard.jsx";
-import * as externalLink from '../../constants/externalLinks';
-import { formatStringToDate } from "../../utils/dateFormatter";
+import * as externalLink from '../../constants/external-links.js';
+import { formatStringToDate } from "../../utils/date-formatter.js";
 
 /*
 SpeciesStats component to display detailed statistics for a specific species
-It includes a filter bar for selecting species and displays a summary table with relevant
+Includes a filter bar for selecting species and displays a summary table with relevant
 information such as detection counts, first/last detection dates
 */
 export default function SpeciesStats({ filters, setFilters }) {

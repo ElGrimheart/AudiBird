@@ -3,6 +3,7 @@ import SocketProvider from '../providers/SocketProvider';
 import UserStationsProvider from "../providers/UserStationsProvider";
 import SelectedStationProvider from "../providers/SelectedStationProvider";
 import StationMetadataProvider from "../providers/StationMetadataProvider";
+import UserPreferencesProvider from "../providers/UserPreferencesProvider";
 import AudioPlayerProvider from "../providers/AudioPlayerProvider";
 import Container from 'react-bootstrap/Container';
 import MainNavbar from '../components/common/MainNavbar';
@@ -17,15 +18,19 @@ export default function AuthenticatedLayout() {
       <UserStationsProvider>
         <SelectedStationProvider>
           <StationMetadataProvider>
-            <AudioPlayerProvider>
-              <Container fluid className="p-2">
-                <MainNavbar />
-                <ToastContainer />
-                <ToastNotification />
-                <Outlet />              {/* Renders the associated child route */}
-                <MainFooter />
-              </Container>
-            </AudioPlayerProvider>
+            <UserPreferencesProvider>
+              <AudioPlayerProvider>
+                <Container fluid className="app-shell p-2">
+                  <MainNavbar />
+                  <ToastContainer />
+                  <ToastNotification />
+                  <div className="app-content">
+                    <Outlet />              {/* Renders the associated child routes */}
+                  </div>
+                  <MainFooter />
+                </Container>
+              </AudioPlayerProvider>
+            </UserPreferencesProvider>
           </StationMetadataProvider>
         </SelectedStationProvider>
       </UserStationsProvider>

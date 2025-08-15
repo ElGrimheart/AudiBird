@@ -13,6 +13,7 @@ import CommonSpeciesCard from './CommonSpeciesCard.jsx';
 import AverageDetectionsCard from './AverageDetectionsCard.jsx';
 import SummaryCard from './SummaryCard.jsx';
 
+// Date range for filtering detections
 const dateYesterday = new Date();
 dateYesterday.setDate(dateYesterday.getDate() - 1);
 dateYesterday.toUTCString();
@@ -21,7 +22,8 @@ const dateOneWeekAgo = new Date();
 dateOneWeekAgo.setDate(dateOneWeekAgo.getDate() - 7);
 dateOneWeekAgo.toUTCString();
 
-/* Main DashboardContainer component that assembles and controls layout of the dashboard cards.
+/* 
+Main DashboardContainer component that assembles and controls layout of the dashboard cards.
 Fetches data, loading and error states from the applicable hooks and passes it to the respective card components.
 */
 export default function DashboardContainer() {
