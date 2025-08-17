@@ -1,0 +1,13 @@
+detection_config:
+  min_confidence: 0.25
+  species_ignore_list: []
+station:
+  api_key: ""
+  id: ""
+  location:
+    desc: ""
+    lat: null
+    lon: null
+  state: unannounced
+  station_name: UNCONFIGURED STATION
+storage_policy: Delete oldest first

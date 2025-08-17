@@ -207,7 +207,9 @@ def claim_station():
 
 @app.route('/update-config', methods=['POST'])
 def update_config():
-    """Update the remote configuration file."""
+    """Update the station configuration file.
+    Closes and restarts the detection controller with the updated configuration
+    """
     global detection_controller
     new_config = request.get_json()
     if not new_config:
@@ -217,6 +219,7 @@ def update_config():
         }), 400
     
     try:
+        print("Updating station configuration...")
         write_yaml_config(f"{STATIC_CONFIG['paths']['configs_dir']}/station_config.yaml", new_config)
         
         # Recreate DetectionController with updated config
@@ -225,6 +228,7 @@ def update_config():
             
         with controller_lock:
             station_config = load_yaml_config(STATION_CONFIG_PATH)
+            print(f"Re-starting detection with config: {station_config}")
             detection_controller = DetectionController(STATIC_CONFIG, station_config)
             detection_controller.start()
             

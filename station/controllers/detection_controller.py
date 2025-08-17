@@ -26,18 +26,18 @@ class DetectionController:
         }
 
         audio_metadata = {
-            "duration": self._station_config["detection_config"]["segment_duration"],
+            "duration": self._static_config["segmenter_config"]["segment_duration"],
             "channels": self._static_config["audio_capture"]["channels"],
             "sample_rate": self._static_config["audio_capture"]["sample_rate"],
-            "sample_width": self._static_config["audio_capture"]["sample_width"],
+            "sample_width": self._static_config["segmenter_config"]["sample_width"],
             "dtype": self._static_config["audio_capture"]["dtype"]
         }
 
         processing_metadata = {
             "model_name": self._static_config["birdnet"]["model"] + " " + self._static_config["birdnet"]["version"],
             "min_confidence": self._station_config["detection_config"]["min_confidence"],
-            "segment_duration": self._station_config["detection_config"]["segment_duration"],
-            "segment_overlap": self._station_config["detection_config"]["segment_overlap"]
+            "segment_duration": self._static_config["segmenter_config"]["segment_duration"],
+            "segment_overlap": self._static_config["segmenter_config"]["segment_overlap"]
         }
             
         audio_capture_config = {
@@ -48,15 +48,15 @@ class DetectionController:
 
         segmenter_config = {
             "sample_rate": self._static_config["audio_capture"]["sample_rate"],
-            "segment_duration": self._station_config["detection_config"]["segment_duration"],
-            "segment_overlap": self._station_config["detection_config"]["segment_overlap"]
+            "segment_duration": self._static_config["segmenter_config"]["segment_duration"],
+            "segment_overlap": self._static_config["segmenter_config"]["segment_overlap"]
         }
 
         segment_saver_config = {
             "segments_dir": self._static_config["paths"]["segments_dir"],
             "sample_rate": self._static_config["audio_capture"]["sample_rate"],
             "channels": self._static_config["audio_capture"]["channels"],
-            "sample_width": self._static_config["audio_capture"]["sample_width"]
+            "sample_width": self._static_config["segmenter_config"]["sample_width"]
         }
 
         analyser_config = {

@@ -21,17 +21,13 @@ def upload_detection(filename, detection, config, station_metadata, audio_metada
     detections_route = os.environ.get("API_DETECTIONS_ROUTE")
     station_id = config['station_id']
     station_api_key = config['station_api_key']
-    print("station_id:", station_id)
-    print("station_api_key:", station_api_key)
-    print("detections_route:", detections_route)
 
     post_detection_route = detections_route + "/new/" + station_id
-    print("post_detection_route:", post_detection_route)
     headers = {
         "Authorization": f"Bearer {station_api_key}",
         "Content-Type": "application/json"
     }
-    print("filename:", filename)
+    
     base = filename.replace('.wav', '')
     timestamp = datetime.strptime(base, "%Y%m%d_%H%M%S_%f")
 
