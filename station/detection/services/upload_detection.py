@@ -1,7 +1,6 @@
 from datetime import datetime
 import requests
 import os
-from utils.config_loader import load_yaml_config
 
 def upload_detection(filename, detection, config, station_metadata, audio_metadata, processing_metadata):
     """Posts detection data to the remote database API.

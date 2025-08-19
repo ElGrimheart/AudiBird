@@ -1,5 +1,5 @@
 detection_config:
-  min_confidence: 0.55
+  min_confidence: 0.6
   species_ignore_list: []
 station:
   api_key: c069c1fb-aa87-4ac6-8359-15dafa25bb2d

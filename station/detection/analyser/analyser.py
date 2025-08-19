@@ -38,6 +38,7 @@ class Analyser:
         Args:
             filename (str): Name of the audio segment file to analyze.
         """
+        print("Min confidence:", self._min_conf)
 
         filepath = self._segments_dir / f"{filename}.wav"
         recording = Recording(

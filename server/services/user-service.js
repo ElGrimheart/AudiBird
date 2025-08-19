@@ -127,6 +127,7 @@ export async function registerUser(name, username, email, password) {
             throw new Error('User registration failed');
         }
 
+        // add user to new-user-queue for email notifications
         await newUserQueue.add({
             userEmail: email,
             newUser: newUser.rows[0]
