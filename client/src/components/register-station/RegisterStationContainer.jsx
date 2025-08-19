@@ -32,7 +32,7 @@ export default function RegisterStationContainer() {
             console.log("New Station Registered:", result.data.result);
             await fetchUserStations();
             setSelectedStation(values.stationId);
-            window.location.href = '/dashboard';
+            window.location.href = '/station-settings';
         }
 
         // Otherwise map API errors to Formik fields

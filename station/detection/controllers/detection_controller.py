@@ -1,8 +1,8 @@
 import os
 import threading
-from audio_capture import AudioCapture, WebSocketStream, Segmenter, SegmentSaver
-from analysis import Analyser, DetectionLogger
-from services import upload_detection
+from detection.audio_capture import AudioCapture, WebSocketStream, Segmenter, SegmentSaver
+from detection.analyser import Analyser, DetectionLogger
+from detection.services import upload_detection
 
 class DetectionController:
     def __init__(self, static_config, station_config):
@@ -146,6 +146,7 @@ class DetectionController:
 
     def stop(self):
         """Stop the detection controller including all its components."""
+        print("Stopping detection controller...")
         with self._lock:
             if not self._running:
                 return False
@@ -166,6 +167,7 @@ class DetectionController:
                 self._running = False
             finally:
                 self._running = False
+                print("Detection controller stopped.")
             return True
 
     def is_running(self):

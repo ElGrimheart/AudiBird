@@ -17,6 +17,12 @@ segmenter_config:
     detection_padding: 2
     sample_width: 2
 
+allowable_states:
+    - unannounced
+    - announced
+    - claimed
+    - configured
+
 birdnet:
     model: "BirdNet-Analyser"
     version: "v2.4"

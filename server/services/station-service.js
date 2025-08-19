@@ -129,18 +129,19 @@ export async function registerStationToUser(userId, stationId, apiKey) {
         const stationConfigValue = [ newConfig, stationId ];
 
         const userPreferencesSql = `
-            INSERT INTO user_preferences (enabled, user_id, event_type_id, channel_type_id, station_id)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO user_preferences (enabled, threshold, user_id, event_type_id, channel_type_id, station_id)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *
         `;
-        const userDailySummaryValues = [true, userId, NOTIFICATION_EVENT_TYPE_ID.DailySummary, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
-        const userNewDetectionEmailValues = [true, userId, NOTIFICATION_EVENT_TYPE_ID.NewDetection, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
-        const userNewDetectionToastValues = [true, userId, NOTIFICATION_EVENT_TYPE_ID.NewDetection, NOTIFICATION_CHANNEL_TYPE_ID.Toast, stationId];
-        const userLowStorageEmailValues = [true, userId, NOTIFICATION_EVENT_TYPE_ID.LowStorage, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
+        const userDailySummaryValues = [true, null, userId, NOTIFICATION_EVENT_TYPE_ID.DailySummary, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
+        const userNewDetectionEmailValues = [true, 0, userId, NOTIFICATION_EVENT_TYPE_ID.NewDetection, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
+        const userNewDetectionToastValues = [true, 0, userId, NOTIFICATION_EVENT_TYPE_ID.NewDetection, NOTIFICATION_CHANNEL_TYPE_ID.Toast, stationId];
+        const userLowStorageEmailValues = [true, 80, userId, NOTIFICATION_EVENT_TYPE_ID.LowStorage, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
         
 
         try {
             await db.query('BEGIN');
+            
             const result = await db.query(userStationSql, userStationValue);
             await db.query(stationConfigSql, stationConfigValue);           // update station_config
             await db.query(userPreferencesSql, userDailySummaryValues);     // set user daily summary preferences
@@ -148,6 +149,7 @@ export async function registerStationToUser(userId, stationId, apiKey) {
             await db.query(userPreferencesSql, userNewDetectionToastValues); // set user new detection toast preferences
             await db.query(userPreferencesSql, userLowStorageEmailValues);   // set user low storage email preferences
             await db.query('COMMIT');
+            
             return result.rows[0];
         } catch (error) {
             await db.query('ROLLBACK');
