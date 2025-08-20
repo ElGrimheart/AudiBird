@@ -77,8 +77,8 @@ export async function getFilteredDetectionsByStationId(stationId, { startDate, e
 // Creates a new detection record in the database
 export async function createDetection(stationId, detectionData) {
     const audioSql = `
-        INSERT INTO audio (file_name)
-        VALUES ($1)
+        INSERT INTO audio (file_name, duration_seconds, file_size)
+        VALUES ($1, $2, $3)
         RETURNING audio_id
     `;
 
@@ -93,8 +93,9 @@ export async function createDetection(stationId, detectionData) {
             processing_metadata, 
             station_id, 
             species_code, 
-            audio_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            audio_id,
+            alt_species)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *
     `;
 
@@ -109,7 +110,7 @@ export async function createDetection(stationId, detectionData) {
         await db.query('BEGIN');
 
         // Insert audio file and get its ID
-        const audioResult = await db.query(audioSql, [detectionData.recording_file_name]);
+        const audioResult = await db.query(audioSql, [detectionData.recording_file_name, detectionData.audio_metadata.duration, detectionData.audio_metadata.filesize]);
         const audioId = audioResult.rows[0].audio_id;
 
         // Get species code from taxonomy table
@@ -127,7 +128,8 @@ export async function createDetection(stationId, detectionData) {
             detectionData.processing_metadata || {},
             stationId,
             speciesCode || null, 
-            audioId
+            audioId,
+            detectionData.alternative_species ? JSON.stringify(detectionData.alternative_species) : null
         ];
 
         // Insert the detection record and commit the transaction

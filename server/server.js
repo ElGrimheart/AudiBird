@@ -1,7 +1,7 @@
 import app from './app.js';
 import http from 'http';
 import { Server } from "socket.io";
-import stationStreamHandler from './sockets/station-stream-handler.js';
+//import stationStreamHandler from './sockets/station-stream-handler.js';
 
 
 // Create HTTP server
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
 
 
 // Station mic stream handler
-stationStreamHandler(io);
+// stationStreamHandler(io);
 
 
 // Start server

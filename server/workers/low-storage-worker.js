@@ -24,7 +24,7 @@ dailyStationStorageCheckQueue.process(async (job) => {
                 html: `
                     <h1>Low Storage Warning for Station: ${user.station_name}</h1>
                     <p>Your station is running low on storage space.</p>
-                    <p>Current storage usage has reached <strong>${station.disk_usage_percent*100}</strong>%</p>
+                    <p>Current storage usage has reached <strong>${station.disk_usage_percent}</strong>%</p>
                     <p>Once storage usage reaches 90% of capacity, AudiBird will automatically delete old recordings to free up space.</p>
                     <p>Please take a moment to review your recordings and back them up if necessary.</p>
                 `
