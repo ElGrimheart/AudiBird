@@ -62,9 +62,6 @@ export const validateNewDetection = [
       if (typeof sample_rate !== 'number' || sample_rate <= 0) {
           throw new Error('Sample rate must be a positive number');
       }
-      if (typeof sample_width !== 'number' || sample_width <= 0) {
-          throw new Error('Sample width must be a positive number');
-      }
       if (!dtype || typeof dtype !== 'string') {
           throw new Error('Data type (dtype) is required and must be a string');
       }
