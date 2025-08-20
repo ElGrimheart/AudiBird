@@ -11,27 +11,39 @@ class DetectionLogger:
         
         self._log_path = Path(config.get("detections_log")).resolve()
         self._log_path.parent.mkdir(parents=True, exist_ok=True)
+        
         if not self._log_path.exists():
             with open(self._log_path, "w", newline="") as f:
                 writer = csv.writer(f)
                 writer.writerow([
-                    "filename", "start_time", "end_time", "common_name",
-                    "scientific_name", "confidence", "detection_timestamp", "audio_metadata", "processing_metadata", "station_id"
+                    "filename", 
+                    "common_name", 
+                    "scientific_name", 
+                    "confidence", 
+                    "alternative_species", 
+                    "detection_timestamp", 
+                    "station_metadata", 
+                    "audio_metadata", 
+                    "processing_metadata", 
+                    "station_id"
                 ])
 
-    def log(self, filename, detection):
+    def log(self, detection):
+
+        self._audio_metadata["duration"] = detection.get("duration")
+
         with open(self._log_path, "a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([
-                filename,
-                detection.get("start_time"),
-                detection.get("end_time"),
+                detection.get("recording_filename"),
                 detection.get("common_name"),
                 detection.get("scientific_name"),
                 detection.get("confidence"),
-                datetime.strptime(filename, "%Y%m%d_%H%M%S_%f"),
+                detection.get("alternatives"),
+                datetime.strptime(Path(detection.get("recording_filename")).stem, "%Y%m%d_%H%M%S_%f"),
                 json.dumps(self._station_metadata),
                 json.dumps(self._audio_metadata),
-                json.dumps(self._processing_metadata)
+                json.dumps(self._processing_metadata),
+                self._station_metadata.get("station_id")
             ])
-        print(f"Detection logged for {filename}: {detection.get('common_name')} ({detection.get('confidence')})")
+        print(f"Detection logged for {detection.get('recording_filename')}: {detection.get('common_name')} ({detection.get('confidence')})")

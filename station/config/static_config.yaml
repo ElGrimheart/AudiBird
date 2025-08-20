@@ -1,6 +1,7 @@
 paths:
     configs_dir: "config"
     segments_dir: "data/segments"
+    recordings_dir: "data/recordings"
     detections_dir: "data/detections"
     logs_dir: "data/logs"
     detections_log: "data/detections/detections.csv"
@@ -9,13 +10,13 @@ audio_capture:
     sample_rate: 48000
     channels: 1
     dtype: int16
-    sample_width: 2
+    audio_format: "wav"
+    audio_device: None
+    inactivity_timeout: 6
 
 segmenter_config:
-    segment_duration: 4
-    segment_overlap: 1
-    detection_padding: 2
-    sample_width: 2
+    segment_duration: 3
+    segment_overlap: 2
 
 allowable_states:
     - unannounced
@@ -26,3 +27,5 @@ allowable_states:
 birdnet:
     model: "BirdNet-Analyser"
     version: "v2.4"
+    sensitivity: 1.5
+    analyser_min_confidence: 0.1

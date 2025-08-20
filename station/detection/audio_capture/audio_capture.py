@@ -14,46 +14,41 @@ class AudioCapture:
         _save_segments(): Background thread to save audio segments from the queue.
     """
      
-    def __init__ (self, config, segmenter, segment_saver, on_segment_ready=None):
-        """Initializes the AudioCapture with configuration parameters, a segmenter, and a segment_saver.
+    def __init__ (self, config, segmenter, segment_handler, on_segment_ready=None):
+        """Initializes the AudioCapture with configuration parameters, Segmenter, and SegmentHandler.
         
         Args:
             config (dict): Configuration parameters for audio capture.
-            segmenter (Segmenter): An instance of a segmenter to process audio data.
-            segment_saver (SegmentSaver): An instance of a segment_saver to save audio segments.
-            on_segment_ready (callable, optional): Callback function to notify when a segment is ready.
+            segmenter (Segmenter): An instance of a segmenter to process and segment the audio stream.
+            segment_handler (SegmentHandler): An instance of a SegmentHandler to handle audio segments.
+            on_segment_ready (callable): Callback function to notify when a segment is ready.
         
         Attributes:
             sample_rate (int): Sample rate for audio capture. Defaults to 48000.
             channels (int): Number of audio channels. Defaults to 1.
             dtype (str): Data type for audio samples. Defaults to "int16".
             segmenter (Segmenter): The segmenter instance to process audio data.
-            segment_saver (SegmentSaver): The segment_saver instance to save audio segments.
+            segment_handler (SegmentHandler): The segment_handler instance which saves the audio segments.
             segments_queue (queue.Queue): Queue to hold audio segments for processing.
             on_segment_ready (callable): Callback function to notify when a segment is ready.
             listeners (list): List of listeners for live audio blocks.
             running (bool): Flag to indicate if the audio capture is running.
         """
-        
-        # Initializing with configuration parameters
+
+        # Initialize with configuration parameters
         self._sample_rate = config.get("sample_rate", 48000)
         self._channels = config.get("channels", 1)
         self._dtype = config.get("dtype", "int16")
 
         self._segmenter = segmenter
-        self._segment_saver = segment_saver
+        self._segment_handler = segment_handler
         self._segments_queue = queue.Queue()
 
         self._on_segment_ready = on_segment_ready
         self._listeners = []     
 
         self._running = False
-
-      
-    def add_listener(self, callback):
-        """Adds a listener to receive live audio blocks."""
-        self._listeners.append(callback)
-
+        
         
     def start(self, device=None):
         """Starts continuous audio capture from the microphone.
@@ -67,56 +62,48 @@ class AudioCapture:
 
         self._running = True
         print(f"Starting audio capture...")
-        
-        
-        def callback(indata, frames, time, status):
-            """Callback function to process audio data in real-time."""
-            if self._running:
-                
-                # Notify listeners with the live audio block
-                for listener in self._listeners:
-                    listener(indata.copy())
-                
-                # Append audio data to the segmenter
-                self._segmenter.append_audio(indata)
-                for segment in self._segmenter.get_segments():
-                    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
-                    self._segments_queue.put((segment, timestamp))
 
-
-        # Thread to save segments in the background
-        self._save_thread = threading.Thread(
-            target=self._save_segments, 
-            daemon=True,
-            name=f"AudioCaptureSaveThread {id(self)}"
-        )    
+        # Start background thread for saving segments
+        self._save_thread = threading.Thread(target=self._save_segments, daemon=True,name=f"AudioCaptureSaveThread {id(self)}")    
         self._save_thread.start()
-        
-        
-        # Starting the audio stream
+
+        # Starting the audio stream with callback for notifying listeners
         try:
             with sd.InputStream(
                 device=device,
                 samplerate=self._sample_rate, 
                 channels=self._channels, 
                 dtype=self._dtype,
-                callback=callback
+                callback=self._audio_callback
             ):
-                while self._running:
-                    sd.sleep(1000)  # Keep the stream alive
+                while self._running:        # Keep the stream alive
+                    sd.sleep(1000)
         except Exception as e:
             print(f"Error starting audio capture: {e}")
             self._running = False
         finally:
             self.stop()
             print("Audio capture stopped.")
+            
+    
+    def _audio_callback(self, indata, frames, time, status):
+        """Callback function to process audio data as it is captured.
+        Notifies listeners and appends audio data to the segmenter.
+        """
+        if self._running:
+            for listener in self._listeners:
+                listener(indata.copy())
+            self._segmenter.append_audio(indata)
+            for segment in self._segmenter.get_segments():
+                timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
+                self._segments_queue.put((segment, timestamp))
          
             
     def _save_segments(self):    
-        """Background thread to save audio segments from the queue.
-        This method continuously checks the segments queue for new segments and saves them using the segment_saver
-        until the running flag is set to False.
-        
+        """Saves audio segments from the queue to disk.
+        Continuously checks the segments queue for new segments and saves them using the SegmentHandler.
+        Also notifies the on_segment_ready callback when a segment is saved.
+
         Args:
             None
             
@@ -126,22 +113,25 @@ class AudioCapture:
      
         while self._running:
             try:
-                segment, timestamp = self._segments_queue.get(timeout=1) #timeout to prevent blocking indefinitely
-                self._segment_saver.save(segment, timestamp)
+                segment, timestamp = self._segments_queue.get(timeout=1)
+                self._segment_handler.save_segment(segment, timestamp)
                 if self._on_segment_ready:
-                    self._on_segment_ready(timestamp)  # Notify listeners that a segment is ready
+                    self._on_segment_ready(timestamp) 
                 self._segments_queue.task_done()
             except queue.Empty:
                 continue
             except Exception as e:
                 print(f"Error saving segment: {e}")
 
+
+    def add_listener(self, callback):
+        """Adds a listener to receive live audio blocks."""
+        self._listeners.append(callback)
+            
+            
     def stop(self):
         """Stops the audio capture and processes
-        
-        Args:
-            None
-            
+
         Attributes:
             running (bool): Flag to indicate if the audio capture is currently running.
         """
@@ -149,7 +139,5 @@ class AudioCapture:
 
         if hasattr(self, '_save_thread') and self._save_thread.is_alive():
             self._save_thread.join(timeout=5)
-        
-        print("Audio capture stopped")
 
-   
+        print("Audio capture stopped.")

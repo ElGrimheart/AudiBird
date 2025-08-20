@@ -41,7 +41,6 @@ export default function DetectionModal({ show, onHide, detection }) {
                         <p><em><strong>Scientific Name:</strong> {detection.scientific_name} </em></p>
                         <p><strong>Confidence:</strong> {Math.round(detection.confidence * 100)}%</p>
                         <p><strong>Date:</strong> {formatStringToDate(detection.detection_timestamp)}</p>
-                        <p><strong>Location:</strong> {detection.location}</p>
                         <hr />
                         <h6>Recording Station:</h6>
                         <p>Station Name: {detection.station_metadata.station_name}</p>
@@ -50,18 +49,17 @@ export default function DetectionModal({ show, onHide, detection }) {
                         <hr />
                         <h6>Recording Data</h6>
                         <p>Duration: {detection.audio_metadata.duration} seconds</p>
-                        <p>Format: {detection.audio_metadata.format} wav </p>
+                        <p>Format: {detection.audio_metadata.format} </p>
                         <p>Channels: {detection.audio_metadata.channels}</p>
                         <p>Sample Rate: {detection.audio_metadata.sample_rate} Hz</p>
-                        <p>Sample Width: {detection.audio_metadata.sample_width} bits</p>
                         <p>Data type: {detection.audio_metadata.dtype}</p>
                         <hr />
                         <h6>Processing Information</h6>
                         <p>Model: {detection.processing_metadata.model_name}</p>
-                        <p>Min confidence threshold: {detection.processing_metadata.min_confidence*100}%</p>
+                        <p>Model sensitivity: {detection.processing_metadata.sensitivity}</p>
+                        <p>Min confidence threshold: {(detection.processing_metadata.min_confidence*100).toFixed(0)}%</p>
                         <p>Segment duration: {detection.processing_metadata.segment_duration} seconds</p>
                         <p>Segment overlap: {detection.processing_metadata.segment_overlap} seconds</p>
-                        <p>Processing time: {detection.processing_metadata.processing_time} seconds</p>
                     </div>
                 )}
             </Modal.Body>

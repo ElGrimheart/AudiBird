@@ -1,6 +1,5 @@
 from .audio_capture import AudioCapture
-from .websocket_stream import WebSocketStream
 from .segmenter import Segmenter
-from .segment_saver import SegmentSaver
+from .segment_handler import SegmentHandler
 
-__all__ = ['AudioCapture', 'WebSocketStream', 'Segmenter', 'SegmentSaver']
+__all__ = ['AudioCapture', 'Segmenter', 'SegmentHandler']

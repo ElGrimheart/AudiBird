@@ -15,8 +15,15 @@ def upload_detection(filename, detection, config, station_metadata, audio_metada
     Returns:
         dict: The response from the API.
     """
-    print("Uploading detection for file:", filename)
     
+    # Update metadata with detection information and upload detection info
+    base = filename.replace('.wav', '')
+    timestamp = datetime.strptime(base, "%Y%m%d_%H%M%S_%f")
+    audio_metadata["duration"] = detection.get("duration")
+    audio_metadata["filesize"] = detection.get("filesize")
+    
+    
+    # Construct endpoint and post payload
     detections_route = os.environ.get("API_DETECTIONS_ROUTE")
     station_id = config['station_id']
     station_api_key = config['station_api_key']
@@ -27,9 +34,6 @@ def upload_detection(filename, detection, config, station_metadata, audio_metada
         "Content-Type": "application/json"
     }
     
-    base = filename.replace('.wav', '')
-    timestamp = datetime.strptime(base, "%Y%m%d_%H%M%S_%f")
-
     try:
         response = requests.post(
             post_detection_route,
@@ -39,13 +43,17 @@ def upload_detection(filename, detection, config, station_metadata, audio_metada
                 "scientific_name": detection.get("scientific_name"),
                 "confidence": detection.get("confidence"),
                 "detection_timestamp": timestamp.isoformat(),
+                "alternative_species": detection.get("alternatives", []),
                 "station_metadata": station_metadata,
                 "audio_metadata": audio_metadata,
                 "processing_metadata": processing_metadata,
-                "recording_file_name": filename + ".wav"
+                "recording_file_name": filename
             }
         )
         response.raise_for_status()
+        
+        if response.status_code == 201:
+            print("Detection uploaded successfully:", response.json())
         return response.json()
     except requests.HTTPError as e:
         print(f"Error posting detection: {e}")

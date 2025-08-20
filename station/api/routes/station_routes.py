@@ -146,8 +146,8 @@ def serve_audio(file_name):
     """Serves the requested recording file to the backend if it exists.
     Otherwise returns a 404 error if the file is not found."""
     static_config = get_static_config()
-    segments_dir = os.path.abspath(static_config['paths']['segments_dir'])
-    file_path = os.path.join(segments_dir, file_name)
+    recordings_dir = os.path.abspath(static_config['paths']['recordings_dir'])
+    file_path = os.path.join(recordings_dir, file_name)
 
     if not os.path.exists(file_path):
         return jsonify({
@@ -155,4 +155,4 @@ def serve_audio(file_name):
             "message": f"File {file_path} not found."
         }), 404
 
-    return send_from_directory(segments_dir, file_name)
+    return send_from_directory(recordings_dir, file_name)
