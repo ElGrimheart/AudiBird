@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import SocketContext from '../contexts/SocketContext';
 import axios from 'axios';
 
@@ -15,36 +15,34 @@ export default function useSummaryStats(stationId) {
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;
 
-    useEffect(() => {
+    const fetchSummaryStats = useCallback(async () => {
         if (!stationId) {
             setSummaryStats([]);
             return;
         }
+        setLoading(true);
+        setError(null);
 
-        const fetchSummaryStats = async () => {
-            setLoading(true);
-            setError(null);
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/detection-summary/${stationId}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
+            });
 
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_ANALYTICS_URL}/detection-summary/${stationId}`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
-                });
+            // format labels for readability
+            const statsArray = Object.entries(response.data.result || {}).map(([key, value]) => ({
+                label: key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
+                value
+            }));
+            setSummaryStats(statsArray || []);
+        } catch (error) {
+            setError(error);
+            setSummaryStats([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [stationId]);
 
-                // format labels for readability
-                const statsArray = Object.entries(response.data.result || {}).map(([key, value]) => ({
-                    label: key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
-                    value
-                }));
-                setSummaryStats(statsArray || []);
-            } catch (error) {
-                setError(error);
-                setSummaryStats([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        // Initial fetch 
+    useEffect(() => {
         fetchSummaryStats();
 
         // Re-fetch on new detection
@@ -54,12 +52,11 @@ export default function useSummaryStats(stationId) {
             }
         };
 
-        // Listener for new detections on the station's room
         if (!socket || !isConnected) return;
         socket.on("newDetection", handleNewDetection);
         return () => socket.off("newDetection", handleNewDetection);
 
-    }, [stationId, socket, isConnected]);
+    }, [stationId, socket, isConnected, fetchSummaryStats]);
 
-    return { summaryStats, loading, error };
+    return { summaryStats, loading, error, refetch: fetchSummaryStats };
 }

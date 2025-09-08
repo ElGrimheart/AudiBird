@@ -5,7 +5,8 @@ from api.state import globals
 from api.services import get_static_config, get_station_config
 
 def get_detection_controller():
-    """Gets the current instance of the DetectionController, or creates a new one if it doesn't exist.
+    """
+    Gets the current instance of the DetectionController, or creates a new one if it doesn't exist.
 
     Returns:
         DetectionController: The current instance of the DetectionController.
@@ -19,7 +20,8 @@ def get_detection_controller():
     
     
 def detection_is_running():
-    """Checks if an instance of DetectionController exists and if the detection process is running.
+    """
+    Checks if an instance of DetectionController exists and if the detection process is running.
 
     Returns:
         bool: True if DetectionController exists and detection process is running, False otherwise.
@@ -30,7 +32,8 @@ def detection_is_running():
 
 
 def stop_detection():
-    """Stops the detection process for the current instance of the DetectionController.
+    """
+    Stops the detection process for the current instance of the DetectionController.
 
     Returns:
         bool: True if the DetectionController was stopped, False otherwise.
@@ -43,7 +46,8 @@ def stop_detection():
 
 
 def start_detection():
-    """Starts the detection process for the current instance of the DetectionController.
+    """
+    Starts the detection process for the current instance of the DetectionController.
     Otherwise creates a new instance of DetectionController and starts the detection process.
 
     Returns:

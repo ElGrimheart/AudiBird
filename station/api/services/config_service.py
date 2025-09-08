@@ -11,7 +11,8 @@ ALLOWABLE_STATION_STATES = ["unannounced", "announced", "claimed", "configured"]
 
 
 def get_station_state():
-    """Gets the current state of the station.
+    """
+    Gets the current state of the station.
     
     Returns:
         str: The current state of the station.
@@ -21,7 +22,8 @@ def get_station_state():
 
 
 def set_station_state(new_state):
-    """Sets the current state of the station. 
+    """
+    Sets the current state of the station. 
 
     Args:
         new_state (str): The new state to set for the station.
@@ -38,7 +40,8 @@ def set_station_state(new_state):
 
 
 def get_station_config():
-    """Gets the full station configuration.
+    """
+    Gets the full station configuration.
 
     Returns:
         dict: The full station configuration.
@@ -48,7 +51,8 @@ def get_station_config():
 
 
 def save_station_config(config):
-    """Writes the full station configuration to the config file.
+    """
+    Writes the full station configuration to the config file.
 
     Args:
         config (dict): The station configuration to save.
@@ -71,7 +75,8 @@ def save_station_config(config):
 
 
 def get_static_config():
-    """Get the full static configuration.
+    """
+    Get the full static configuration.
 
     Returns:
         dict: The full static configuration.
@@ -81,9 +86,11 @@ def get_static_config():
 
 
 
-# Helper functions to load and write the YAML configuration files
+########## Helper functions to load and write the YAML configuration files
+
 def _load_config(file_path):
-    """Loads a YAML configuration data from a file.
+    """
+    Loads a YAML configuration data from a file.
 
     Args:
         file_path (str): The path to the YAML file.
@@ -96,7 +103,8 @@ def _load_config(file_path):
     
     
 def _write_config(file_path, data):
-    """Writes configuration data to a YAML file.
+    """
+    Writes configuration data to a YAML file.
 
     Args:
         file_path (str): The path to the YAML file.

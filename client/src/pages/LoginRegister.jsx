@@ -7,7 +7,7 @@ import LoginRegisterContainer from '../components/login/LoginRegisterContainer';
 export default function LoginRegister() {
     return (
         <UserStationsProvider>
-                <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '90vh' }}>
+                <Container fluid className="login-background d-flex align-items-center justify-content-center">
                     <Card className="p-4 shadow" style={{ minWidth: 480 }}>
                         <Card.Body>
                             <LoginRegisterContainer />

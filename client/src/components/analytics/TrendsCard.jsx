@@ -7,7 +7,7 @@ import TrendsChart from "./TrendsChart";
 
 /*
 TrendsCard component to display trends in species detections over time
-Allows adding multiple trend charts with independent filters.
+Multiple charts with independent filters can be created.
 */
 export default function TrendsCard() {
     const { selectedStation } = useContext(SelectedStationContext);
@@ -16,8 +16,8 @@ export default function TrendsCard() {
     // Generate default filters based on the selected station and its date range
     const generateDefaultFilters = () => ({
         stationId: selectedStation,
-        startDate: stationDateRange?.startDate || "",
-        endDate: stationDateRange?.endDate || ""
+        endDate: stationDateRange?.endDate || "",
+        startDate: stationDateRange?.startDate || ""
     });
 
 

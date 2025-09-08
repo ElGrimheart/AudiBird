@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticateJWT, validateStationId } from '../../middleware/authenticator.js';
-import { validateLoginForm, validateUserRegistrationForm } from '../../middleware/client-request-validator.js';
+import { validateLoginForm, validateUserRegistrationForm, validateUserPreferences } from '../../middleware/client-request-validator.js';
 import * as usercontroller from '../../controllers/user-controller.js';
 
 const userRouter = express.Router();
@@ -30,9 +30,10 @@ userRouter.post('/logout',
     usercontroller.logoutUser
 );
 
-userRouter.post('/preferences/:stationId', 
+userRouter.patch('/preferences/:stationId', 
     authenticateJWT, 
     validateStationId, 
+    validateUserPreferences, 
     usercontroller.updateUserPreferencesByStationId
 );
 

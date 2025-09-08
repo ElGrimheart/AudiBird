@@ -1,17 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import { Form, Button, Alert, Spinner, Row, Col } from 'react-bootstrap';
 import ComponentCard from '../common/ComponentCard';
-import * as Yup from 'yup';
+import { userPreferencesSchema } from '../../utils/form-validator';
+import SkeletonComponent from '../common/SkeletonPlaceholder';
 
-const userPreferencesSchema = Yup.object().shape({
-    dailySummaryEmail: Yup.boolean(),
-    newDetectionInApp: Yup.boolean(),
-    newDetectionInAppThreshold: Yup.number().min(0).max(100),
-    newDetectionEmail: Yup.boolean(),
-    newDetectionEmailThreshold: Yup.number().min(0).max(100),
-    lowStorageAlert: Yup.boolean(),
-});
 
 /*
 UserPreferencesForm component
@@ -19,6 +13,8 @@ Handles displaying and updating user notification preferences.
 Wrapped in Formik for form state management and validation via Yup
 */
 export default function UserPreferencesForm({ initialValues, loading, generalError, onSubmit, userCanEdit }) {
+    const navigate = useNavigate();
+
     return (
         <ComponentCard title={`Notification Preferences`}>
             <div>
@@ -27,7 +23,7 @@ export default function UserPreferencesForm({ initialValues, loading, generalErr
                         {generalError}
                     </Alert>
                 )}
-                {loading ? <Spinner animation="border" /> : (
+                {loading ? <SkeletonComponent height={400} /> : (
                     <Formik
                         initialValues={initialValues}
                         validationSchema={userPreferencesSchema}
@@ -84,6 +80,9 @@ export default function UserPreferencesForm({ initialValues, loading, generalErr
                                             <Form.Text className="text-muted d-inline ms-2">
                                                 % min confidence
                                             </Form.Text>
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.newDetectionInAppThreshold}
+                                            </Form.Control.Feedback>
                                         </Col>
                                     </Form.Group>
                                     <Form.Group as={Row} className="d-flex align-items-center" controlId="newDetectionEmail">
@@ -112,8 +111,12 @@ export default function UserPreferencesForm({ initialValues, loading, generalErr
                                             <Form.Text className="text-muted d-inline ms-2">
                                                 % min confidence
                                             </Form.Text>
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.newDetectionEmailThreshold}
+                                            </Form.Control.Feedback>
                                         </Col>
                                     </Form.Group>
+                                    
                                 {/*Only show system notifications to owners/admins*/}
                                 {userCanEdit && (
                                     <>
@@ -145,6 +148,9 @@ export default function UserPreferencesForm({ initialValues, loading, generalErr
                                                 <Form.Text className="text-muted d-inline ms-2">
                                                     % storage used
                                                 </Form.Text>
+                                                <Form.Control.Feedback type="invalid">
+                                                    {errors.lowStorageEmailThreshold}
+                                                </Form.Control.Feedback>
                                             </Col>
                                         </Form.Group>
                                     </>
@@ -153,6 +159,13 @@ export default function UserPreferencesForm({ initialValues, loading, generalErr
                                 <div className="d-grid gap-2 mt-3">
                                     <Button variant="success" type="submit" disabled={isSubmitting}>
                                         {isSubmitting ? <Spinner animation="border" size="sm" /> : 'Save Preferences'}
+                                    </Button>
+                                    <Button
+                                        variant="secondary"
+                                        type="button"
+                                        onClick={() => navigate('/dashboard')}
+                                    >
+                                        Cancel
                                     </Button>
                                 </div>
                             </Form>

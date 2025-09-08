@@ -55,12 +55,11 @@ export async function getStationStatusById(stationId) {
     }
 
     const latestStatus = result.rows[0];
-    const minutesSinceLastSeen = (Date.now() - new Date(latestStatus.created_at)) / 60000; // in minutes
 
-    return {
-        ...latestStatus,
-        status: minutesSinceLastSeen > 2 ? "offline" : "online",  // calculate online/offline status
-    }
+    // Calculate minutes since last seen
+    const minutesSinceLastSeen = (Date.now() - new Date(latestStatus.created_at)) / 60000;
+
+    return { ...latestStatus, status: minutesSinceLastSeen > 2 ? "offline" : "online" };  // calculate online/offline status
 }
 
 // Retrieves metadata for a station including date range of detections and species list
@@ -111,14 +110,12 @@ export async function registerStationToUser(userId, stationId, apiKey) {
     if (storedStation) {
 
         const newConfig = generateDefaultStationConfig(storedStation.station_name, stationId, apiKey);
-        console.log("New Station Config:", newConfig);
 
         const userStationSql = `
             INSERT INTO user_station (user_id, station_id, station_user_type_id)
             VALUES ($1, $2, $3)
             RETURNING *
         `;
-        const userStationValue = [ userId, stationId, STATION_USER_TYPE_ID.Owner ];
 
         const stationConfigSql = `
             UPDATE station
@@ -126,17 +123,20 @@ export async function registerStationToUser(userId, stationId, apiKey) {
             WHERE station_id = $2
             RETURNING *
         `;
-        const stationConfigValue = [ newConfig, stationId ];
 
         const userPreferencesSql = `
             INSERT INTO user_preferences (enabled, threshold, user_id, event_type_id, channel_type_id, station_id)
             VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *
         `;
+
+        const userStationValue = [ userId, stationId, STATION_USER_TYPE_ID.Owner ];
+        const stationConfigValue = [ newConfig, stationId ];
+
         const userDailySummaryValues = [true, null, userId, NOTIFICATION_EVENT_TYPE_ID.DailySummary, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
         const userNewDetectionEmailValues = [true, 0, userId, NOTIFICATION_EVENT_TYPE_ID.NewDetection, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
         const userNewDetectionToastValues = [true, 0, userId, NOTIFICATION_EVENT_TYPE_ID.NewDetection, NOTIFICATION_CHANNEL_TYPE_ID.Toast, stationId];
-        const userLowStorageEmailValues = [true, 80, userId, NOTIFICATION_EVENT_TYPE_ID.LowStorage, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
+        const userLowStorageEmailValues = [true, 0.8, userId, NOTIFICATION_EVENT_TYPE_ID.LowStorage, NOTIFICATION_CHANNEL_TYPE_ID.Email, stationId];
         
 
         try {
@@ -211,8 +211,8 @@ export async function createStationStatus(stationId, statusData) {
     return result.rows[0] || null;
 }
 
-// Relays a request to a specific station's flask API
-export async function relayToStation(stationId, path, method="GET", body=null) {
+// Relays a request to a specific station's Flask API
+export async function relayToStation(stationId, path, method, body=null) {
     try {
         const station = await getStationById(stationId);
 
@@ -241,7 +241,7 @@ export async function relayToStation(stationId, path, method="GET", body=null) {
 }
 
 
-// Helper functions for station management
+//// Helper functions for station management  //////
 
 // Checks if a station is available for registration
 async function canRegisterStation(stationId, userId, apiKey) {
@@ -283,9 +283,10 @@ export async function getActiveStationIds(startDate, endDate) {
 // Retrieve last status update from all stations
 export async function getLastStationStatusUpdates() {
     const sql = `
-        SELECT DISTINCT ON (station_id) *
+        SELECT DISTINCT ON (station_status.station_id) *
         FROM station_status
-        ORDER BY station_id, created_at DESC
+        JOIN station ON station_status.station_id = station.station_id
+        ORDER BY station_status.station_id, station_status.created_at DESC
     `;
 
     const result = await db.query(sql);

@@ -4,7 +4,6 @@ import UserStationsProvider from "../providers/UserStationsProvider";
 import SelectedStationProvider from "../providers/SelectedStationProvider";
 import StationMetadataProvider from "../providers/StationMetadataProvider";
 import UserPreferencesProvider from "../providers/UserPreferencesProvider";
-import AudioPlayerProvider from "../providers/AudioPlayerProvider";
 import Container from 'react-bootstrap/Container';
 import MainNavbar from '../components/common/MainNavbar';
 import MainFooter from '../components/common/MainFooter';
@@ -19,17 +18,15 @@ export default function AuthenticatedLayout() {
         <SelectedStationProvider>
           <StationMetadataProvider>
             <UserPreferencesProvider>
-              <AudioPlayerProvider>
-                <Container fluid className="app-shell p-2">
+                <Container fluid className="app-wrapper">
                   <MainNavbar />
                   <ToastContainer />
                   <ToastNotification />
                   <div className="app-content">
-                    <Outlet />              {/* Renders the associated child routes */}
+                    <Outlet />                    {/* Renders the associated child routes */}
                   </div>
                   <MainFooter />
                 </Container>
-              </AudioPlayerProvider>
             </UserPreferencesProvider>
           </StationMetadataProvider>
         </SelectedStationProvider>

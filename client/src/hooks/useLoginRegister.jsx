@@ -27,8 +27,15 @@ export default function useLoginRegister(fetchUserStations) {
             const token = response.data.result.jwt;
             localStorage.setItem('jwt', token);
 
-            // fetch users station list and redirect to last visited page or dashboard
+            // If registering, redirect to station registration page
+            if (isRegister) {
+                navigate('/register-station', { replace: true });
+                return;
+            }
+
+            // Else fetch users station list and redirect to last visited page or dashboard
             await fetchUserStations();
+
             const redirectTo = location.state?.from?.pathname || '/dashboard';
             navigate(redirectTo, { replace: true });
           }

@@ -36,6 +36,15 @@ detectionRouter.get('/:stationId/:detectionId',
     detectionController.getDetectionById
 );
 
+detectionRouter.get('/alternative-species/:stationId/:detectionId', 
+    validateStationId,
+    authenticateJWT, 
+    authenticateAccessPermission,
+    validateDetectionId, 
+    detectionController.getAlternativeSpeciesByDetectionId
+);
+
+
 
 detectionRouter.post('/new/:stationId', 
     validateStationId, 
@@ -44,12 +53,32 @@ detectionRouter.post('/new/:stationId',
     detectionController.createDetection
 );
 
-/* Future development - multi-stations support
-/api/detections/all?stations=stationId1,stationId2 - all detections for multiple stations
-/api/detections/recent?stations=stationId1,stationId2 - recent detections for multiple stations
-/api/detections/common?stations=stationId1,stationId2 - most common species for multiple stations
-/api/detections/summary?stations=stationId1,stationId2 - summary for multiple stations
-/api/detections/filtered?stations=stationId1,stationId2&otherFilters=... - filtered detections for multiple stations
-*/
+
+
+detectionRouter.patch('/verify/:stationId/:detectionId', 
+    validateStationId, 
+    authenticateJWT, 
+    authenticateWritePermission, 
+    validateDetectionId, 
+    detectionController.verifyDetection
+);
+
+detectionRouter.patch('/reclassify/:stationId/:detectionId', 
+    validateStationId, 
+    authenticateJWT, 
+    authenticateWritePermission, 
+    validateDetectionId, 
+    detectionController.reclassifyDetection
+);  
+
+
+
+detectionRouter.delete('/delete/:stationId/:detectionId', 
+    validateStationId, 
+    authenticateJWT, 
+    authenticateWritePermission, 
+    validateDetectionId, 
+    detectionController.deleteDetection
+);
 
 export default detectionRouter;

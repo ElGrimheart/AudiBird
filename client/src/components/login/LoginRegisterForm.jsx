@@ -19,12 +19,6 @@ export default function LoginRegisterForm({ isRegister, onSubmit, generalError, 
 
     return (
         <>
-            {generalError && (
-                <Alert variant="danger" className="mb-3">
-                    {generalError}
-                </Alert>
-            )}
-
             <Formik
                 initialValues={initialValues}
                 validationSchema={loginRegisterSchema(isRegister)}
@@ -40,6 +34,10 @@ export default function LoginRegisterForm({ isRegister, onSubmit, generalError, 
                     setFieldTouched,
                 }) => (
                     <Form onSubmit={handleSubmit}>
+                        <div className="audibird-logo text-center pb-4">
+                            <img src="/audibird-high-resolution-logo-transparent.png" alt="Station" className="img-fluid mb-3" />
+                        </div>
+
                         {isRegister && (
                             <>
                                 <Form.Group className="mb-3" controlId="name">
@@ -121,8 +119,17 @@ export default function LoginRegisterForm({ isRegister, onSubmit, generalError, 
                                 </Form.Control.Feedback>
                             </Form.Group>
                         )}
+
+                        {/* General Error Message */}
+                        {generalError && (
+                            <Alert variant="danger" className="mb-3">
+                                {generalError}
+                            </Alert>
+                        )}
+
+                        {/* Submit/Back Buttons */}
                         <div className="d-grid gap-2">
-                            <Button variant="primary" type="submit" disabled={isSubmitting}>
+                            <Button variant="success" type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? <Spinner animation="border" size="sm" /> : (isRegister ? 'Register' : 'Login')}
                             </Button>
                             <Button

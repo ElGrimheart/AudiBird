@@ -1,0 +1,15 @@
+detection_config:
+  min_confidence: 0.5
+  species_ignore_list: []
+station:
+  api_key: c069c1fb-aa87-4ac6-8359-15dafa25bb2d
+  id: 149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f
+  location:
+    desc: Back garden, Belfast, Northern Ireland
+    lat: 54.607868
+    lon: -5.926437
+  state: configured
+  station_name: Development Station
+storage_manager:
+  max_storage_usage_percent: '56'
+  storage_policy: Default

@@ -37,7 +37,7 @@ export function formatHtmlInputToDate(date) {
     return dateIso.toISOString().slice(0, 10);
 }
 
-
+// Converts a date string to a UTC date string
 export function formatHtmlDateToUTC(date) {
     if (!date)
         return "";

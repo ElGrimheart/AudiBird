@@ -6,6 +6,7 @@ import useHourlyTrends from "../../hooks/useHourlyTrends.jsx";
 import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import ComponentCard from "../common/ComponentCard.jsx";
 
+
 /*
 TrendsChart component to display hourly trends in species detections
 Uses a line chart to visualize average detections per hour
@@ -36,6 +37,7 @@ export default function TrendsChart({ filters, setFilters }) {
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
             datalabels: { display: false },
@@ -46,8 +48,8 @@ export default function TrendsChart({ filters, setFilters }) {
             }
         },
         scales: {
-            x: { type: 'category', title: { display: true, text: 'Hour of Day' } },
-            y: { title: { display: true, text: 'Number of Detections' } }
+            x: { type: 'category', title: { display: true, text: 'Hour of Day', font: { size: 18 } } },
+            y: { title: { display: true, text: 'Number of Detections', font: { size: 18 } } }
         }
     };
 
@@ -64,14 +66,16 @@ export default function TrendsChart({ filters, setFilters }) {
 
             {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
-            {loading ? <SkeletonComponent height={200} /> : (
+            {loading ? <SkeletonComponent height={450} /> : (
                 data.length > 0 ? (
 
                     /* Line chart displaying hourly trends */
-                    <Line 
-                        key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
-                        data={chartData} 
-                        options={options} />
+                    <div className="analytics-chart">
+                        <Line
+                            key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
+                            data={chartData}
+                            options={options} />
+                    </div>
                 ) : (
                     <div className="text-center text-muted">No detection data available</div>
                 )

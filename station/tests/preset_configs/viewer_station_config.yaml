@@ -1,0 +1,16 @@
+detection_config:
+  min_confidence: 0.25
+  species_ignore_list: []
+station:
+  api_key: 789960c4-900a-4a38-81f1-768d89b3595a
+  id: 5999fd80-c128-49ba-a2a9-70a2707bdeba
+  location:
+    desc: 123 Some Street, Some Town, Ireland
+    lat: 53.525932
+    lon: -7.338138
+  state: configured
+  station_name: Viewer Station
+storage_manager:
+  max_storage_usage_percent: '90'
+  storage_policy: default
+

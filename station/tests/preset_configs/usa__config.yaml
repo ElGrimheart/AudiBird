@@ -1,0 +1,15 @@
+detection_config:
+  min_confidence: 0.5
+  species_ignore_list: []
+station:
+  api_key: cc0c1165-1002-4d14-b83d-38593397c3f9
+  id: 43bdcf75-c7de-41f3-9b14-fbe2bf301658
+  location:
+    desc: FLORIDA, USA
+    lat: 27.994402
+    lon: -81.760254
+  state: configured
+  station_name: Test Station
+storage_manager:
+  max_storage_usage_percent: '90'
+  storage_policy: Default

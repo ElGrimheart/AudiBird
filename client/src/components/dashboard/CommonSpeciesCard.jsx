@@ -15,7 +15,7 @@ export default function CommonSpeciesCard({ speciesData, loading, error }){
         <ComponentCard title="Most Common Species">
             {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
-            {loading ? <SkeletonComponent height={200} /> : (
+            {loading ? <SkeletonComponent height={300} /> : (
 
                 /* Display species data */
                 <ol className="list mb-0">
@@ -27,15 +27,13 @@ export default function CommonSpeciesCard({ speciesData, loading, error }){
                                     alt={`${species.common_name} by ${species.image_rights}; ${externalLink.EXTERNAL_MEDIA_NAME}`}
                                     commonName={species.common_name}
                                     contributor={species.image_rights}
-                                    size={72} 
+                                    size={56} 
                                     className="me-2 birdAvatar"
                                 />
                                 <strong> {species.common_name}</strong> 
-                                <em> ({species.scientific_name}) 
                                     <a href={`${externalLink.EXTERNAL_SPECIES_URL}/${species.species_code}`} target="_blank" rel="noopener noreferrer">
-                                        <BoxArrowUpRight size={12} aria-label="external link" title="External link" style={{ marginLeft: 4 }} />
+                                        <BoxArrowUpRight size={12} aria-label="external link" title={`Find out more about the ${species.common_name} on eBird`} style={{ marginLeft: 4 }} />
                                     </a>
-                                </em> 
                                 {" - "}{species.count} detections
                             </li>
                         )) : 

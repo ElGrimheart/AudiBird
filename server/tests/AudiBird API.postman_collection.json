@@ -1,0 +1,4087 @@
+{
+	"info": {
+		"_postman_id": "b5c3f771-0be9-4900-b98b-9648752ac091",
+		"name": "AudiBird API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39508024"
+	},
+	"item": [
+		{
+			"name": "Post user login VALID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"dummyuser1@email.com\",\r\n    \"password\": \"Simplepassword789!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post user login INVALID CREDS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"cforeman01@qub.ac.uk\",\r\n    \"password\": \"Simplepassword123?\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post user login INVALID FIELDS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"cforeman01\",\r\n    \"password\": \"shortpass\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post register user VALID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"User Four\",\r\n    \"username\": \"User_4\",\r\n    \"email\": \"email@email4.com\",\r\n    \"password\": \"1234567891011aAQ!\",\r\n    \"confirmPassword\": \"1234567891011aAQ!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post register user DUPLICATE",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"User Four\",\r\n    \"username\": \"BirdMan1\",\r\n    \"email\": \"cforeman01@qub.ac.uk\",\r\n    \"password\": \"1234567891011aAQ!\",\r\n    \"confirmPassword\": \"1234567891011aAQ!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post register user INVALID FIELDS",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"!\",\r\n    \"username\": \"!\",\r\n    \"email\": \"email\",\r\n    \"password\": \"abc\",\r\n    \"confirmPassword\": \"xyz\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post announce station",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"station_name\": \"TEST\",\r\n    \"station_port\": \"5000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/stations/announce",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"announce"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post register station VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationId\": \"b2b2e93d-93fa-4460-8531-b110c32595e5\",\r\n    \"stationApiKey\": \"5be96f22-643b-4298-9adf-400b7a69340c\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/stations/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post register station INVALID API",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationId\": \"cc40690d-e430-42a2-8a98-3f9820d6dbae\",\r\n    \"stationApiKey\": \"50bcd843-6e3f-4015-a7d9-d6e0f60b56b1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/stations/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post register station DUPLICATE",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationId\": \"cc40690d-e430-42a2-8a98-3f9820d6dbae\",\r\n    \"stationApiKey\": \"50bcd843-6e3f-4015-a7d9-d6e0f60b56b7\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/stations/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update station config VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationName\": \"Dummy Station\",\r\n    \"locationDesc\": \"Dummy location\",\r\n    \"lat\": 90,\r\n    \"lon\": -180,\r\n    \"minConfidence\": 50,\r\n    \"maxStoragePercent\": 70\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/stations/config/cc40690d-e430-42a2-8a98-3f9820d6dbae",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"config",
+						"cc40690d-e430-42a2-8a98-3f9820d6dbae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update station config INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationName\": \"!\",\r\n    \"locationDesc\": \"?\",\r\n    \"lat\": 91,\r\n    \"lon\": -181,\r\n    \"minConfidence\": -1,\r\n    \"maxStoragePercent\": 101\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/stations/config/cc40690d-e430-42a2-8a98-3f9820d6dbae",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"config",
+						"cc40690d-e430-42a2-8a98-3f9820d6dbae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update station config UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"27577f51-a39d-44ec-8059-d4bb57ba211e\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 1,\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 3,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 3,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 3\r\n  },\r\n  \"iat\": 1757151992,\r\n  \"exp\": 1757166392\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stationName\": \"Dummy Station\",\r\n    \"locationDesc\": \"Dummy location\",\r\n    \"lat\": 90,\r\n    \"lon\": -180,\r\n    \"minConfidence\": 50,\r\n    \"maxStoragePercent\": 70\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/stations/config/cc40690d-e430-42a2-8a98-3f9820d6dbae",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"config",
+						"cc40690d-e430-42a2-8a98-3f9820d6dbae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start station recording AUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/stations/start/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"start",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start station recording UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"27577f51-a39d-44ec-8059-d4bb57ba211e\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 1,\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 3,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 3,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 3\r\n  },\r\n  \"iat\": 1757151992,\r\n  \"exp\": 1757166392\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/stations/start/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"start",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stop station recording AUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/stations/stop/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"stop",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stop station recording UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"27577f51-a39d-44ec-8059-d4bb57ba211e\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 1,\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 3,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 3,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 3\r\n  },\r\n  \"iat\": 1757151992,\r\n  \"exp\": 1757166392\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/stations/stop/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"stations",
+						"stop",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post station status update VALID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15dafa25bb2d",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"is_recording\": false,\r\n    \"cpu_temp\": 87,\r\n    \"memory_usage\": 10,\r\n    \"disk_usage\": 99,\r\n    \"battery\": \"N/A\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/status/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"status",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post station status update INVALID FIELDS",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15dafa25bb2d",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"is_recording\": null,\r\n    \"cpu_temp\": \"58\",\r\n    \"memory_usage\": -1,\r\n    \"disk_usage\": 101,\r\n    \"battery\": \"N/A\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/status/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"status",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post station status update INVALID API",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15dafa25bb2e",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"is_recording\": null,\r\n    \"cpu_temp\": \"58\",\r\n    \"memory_usage\": -1,\r\n    \"disk_usage\": 101,\r\n    \"battery\": \"N/A\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/stations/status/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"status",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user preferences VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dailySummaryEmail\": false,\r\n    \"newDetectionInApp\": false,\r\n    \"newDetectionInAppThreshold\": 0.1,\r\n    \"newDetectionEmail\": false,\r\n    \"newDetectionEmailThreshold\": 0.1,\r\n    \"lowStorageEmail\": false,\r\n    \"lowStorageEmailThreshold\": 0.1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/preferences/cc40690d-e430-42a2-8a98-3f9820d6dbae",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"preferences",
+						"cc40690d-e430-42a2-8a98-3f9820d6dbae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user preferences INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dailySummaryEmail\": \"False\",\r\n    \"newDetectionInApp\": \"False\",\r\n    \"newDetectionInAppThreshold\": -0.1,\r\n    \"newDetectionEmail\": \"True\",\r\n    \"newDetectionEmailThreshold\": 1.1,\r\n    \"lowStorageEmail\": \"True\",\r\n    \"lowStorageEmailThreshold\": 1.1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/preferences/cc40690d-e430-42a2-8a98-3f9820d6dbae",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"preferences",
+						"cc40690d-e430-42a2-8a98-3f9820d6dbae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post detection VALID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15dafa25bb2d",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"common_name\": \"House Sparrow\",\r\n    \"scientific_name\": \"Passer domesticus\",\r\n    \"confidence\": 0.69,\r\n    \"detection_timestamp\": \"2025-09-06T10:15:00.438552\",\r\n    \"alternative_species\": {},\r\n    \"station_metadata\": {\r\n        \"lat\": 54.607868,\r\n        \"lon\": -5.926437,\r\n        \"description\": \"Back garden, Belfast, Northern Ireland\",\r\n        \"station_name\": \"Development Station\"\r\n    },\r\n    \"audio_metadata\": {\r\n            \"dtype\": \"int16\",\r\n            \"format\": \"wav\",\r\n            \"channels\": 1,\r\n            \"duration\": 3,\r\n            \"filesize\": 28000,\r\n            \"sample_rate\": 48000\r\n        },\r\n    \"processing_metadata\": {\r\n        \"model_name\": \"BirdNet-Analyser v2.4\",\r\n        \"sensitivity\": 1.5,\r\n        \"min_confidence\": 0.5,\r\n        \"segment_overlap\": 2,\r\n        \"segment_duration\": 3\r\n    },\r\n    \"recording_file_name\": \"test.wav\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/detections/new/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"new",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post detection INVALID FIELDS",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15dafa25bb2d",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"common_name\": \"!*\",\r\n    \"scientific_name\": \"?\",\r\n    \"confidence\": 1.1,\r\n    \"detection_timestamp\": \"2025-09-06T16:15:00.438552\",\r\n    \"alternative_species\": {},\r\n    \"station_metadata\": {\r\n        \"lat\": null,\r\n        \"lon\": null,\r\n        \"description\": null,\r\n        \"station_name\": null\r\n    },\r\n    \"audio_metadata\": {\r\n            \"dtype\": null,\r\n            \"format\": null,\r\n            \"channels\": -1,\r\n            \"duration\": -1,\r\n            \"filesize\": -1,\r\n            \"sample_rate\": -1\r\n        },\r\n    \"processing_metadata\": {\r\n        \"model_name\": null,\r\n        \"sensitivity\": -0.1,\r\n        \"min_confidence\": 1.1,\r\n        \"segment_overlap\": -1,\r\n        \"segment_duration\": -1\r\n    },\r\n    \"recording_file_name\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/detections/new/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"new",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post detection INVALID API",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15eafa25bb2d",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"common_name\": \"House Sparrow\",\r\n    \"scientific_name\": \"Passer domesticus\",\r\n    \"confidence\": 0.69,\r\n    \"detection_timestamp\": \"2025-09-06T10:15:00.438552\",\r\n    \"alternative_species\": {},\r\n    \"station_metadata\": {\r\n        \"lat\": 54.607868,\r\n        \"lon\": -5.926437,\r\n        \"description\": \"Back garden, Belfast, Northern Ireland\",\r\n        \"station_name\": \"Development Station\"\r\n    },\r\n    \"audio_metadata\": {\r\n            \"dtype\": \"int16\",\r\n            \"format\": \"wav\",\r\n            \"channels\": 1,\r\n            \"duration\": 3,\r\n            \"filesize\": 28000,\r\n            \"sample_rate\": 48000\r\n        },\r\n    \"processing_metadata\": {\r\n        \"model_name\": \"BirdNet-Analyser v2.4\",\r\n        \"sensitivity\": 1.5,\r\n        \"min_confidence\": 0.5,\r\n        \"segment_overlap\": 2,\r\n        \"segment_duration\": 3\r\n    },\r\n    \"recording_file_name\": \"test.wav\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/detections/new/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"new",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete detection VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/delete/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/64dd89fe-8b30-448b-9626-122331eac836",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"delete",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"64dd89fe-8b30-448b-9626-122331eac836"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete detection INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/delete/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/490fcbec-af20-4fae-b595-4cf187a051d1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"delete",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"490fcbec-af20-4fae-b595-4cf187a051d1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete detection UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"27577f51-a39d-44ec-8059-d4bb57ba211e\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 1,\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 3,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 3,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 3\r\n  },\r\n  \"iat\": 1757151992,\r\n  \"exp\": 1757166392\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/delete/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/64dd89fe-8b30-448b-9626-122331eac836",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"delete",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"64dd89fe-8b30-448b-9626-122331eac836"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify detection VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/verify/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/b601577b-8dec-40cc-8660-7a2a5650429a",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"verify",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"b601577b-8dec-40cc-8660-7a2a5650429a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify detection INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/verify/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/df17ced6-b099-404d-8dd2-10534c95f2ae",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"verify",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"df17ced6-b099-404d-8dd2-10534c95f2ae"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify detection UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1755785261,\r\n  \"exp\": 1755792461\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/verify/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/df17ced6-b099-404d-8dd2-10534c95f2ad",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"verify",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"df17ced6-b099-404d-8dd2-10534c95f2ad"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Protect audio VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"protectAudio\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/audio/protect/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/67781c90-13f1-4dfa-84e1-1ecf7019664f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"audio",
+						"protect",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"67781c90-13f1-4dfa-84e1-1ecf7019664f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Protect audio INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"protectAudio\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/audio/protect/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/67781c90-13f1-4dfa-84e1-1ecf7019664f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"audio",
+						"protect",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"67781c90-13f1-4dfa-84e1-1ecf7019664f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Protect audio UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1755785261,\r\n  \"exp\": 1755792461\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"protectAudio\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/audio/protect/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/67781c90-13f1-4dfa-84e1-1ecf7019664f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"audio",
+						"protect",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"67781c90-13f1-4dfa-84e1-1ecf7019664f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all detections by station VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/all/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"all",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all detections by station INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/all/149cd7cd-350e-4a84-a3dd-f6d6b6afaf",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"all",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all detections by station UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"7bf71244-77c6-4a70-9aad-c3c6ead3a542\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 1\r\n  },\r\n  \"iat\": 1757156807,\r\n  \"exp\": 1757171207\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/all/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"all",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get recent detections by station VALID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/detections/recent/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?limit=10",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"recent",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get recent detections by station INVALID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/detections/recent/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?limit=-1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"recent",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "-1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get recent detections by station UNAUTHORISED",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"7bf71244-77c6-4a70-9aad-c3c6ead3a542\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 1\r\n  },\r\n  \"iat\": 1757156807,\r\n  \"exp\": 1757171207\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/detections/recent/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?limit=10",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"recent",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get filtered detections VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/filtered/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?startDate=2025-08-25T00:00:00Z&endDate=2025-08-27T23:59:59Z&speciesName=crow&minConfidence=50&maxConfidence=80&limit=25&offset=0&sortOrder=asc&sortBy=confidence&verificationStatusId=1&protectedAudio=false",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"filtered",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2025-08-25T00:00:00Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-08-27T23:59:59Z"
+						},
+						{
+							"key": "speciesName",
+							"value": "crow"
+						},
+						{
+							"key": "minConfidence",
+							"value": "50"
+						},
+						{
+							"key": "maxConfidence",
+							"value": "80"
+						},
+						{
+							"key": "limit",
+							"value": "25"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sortOrder",
+							"value": "asc"
+						},
+						{
+							"key": "sortBy",
+							"value": "confidence"
+						},
+						{
+							"key": "verificationStatusId",
+							"value": "1"
+						},
+						{
+							"key": "protectedAudio",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get filtered detections VALID INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/filtered/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?startDate=2025-08-29T00:00:00Z&endDate=2025-08-27T23:59:59Z&speciesName=crow!&minConfidence=-1&maxConfidence=101&limit=25&offset=0&sortOrder=asc&sortBy=confidence&verificationStatusId=1&protectedAudio=false",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"filtered",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2025-08-29T00:00:00Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-08-27T23:59:59Z"
+						},
+						{
+							"key": "speciesName",
+							"value": "crow!"
+						},
+						{
+							"key": "minConfidence",
+							"value": "-1"
+						},
+						{
+							"key": "maxConfidence",
+							"value": "101"
+						},
+						{
+							"key": "limit",
+							"value": "25"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sortOrder",
+							"value": "asc"
+						},
+						{
+							"key": "sortBy",
+							"value": "confidence"
+						},
+						{
+							"key": "verificationStatusId",
+							"value": "1"
+						},
+						{
+							"key": "protectedAudio",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get filtered detections UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"7bf71244-77c6-4a70-9aad-c3c6ead3a542\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 1\r\n  },\r\n  \"iat\": 1757156807,\r\n  \"exp\": 1757171207\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/filtered/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?startDate=2025-08-25T00:00:00Z&endDate=2025-08-27T23:59:59Z&speciesName=crow&minConfidence=50&maxConfidence=80&limit=25&offset=0&sortOrder=asc&sortBy=confidence&verificationStatusId=1&protectedAudio=false",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"filtered",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2025-08-25T00:00:00Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-08-27T23:59:59Z"
+						},
+						{
+							"key": "speciesName",
+							"value": "crow"
+						},
+						{
+							"key": "minConfidence",
+							"value": "50"
+						},
+						{
+							"key": "maxConfidence",
+							"value": "80"
+						},
+						{
+							"key": "limit",
+							"value": "25"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "sortOrder",
+							"value": "asc"
+						},
+						{
+							"key": "sortBy",
+							"value": "confidence"
+						},
+						{
+							"key": "verificationStatusId",
+							"value": "1"
+						},
+						{
+							"key": "protectedAudio",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get detection by ID VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/dc333fb2-197e-4560-adba-28d03798b924",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"dc333fb2-197e-4560-adba-28d03798b924"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get detection by ID INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/dc333fb2-197e-4560-adba-28d03798b929",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"dc333fb2-197e-4560-adba-28d03798b929"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get alt species by ID VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/alternative-species/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/e7b18acf-db33-484b-b7e2-2e3079dcd8d7",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"alternative-species",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"e7b18acf-db33-484b-b7e2-2e3079dcd8d7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get alt species by ID INVALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/detections/alternative-species/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f/e7b18acf-db33-484b-b7e2-2e3079dcd8d9",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"detections",
+						"alternative-species",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+						"e7b18acf-db33-484b-b7e2-2e3079dcd8d9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user stations VALID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZTdjZmI0YS0wNmIzLTQ3MTUtOGIyZC04MDc0OTJiNzFlOWUiLCJ1c2VybmFtZSI6InN0YXRpb25fb3duZXIiLCJ1c2VyVHlwZUlkIjoyLCJpYXQiOjE3NTMzNjYyOTEsImV4cCI6MTc1MzM3MzQ5MX0.qIDPvf_Tm7CY72aOylDIxDOWpCLraVf3wTaUL9RiX_Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/stations",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"stations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user stations UNAUTHORISED",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "secret",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZTdjZmI0YS0wNmIzLTQ3MTUtOGIyZC04MDc0OTJiNzFlOWUiLCJ1c2VybmFtZSI6InN0YXRpb25fb3duZXIiLCJ1c2VyVHlwZUlkIjoyLCJpYXQiOjE3NTMzNjYyOTEsImV4cCI6MTc1MzM3MzQ5MX0.qIDPvf_Tm7CY72aOylDIxDOWpCLraVf3wTaUL9RiX_Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/stations",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"stations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user prefences VALID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZTdjZmI0YS0wNmIzLTQ3MTUtOGIyZC04MDc0OTJiNzFlOWUiLCJ1c2VybmFtZSI6InN0YXRpb25fb3duZXIiLCJ1c2VyVHlwZUlkIjoyLCJpYXQiOjE3NTMzNjYyOTEsImV4cCI6MTc1MzM3MzQ5MX0.qIDPvf_Tm7CY72aOylDIxDOWpCLraVf3wTaUL9RiX_Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/preferences/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"preferences",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user prefences INVALID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZTdjZmI0YS0wNmIzLTQ3MTUtOGIyZC04MDc0OTJiNzFlOWUiLCJ1c2VybmFtZSI6InN0YXRpb25fb3duZXIiLCJ1c2VyVHlwZUlkIjoyLCJpYXQiOjE3NTMzNjYyOTEsImV4cCI6MTc1MzM3MzQ5MX0.qIDPvf_Tm7CY72aOylDIxDOWpCLraVf3wTaUL9RiX_Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/preferences/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"preferences",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user prefences UNAUTHORISED",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"7bf71244-77c6-4a70-9aad-c3c6ead3a542\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 1\r\n  },\r\n  \"iat\": 1757156807,\r\n  \"exp\": 1757171207\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4ZTdjZmI0YS0wNmIzLTQ3MTUtOGIyZC04MDc0OTJiNzFlOWUiLCJ1c2VybmFtZSI6InN0YXRpb25fb3duZXIiLCJ1c2VyVHlwZUlkIjoyLCJpYXQiOjE3NTMzNjYyOTEsImV4cCI6MTc1MzM3MzQ5MX0.qIDPvf_Tm7CY72aOylDIxDOWpCLraVf3wTaUL9RiX_Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/users/preferences/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"preferences",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get station metadata VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/stations/metadata/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"metadata",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get station metadata UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"7bf71244-77c6-4a70-9aad-c3c6ead3a542\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 1\r\n  },\r\n  \"iat\": 1757156807,\r\n  \"exp\": 1757171207\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/stations/metadata/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"metadata",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get station status VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/stations/status/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"status",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get station status UNAUTHORISED",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"7bf71244-77c6-4a70-9aad-c3c6ead3a542\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 1\r\n  },\r\n  \"iat\": 1757156807,\r\n  \"exp\": 1757171207\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/stations/status/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stations",
+						"status",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get protected audio VALID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15dafa25bb2d",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/audio/protected/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"audio",
+						"protected",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get protected audio INVALID API",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "c069c1fb-aa87-4ac6-8359-15dafa25bb2e",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/audio/protected/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"audio",
+						"protected",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get summary by station VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/analytics/detection-summary/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"analytics",
+						"detection-summary",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get common species by station VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/analytics/common-species/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?limit=10",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"analytics",
+						"common-species",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get species summary VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/analytics/species-summary/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?speciesName=Carrion Crow",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"analytics",
+						"species-summary",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "speciesName",
+							"value": "Carrion Crow"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get average detections VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/analytics/average-hourly-trends/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?startDate=2025-08-25T12:14:17.627Z&endDate=2025-08-27T12:14:17.631Z&speciesName=Carrion Crow&minConfidence=50",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"analytics",
+						"average-hourly-trends",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2025-08-25T12:14:17.627Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-08-27T12:14:17.631Z"
+						},
+						{
+							"key": "speciesName",
+							"value": "Carrion Crow"
+						},
+						{
+							"key": "minConfidence",
+							"value": "50"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get hourly detection totals VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/analytics/hourly-detection-totals/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?singleDate=2025-08-28&speciesName=Eurasian&minConfidence=70",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"analytics",
+						"hourly-detection-totals",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "singleDate",
+							"value": "2025-08-28"
+						},
+						{
+							"key": "speciesName",
+							"value": "Eurasian"
+						},
+						{
+							"key": "minConfidence",
+							"value": "70"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get species daily totals VALID",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n  \"userId\": \"f5b30532-b2f7-45db-8702-6bcd33b71bd6\",\r\n  \"userTypeId\": 2,\r\n  \"stations\": {\r\n    \"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f\": 1,\r\n    \"43bdcf75-c7de-41f3-9b14-fbe2bf301658\": 2,\r\n    \"cc40690d-e430-42a2-8a98-3f9820d6dbae\": 2,\r\n    \"5999fd80-c128-49ba-a2a9-70a2707bdeba\": 3\r\n  },\r\n  \"iat\": 1757150445,\r\n  \"exp\": 1757164845\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "3e8f1b2c7d9a4e6f8b1c5a7d2f4e9c3b6a8d7f2e1c4b9a6d5e7f3c2b8a1d6f4e9",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/analytics/daily-detection-totals/149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f?startDate=2025-08-25T12:14:17.627Z&endDate=2025-08-27T12:14:17.631Z&speciesName=Eurasian&minConfidence=70",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"analytics",
+						"daily-detection-totals",
+						"149cd7cd-350e-4a84-a3dd-f6d6b6afaf5f"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2025-08-25T12:14:17.627Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-08-27T12:14:17.631Z"
+						},
+						{
+							"key": "speciesName",
+							"value": "Eurasian"
+						},
+						{
+							"key": "minConfidence",
+							"value": "70"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:3002",
+			"type": "default"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3002/api",
+			"type": "default"
+		}
+	]
+}

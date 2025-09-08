@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import { Form, Button, Alert, Spinner, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ComponentCard from '../common/ComponentCard';
@@ -12,6 +13,7 @@ userCanEdit parameter controls whether form fields and submit button are disable
 */
 export default function StationSettingsForm({ onSubmit, loading, generalError, initialValues, userCanEdit }) {
     const [confidenceWarning, setConfidenceWarning] = useState('');
+    const navigate = useNavigate();
 
     // Tooltips
     const minConfidenceTooltip = (
@@ -29,6 +31,11 @@ export default function StationSettingsForm({ onSubmit, loading, generalError, i
             Longitude in decimal degrees (e.g. -5.92)
         </Tooltip>
     );
+    const diskTooltip = (
+        <Tooltip id="disk-tooltip">
+            This is the total percentage of disk space which can be used by audio files before automatic storage management commences (e.g. 80)
+        </Tooltip>
+    );
 
     return (
         <ComponentCard title={`Station Settings`}>
@@ -39,7 +46,7 @@ export default function StationSettingsForm({ onSubmit, loading, generalError, i
                 </Alert>
             )}
 
-            {loading ? <SkeletonComponent /> : (
+            {loading ? <SkeletonComponent height={400}/> : (
                 <Formik
                     initialValues={initialValues}
                     validationSchema={stationSettingsSchema()}
@@ -143,7 +150,7 @@ export default function StationSettingsForm({ onSubmit, loading, generalError, i
                             </Form.Group>
                             <Form.Group as={Row} className="mb-3" controlId="minConfidence">
                                 <Form.Label column sm={3}>
-                                    Minimum Confidence (%)
+                                    Min Confidence (%)
                                 </Form.Label>
                                 <Col sm={9}>
                                     <OverlayTrigger placement="top" overlay={minConfidenceTooltip}>
@@ -180,7 +187,7 @@ export default function StationSettingsForm({ onSubmit, loading, generalError, i
                                         value={values.storagePolicy}
                                         onChange={handleChange}
                                         onBlur={() => setFieldTouched('storagePolicy', true)}
-                                        placeholder="Select a storage policy"
+                                        placeholder="Default"
                                         isInvalid={touched.storagePolicy && !!errors.storagePolicy}
                                         disabled
                                     />
@@ -189,9 +196,44 @@ export default function StationSettingsForm({ onSubmit, loading, generalError, i
                                     </Form.Control.Feedback>
                                 </Col>
                             </Form.Group>
+                            <Form.Group as={Row} className="mb-3" controlId="maxStoragePercent">
+                                <Form.Label column sm={3}>
+                                    Max Disk Usage (%)
+                                </Form.Label>
+                                <Col sm={9}>
+                                    <OverlayTrigger placement="top" overlay={diskTooltip}>
+                                        <Form.Control
+                                            type="text"
+                                            name="maxStoragePercent"
+                                            value={values.maxStoragePercent}
+                                            onChange={handleChange}
+                                            onBlur={() => setFieldTouched('maxStoragePercent', true)}
+                                            placeholder="Enter max storage percent"
+                                            step="1"
+                                            min="50"
+                                            max="100"
+                                            disabled={!userCanEdit}
+                                            isInvalid={touched.maxStoragePercent && !!errors.maxStoragePercent}
+                                        />
+                                    </OverlayTrigger>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.maxStoragePercent}
+                                    </Form.Control.Feedback>
+                                </Col>
+                            </Form.Group>
                             <div className="d-grid gap-2">
-                                <Button variant="success" type="submit" disabled={!userCanEdit || isSubmitting}>
+                                <Button 
+                                    variant="success" 
+                                    type="submit" 
+                                    disabled={!userCanEdit || isSubmitting}>
                                     {isSubmitting ? <Spinner animation="border" size="sm" /> : 'Save Settings'}
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    type="button"
+                                    onClick={() => navigate('/dashboard')}
+                                >
+                                    Cancel
                                 </Button>
                             </div>
                         </Form>

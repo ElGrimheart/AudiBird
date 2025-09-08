@@ -21,7 +21,7 @@ export default function useStartStopStation() {
                 headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
             });
 
-            return response.data;
+            return response.data.result;
         } catch (err) {
             setError(err);
         } finally {

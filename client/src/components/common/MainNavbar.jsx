@@ -9,7 +9,7 @@ import UserStationsContext from '../../contexts/UserStationsContext';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
 import StationMetadataContext from '../../contexts/StationMetadataContext';
 import useLogout from '../../hooks/useLogout';
-import { STATION_USER_TYPES } from '../../constants/user-types';
+import { STATION_USER_TYPES } from '../../constants/type-ids';
 
 /*
 MainNavbar component that provides navigation links and station selection
@@ -44,7 +44,7 @@ export default function MainNavbar() {
     return (
         <Navbar expand="sm" className="bg-body-tertiary">
             <Container fluid>
-                <Navbar.Brand as={NavLink} to="/">AudiBird</Navbar.Brand>
+                <Navbar.Brand as={NavLink} to="/dashboard">Audibird</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">

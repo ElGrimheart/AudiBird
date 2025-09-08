@@ -3,13 +3,13 @@ import * as userService from "../services/user-service.js";
 
 // Generates a JWT token with the provided user information
 export async function generateJwtToken(userId) {
+    
     // Get the user's station list and their associated station permissions
     const user = await userService.getUserById(userId);
     const userStations = await userService.getUserStations(user.user_id);
 
     const stationPermissions = {};
     userStations.forEach(station => {
-        console.log(`Station ID: ${station.station_id}, User Type: ${station.station_user_type_id}`);
         stationPermissions[station.station_id] = station.station_user_type_id;
     });
 

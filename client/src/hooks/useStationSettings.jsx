@@ -40,8 +40,7 @@ export default function useStationSettings(stationId) {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_STATIONS_URL}/config/${stationId}`,
+            const response = await axios.patch(`${import.meta.env.VITE_API_STATIONS_URL}/config/${stationId}`,
                 values,
                 { headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` } }
             );

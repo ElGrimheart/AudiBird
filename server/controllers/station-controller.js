@@ -244,8 +244,6 @@ export const createStationStatus = async (req, res) => {
     const { stationId } = req.params;
     const statusData = req.body;
 
-    //logAction("Updating station status", { stationId, statusData });
-
     try {
         const updatedStatus = await stationService.createStationStatus(stationId, statusData);
 
@@ -314,7 +312,6 @@ export const stopStationRecording = async (req, res) => {
 
     try {
         const response = await stationService.relayToStation(stationId, 'stop', 'POST');
-        console.log("Stop Recording Response:", response);
 
         if (response.status === 200) {
             // Emit a socket event to notify clients of the recording status

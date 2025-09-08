@@ -4,7 +4,7 @@ import axios from 'axios';
 
 /*
 UserStationsProvider component - fetches list of users stations including station specific access permissions.
-Used by various components to determine which data a user can view, edit or delete
+Controls which station data that a user can view, edit or delete
 */
 export default function UserStationsProvider({ children }) {
     const [usersStations, setUsersStations] = useState(() => {

@@ -40,13 +40,14 @@ export default function HourlyTotalsChart({ filters, setFilters }) {
 
     const chartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: { position: 'right' },
             datalabels: { display: false }
         },
         scales: {
-            x: { title: { display: true, text: 'Hour' } },
-            y: { title: { display: true, text: 'Detections' }, beginAtZero: true }
+            x: { title: { display: true, text: 'Hour of Day', font: { size: 18 } } },
+            y: { title: { display: true, text: 'Number of Detections', font: { size: 18 } }, beginAtZero: true }
         }
     };
 
@@ -63,14 +64,16 @@ export default function HourlyTotalsChart({ filters, setFilters }) {
 
             {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
-            {loading ? <SkeletonComponent height={200} /> : (
+            {loading ? <SkeletonComponent height={450} /> : (
 
                 /* Line chart */
-                <Line 
-                    key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
-                    data={chartData} 
-                    options={chartOptions} 
-                />
+                <div className="analytics-chart">
+                    <Line
+                        key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
+                        data={chartData}
+                        options={chartOptions}
+                    />
+                </div>
             )}
         </ComponentCard>
     );

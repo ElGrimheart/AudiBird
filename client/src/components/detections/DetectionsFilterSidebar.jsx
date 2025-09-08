@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
+import DetectionFiltersContext from '../../contexts/DetectionFiltersContext';
+import { DEFAULT_DETECTION_FILTERS } from '../../constants/detection-filters';
 import { detectionFiltersSchema } from '../../utils/form-validator';
 import Sidebar from '../common/Sidebar';
 
@@ -9,6 +11,8 @@ import Sidebar from '../common/Sidebar';
    Wrapped in Formik for validation, submission handling and error reporting
 */
 export default function DetectionsFilterSidebar({ show, onHide, filters, onFilterSubmit, error }) {
+    const { setFilters } = useContext(DetectionFiltersContext);
+
     return (
         <Sidebar title="Filters" show={show} onHide={onHide}>
 
@@ -31,7 +35,8 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                     values,
                     errors,
                     touched, 
-                    setFieldTouched  
+                    setFieldTouched, 
+                    resetForm
                 }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
@@ -129,6 +134,40 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                             </Row>
                         </Form.Group>
                         <Form.Group className="mb-3">
+                            <Form.Label>Verification Status</Form.Label>
+                            <Form.Select
+                                name="verificationStatusId"
+                                value={values.verificationStatusId}
+                                onChange={handleChange}
+                                isInvalid={!!errors.verificationStatusId && touched.verificationStatusId}
+                            >
+                                <option value="">Any</option>
+                                <option value="1">Unverified</option>
+                                <option value="2">Verified</option>
+                                <option value="3">Reclassified</option>
+                            </Form.Select>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.verificationStatusId}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Select
+                                id="protectedAudio"
+                                name="protectedAudio"
+                                value={values.protectedAudio}
+                                onChange={handleChange}
+                                isInvalid={!!errors.protectedAudio && touched.protectedAudio}
+                            >
+                                <option value="">All Audio</option>
+                                <option value="true">Protected Audio Only</option>
+                                <option value="false">Unprotected Audio Only</option>
+                            </Form.Select>
+                             <Form.Control.Feedback type="invalid">
+                                {errors.protectedAudio}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <hr />
+                        <Form.Group className="mb-3">
                             <Form.Label>Sort By</Form.Label>
                             <Form.Select
                                 // Sort by selection
@@ -162,8 +201,19 @@ export default function DetectionsFilterSidebar({ show, onHide, filters, onFilte
                                 {errors.sortOrder}
                             </Form.Control.Feedback>
                         </Form.Group>
-                        <Button variant="success" type="submit" className="w-100">
+                        <Button variant="success" type="submit" className="w-100 mb-2">
                             Apply Filters
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            type="button"
+                            className="w-100 p-2"
+                            onClick={() => {
+                                resetForm({ values: DEFAULT_DETECTION_FILTERS });
+                                setFilters(DEFAULT_DETECTION_FILTERS);
+                            }}
+                        >
+                            Clear Filters
                         </Button>
                     </Form>
                     )}

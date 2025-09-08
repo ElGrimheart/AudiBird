@@ -10,4 +10,6 @@ station:
     lon: null
   state: unannounced
   station_name: UNCONFIGURED STATION
-storage_policy: Delete oldest first
+storage_manager: 
+  storage_policy: default
+  max_storage_usage_percent: 90

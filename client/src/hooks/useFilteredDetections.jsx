@@ -11,8 +11,9 @@ export default function useDetections(stationId) {
     const [detections, setDetections] = useState([]);
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false);
+    const [totalResults, setTotalResults] = useState(0);
 
-    const fetchDetections = useCallback(async (filters = {}) => {
+    const fetchDetections = useCallback(async (filters = {}, limit = 15, offset = 0) => {
         if (!stationId) {
             setDetections([]);
             return;
@@ -21,12 +22,12 @@ export default function useDetections(stationId) {
         try {
             setLoading(true);
             const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/filtered/${stationId}`, { 
-                params: filters, 
+                params: {...filters, limit, offset},
                 headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` } });
-            setDetections(response.data.result || []);
+            setDetections(response.data.result.rows || []);
+            setTotalResults(response.data.result.totalResults || 0);
             setError(null);
         } catch (error) {
-
             if (error.response && error.response.status === 404) {
                 setDetections([]);
             }
@@ -42,5 +43,5 @@ export default function useDetections(stationId) {
         }
 }, [stationId]);
 
-    return [detections, fetchDetections, error, loading];
+    return [detections, fetchDetections, totalResults, error, loading];
 }

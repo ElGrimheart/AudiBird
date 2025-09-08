@@ -47,7 +47,6 @@ export async function getUserPreferencesByStationId(userId, stationId) {
     `;
 
     const result = await db.query(sql, [userId, stationId]);
-    console.log("User preferences query result:", result);
 
     if (result.rowCount === 0) {
         return null;
@@ -76,7 +75,6 @@ export async function getUserPreferencesByStationId(userId, stationId) {
         lowStorageEmail: !!lowStorageEmailRow?.enabled,
         lowStorageEmailThreshold: lowStorageEmailRow?.threshold ?? 0
     };
-    console.log("User preferences retrieved:", userPreferences);
 
     return userPreferences;
 }
@@ -84,6 +82,7 @@ export async function getUserPreferencesByStationId(userId, stationId) {
 // Checks user credentials and returns user data if valid email and password provided
 export async function loginUser(email, password) {
     const storedUser = await getUserByEmail(email);
+
     if (!storedUser) {
         throw new Error('User not found');
     }
@@ -139,6 +138,7 @@ export async function registerUser(name, username, email, password) {
 
 // Updates a users notification preferences for a specific station
 export async function updateUserPreferencesByStationId(userId, stationId, userPreferences) {
+    
     // Map user preferences to database fields
     const mappings = [
         {
@@ -176,6 +176,7 @@ export async function updateUserPreferencesByStationId(userId, stationId, userPr
                 SET enabled = $1, threshold = $2
                 WHERE user_id = $3 AND station_id = $4 AND event_type_id = $5 AND channel_type_id = $6
             `;
+
             const updateValues = [
                 pref.enabled,
                 pref.threshold,
@@ -184,6 +185,7 @@ export async function updateUserPreferencesByStationId(userId, stationId, userPr
                 pref.event_type_id,
                 pref.channel_type_id,
             ];
+
             const updateResult = await db.query(updateSql, updateValues);
 
             // If no existing row, insert new one
@@ -214,12 +216,6 @@ export async function updateUserPreferencesByStationId(userId, stationId, userPr
 // Retrieves users details based on their notification preferences
 export async function getUsersByPreferences(stationId, eventTypeId, channelTypeId, { confidence } = {}) {
     const values = [stationId, eventTypeId, channelTypeId];
-    console.log("Retrieving users by preferences:", {
-        stationId,
-        eventTypeId,
-        channelTypeId,
-        confidence
-    });
     
     let whereClause = `
         WHERE user_preferences.enabled = true
@@ -234,7 +230,7 @@ export async function getUsersByPreferences(stationId, eventTypeId, channelTypeI
     }
 
     const sql = `
-        SELECT users.name, users.email, station.station_name
+        SELECT users.name, users.email, station.station_name, user_preferences.threshold
         FROM users
         JOIN user_preferences ON users.user_id = user_preferences.user_id
         JOIN station ON user_preferences.station_id = station.station_id
@@ -246,11 +242,12 @@ export async function getUsersByPreferences(stationId, eventTypeId, channelTypeI
     if (result.rowCount === 0) {
         return [];
     }
+
     return result.rows;
 }
 
 
-// Helper function for user management
+//// Helper function for user management ///////
 
 // Retrieves a user by their email
 async function getUserByEmail(email) {
@@ -283,6 +280,7 @@ async function getUserByUsername(username) {
     if (result.rowCount === 0) {
         return null;
     }
+
     return result.rows[0];
 }
 
