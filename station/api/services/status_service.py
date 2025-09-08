@@ -1,4 +1,4 @@
-# Service for continuous posting of station status updates to the backend.
+# Service for posting continuous station status updates to the backend.
 # Runs in a separate thread. Station required to be 'configured' before commencing status update posts
 import os
 import psutil
@@ -8,28 +8,37 @@ import threading
 from api.state import globals
 from api.services import get_station_state, get_station_config
 from api.services.station_service import detection_is_running
+from api.services.storage_service import commence_storage_management
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def start_status_upload_thread():
-    """Starts the status upload thread if not already running.
+    """
+    Starts the status upload thread if not already running.
     Uses a thread lock and global variable to prevent multiple threads from starting.
     """
     with globals.status_thread_lock:
         if globals.status_update_thread and globals.status_update_thread.is_alive():
             return
         if get_station_state() == "configured":
-            print("Starting status upload thread...")
+            logger.info("Starting status upload thread...")
             globals.status_update_thread = threading.Thread(target=post_status_updates)
             globals.status_update_thread.start()
 
 
 def post_status_updates():
-    """Posts status updates to the backend server every 30 seconds.
+    """
+    Posts status updates to the backend server every 30 seconds.
     Requires the station to be in the 'configured' state before starting.
+
+    Checks current disk usage against user-defined limit and initiates storage management 
+    if necessary.
     """
     current_state = get_station_state()
     if current_state != "configured":
-        print("Station is not configured. Status updates will not be sent.")
+        logger.info("Station is not configured. Status updates will not be sent.")
         return
 
     config = get_station_config()
@@ -38,7 +47,16 @@ def post_status_updates():
 
     # Continuously post status updates every 30 seconds
     while True:
-        status = get_hardware_status()
+        try:
+            status = get_hardware_status()
+        except Exception as e:
+            logger.error(f"Error getting hardware status: {e}")
+
+        # Check if disk usage > user-defined limit
+        if status["disk_usage"] > float(config["storage_manager"]["max_storage_usage_percent"]):
+            commence_storage_management()
+
+        # Post status to backend
         try:
             response = requests.post(
                 f"{os.environ.get('API_STATIONS_ROUTE')}/status/{station_id}",

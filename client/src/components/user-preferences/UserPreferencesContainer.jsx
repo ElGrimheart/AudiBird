@@ -5,7 +5,7 @@ import UserPrefencesForm from './UserPreferencesForm';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
 import UserStationsContext from '../../contexts/UserStationsContext';
 import UserPreferencesContext from '../../contexts/UserPreferencesContext';
-import { STATION_USER_TYPES } from '../../constants/user-types';
+import { STATION_USER_TYPES } from '../../constants/type-ids';
 
 /*
 UserPreferencesContainer component

@@ -9,7 +9,7 @@ export default function SummaryCard({ summaryData, loading, error }) {
         <ComponentCard title="Station Detection Summary">
             {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
-            {loading ? <SkeletonComponent height={200} /> : (
+            {loading ? <SkeletonComponent height={250} /> : (
                 summaryData && summaryData.length > 0 ? (
 
                     /* Summary table */

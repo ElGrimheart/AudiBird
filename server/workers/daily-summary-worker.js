@@ -52,6 +52,7 @@ dailySummaryQueue.process(async (job) => {
 });
 
 
+// Event listeners for job completion and failure
 dailySummaryQueue.on('failed', (job, err) => {
     console.error('Job failed:', job.id, err);
 });

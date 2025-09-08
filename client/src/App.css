@@ -1,11 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
 html, body, #root {
   height: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  background-image: linear-gradient(rgba(54, 210, 237, 0.148), rgba(255, 255, 255, 0));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.app-shell {
+.login-background {
+  min-height: 100vh;
+  background-image: url('/pexels-skyler-ewing-266953-4598338.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audibird-logo img {
+  max-width: 200px;
+  margin-bottom: 1rem;
+}
+
+.app-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,14 +41,40 @@ html, body, #root {
   flex-direction: column;
 }
 
-.header {
-  text-align: center;
+img {
+  object-fit: contain;
+  border-radius: 1rem;
 }
 
 .birdAvatar {
-  border: "2px solid #eee"
+  border: 2px solid #eee;
+  object-fit: cover;
 }
 
-img {
-  border-radius: 1rem;
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active,
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu  {
+    color: #0d6efd !important;
+}
+
+.detection-list-item:hover, 
+.detection-list-item:focus {
+    background-color: #f0f4fa;
+}
+
+.nav-tabs .nav-link {
+    color: #222 !important;  
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:hover {
+    color: #0d6efd !important;  
+}
+
+.analytics-chart {
+  height: 50vh !important;  
+  max-height: 600px !important; 
+  min-height: 400px;
 }

@@ -39,13 +39,11 @@ export default function UserPreferencesProvider({ children }) {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_USERS_URL}/preferences/${selectedStation}`,
+            const response = await axios.patch(`${import.meta.env.VITE_API_USERS_URL}/preferences/${selectedStation}`,
                 values,
                 { headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` } }
             );
             if (response.status === 200) {
-                // Optionally re-fetch to ensure latest data from server
                 setUserPreferences(response.data?.result || null);
             }
             return response;

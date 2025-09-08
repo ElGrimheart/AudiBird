@@ -18,22 +18,27 @@ dailyStationStorageCheckQueue.process(async (job) => {
         // Send storage warning to each user in station subscription list
         for (const user of userList) {
 
-            await sendEmail({
-                to: user.email,
-                subject: `Audibird Low Storage Warning`,
-                html: `
-                    <h1>Low Storage Warning for Station: ${user.station_name}</h1>
-                    <p>Your station is running low on storage space.</p>
-                    <p>Current storage usage has reached <strong>${station.disk_usage_percent}</strong>%</p>
-                    <p>Once storage usage reaches 90% of capacity, AudiBird will automatically delete old recordings to free up space.</p>
-                    <p>Please take a moment to review your recordings and back them up if necessary.</p>
-                `
-            });
+            // Send email if station storage is beyond user preference threshold
+            if (station.disk_usage_percent >= user.threshold*100) {
+                console.log(`station disk usage: ${station.disk_usage_percent}. user threshold: ${user.threshold}`);
+                await sendEmail({
+                    to: user.email,
+                    subject: `Audibird Low Storage Warning`,
+                    html: `
+                        <h1>Low Storage Warning for Station: ${user.station_name}</h1>
+                        <p>Your station is running low on storage space.</p>
+                        <p>Current storage usage has reached <strong>${station.disk_usage_percent}</strong>%</p>
+                        <p>Once storage usage reaches <strong>${station.station_config.storage_manager.max_storage_usage_percent}%</strong> of capacity, AudiBird will automatically delete old recordings to free up space.</p>
+                        <p>Please take a moment to review your recordings and back them up if necessary.</p>
+                    `
+                });
+            }
         }
     }
 });
 
 
+// Event listeners for job completion and failure
 dailyStationStorageCheckQueue.on('failed', (job, err) => {
     console.error('Job failed:', job.id, err);
 });

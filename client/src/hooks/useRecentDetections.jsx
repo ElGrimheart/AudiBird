@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import SocketContext from '../contexts/SocketContext';
 import axios from 'axios';
 
@@ -15,31 +15,29 @@ export default function useRecentDetections(stationId, limit) {
     const { socketRef, isConnected } = useContext(SocketContext);
     const socket = socketRef?.current;
 
-    useEffect(() => {
+    const fetchRecentDetections = useCallback(async () => {
         if (!stationId) {
             setRecentDetections([]);
             return;
         }
+        setLoading(true);
+        setError(null);
 
-        const fetchRecentDetections = async () => {
-            setLoading(true);
-            setError(null);
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/recent/${stationId}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
+                params: { limit }
+            });
+            setRecentDetections(response.data.result || []);
+        } catch (error) {
+            setError(error);
+            setRecentDetections([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [stationId, limit]);
 
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_DETECTIONS_URL}/recent/${stationId}`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` },
-                    params: { limit }
-                });
-                setRecentDetections(response.data.result || []);
-            } catch (error) {
-                setError(error);
-                setRecentDetections([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        // Initial fetch
+    useEffect(() => {
         fetchRecentDetections();
 
         // Re-fetch on new detection
@@ -49,12 +47,11 @@ export default function useRecentDetections(stationId, limit) {
             }
         };
 
-        // Listener for new detections on the station's room
         if (!socket || !isConnected) return;
         socket.on("newDetection", handleNewDetection);
         return () => socket.off("newDetection", handleNewDetection);
 
-    }, [stationId, limit, socket, isConnected]);
+    }, [stationId, limit, socket, isConnected, fetchRecentDetections]);
 
-    return { recentDetections, loading, error };
+    return { recentDetections, loading, error, refetch: fetchRecentDetections };
 }

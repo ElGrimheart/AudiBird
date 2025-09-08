@@ -1,0 +1,16 @@
+detection_config:
+  min_confidence: 0.8
+  species_ignore_list: []
+station:
+  api_key: 50bcd843-6e3f-4015-a7d9-d6e0f60b56b7
+  id: cc40690d-e430-42a2-8a98-3f9820d6dbae
+  location:
+    desc: Hide 1, Oxford Island Nature Reserve, Northern Ireland
+    lat: 54.4956526
+    lon: -6.3850435
+  state: configured
+  station_name: Dummy Station
+storage_manager:
+  max_storage_usage_percent: '90'
+  storage_policy: default
+

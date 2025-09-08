@@ -6,7 +6,7 @@ import SpeciesStats from "./SpeciesStats.jsx";
 
 /*
 Component to display species statistics for the selected station.
-Allows adding multiple species summary cards with independent filters.
+Multiple summaries with independent filters can be created.
 */
 export default function SpeciesCard() {
     const { selectedStation } = useContext(SelectedStationContext);

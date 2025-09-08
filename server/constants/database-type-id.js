@@ -22,3 +22,10 @@ export const NOTIFICATION_CHANNEL_TYPE_ID = {
     Email: 2,
     Push: 3
 };
+
+export const VERIFICATION_STATUS_ID = {
+    Unverified: 1,
+    Verified: 2,
+    Reclassified: 3,
+    NonEvent: 4
+};

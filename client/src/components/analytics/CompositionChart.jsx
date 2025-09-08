@@ -1,12 +1,10 @@
 import React, { useContext } from "react";
+import { Bar } from "react-chartjs-2";
 import ChartFilterBar from "./ChartFilterBar";
 import SelectedStationContext from "../../contexts/SelectedStationContext.jsx";
 import useDetectionDailyTotals from "../../hooks/useDetectionDailyTotals.jsx";
 import ComponentCard from "../common/ComponentCard";
 import SkeletonComponent from "../common/SkeletonPlaceholder";
-import { Bar } from "react-chartjs-2";
-import { Chart, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, Filler } from "chart.js";
-Chart.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, Filler);
 
 /*
 CompositionChart component to display daily species composition in chart form
@@ -50,13 +48,14 @@ export default function CompositionChart({filters, setFilters}) {
 
     const chartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: { position: 'right' },
             datalabels: { display: false }
         },
         scales: {
-            x: { title: { display: true, text: 'Date' } },
-            y: { title: { display: true, text: '% of Detections' }, beginAtZero: true }
+            x: { title: { display: true, text: 'Date', font: { size: 18 } } },
+            y: { title: { display: true, text: '% of Detections', font: { size: 18 } }, beginAtZero: true }
         }
     };
 
@@ -72,14 +71,16 @@ export default function CompositionChart({filters, setFilters}) {
 
             {/* Error handling  and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
-            {loading ? <SkeletonComponent height={200}/> : (
+            {loading ? <SkeletonComponent height={450}/> : (
                
                /* Bar chart */
-               <Bar
-                    key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
-                    data={chartData}
-                    options={chartOptions}
-                />
+               <div className="analytics-chart">
+                   <Bar
+                       key={JSON.stringify(chartData.labels) + JSON.stringify(chartData.datasets.map(ds => ds.label))}
+                       data={chartData}
+                       options={chartOptions}
+                   />
+               </div>
             )}
         </ComponentCard>
     );

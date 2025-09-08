@@ -1,7 +1,10 @@
 // Utility class for constructing SQL queries for detection data
+const ALLOWABLE_COLUMNS = ['detection_timestamp', 'confidence', 'common_name', 'scientific_name'];
+const DEFAULT_SORT_COLUMN = 'detection_timestamp';
 
-// Builds a WHERE clause based on the type and quantity of filters provided
-export function buildDetectionWhereClause(stationId, { singleDate, startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence }) {
+
+// Builds a WHERE clause depending on the filters provided
+export function buildDetectionWhereClause(stationId, { singleDate, startDate, endDate, speciesName, speciesCode, minConfidence, maxConfidence, verificationStatusId, protectedAudio }) {
     const filters = [];
     const values = [stationId];
 
@@ -36,10 +39,22 @@ export function buildDetectionWhereClause(stationId, { singleDate, startDate, en
         values.push(Number(minConfidence) / 100);
         filters.push(`confidence >= $${values.length}`);
     }
+
     if (maxConfidence !== undefined && maxConfidence !== '' && !isNaN(Number(maxConfidence))) {
         values.push(Number(maxConfidence) / 100);
         filters.push(`confidence <= $${values.length}`);
     }
+
+    if (verificationStatusId && verificationStatusId !== null) {
+        values.push(verificationStatusId);
+        filters.push(`verification_status_id = $${values.length}`);
+    }
+
+    if (protectedAudio && protectedAudio !== null) {
+        values.push(protectedAudio);
+        filters.push(`protected = $${values.length}`);
+    }
+
     if (filters.length > 0) {
         whereClause += ' AND ' + filters.join(' AND ');
     }
@@ -48,15 +63,26 @@ export function buildDetectionWhereClause(stationId, { singleDate, startDate, en
 }
 
 // Builds an ORDER BY clause based on the parameters passed
-export function buildDetectionSortClause(sortBy, sortOrder, allowedColumns = ['detection_timestamp', 'confidence', 'common_name', 'scientific_name'], defaultColumn = 'detection_timestamp') {
-    let sortByArr = sortBy ? sortBy.split(',') : [defaultColumn];
-    let sortDirArr = sortOrder ? sortOrder.split(',') : ['desc'];
-    const orderByParts = sortByArr.map((col, i) => {
-        const column = allowedColumns.includes(col) ? col : defaultColumn;
-        const dir = (sortDirArr[i] || sortDirArr[0] || 'desc').toLowerCase() === 'asc' ? 'ASC' : 'DESC';
-        return `${column} ${dir}`;
+export function buildDetectionSortClause(sortBy, sortOrder) {
+    
+    // parse sortBy and sortOrder into arrays
+    const sortByArray = sortBy ? sortBy.split(',') : [DEFAULT_SORT_COLUMN];
+    const sortDirectionArray = sortOrder ? sortOrder.split(',') : ['desc'];
+
+    // Check for valid sort columns and directions and construct the order by conditions
+    const orderByConditions = sortByArray.map((column, i) => {
+        const sortColumn = ALLOWABLE_COLUMNS.includes(column) ? column : DEFAULT_SORT_COLUMN;
+
+        const tempDirection = sortDirectionArray[i] || sortDirectionArray[0] || 'desc';
+        const sortDirection = tempDirection.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+
+        return { sortColumn, sortDirection };
     });
-    return orderByParts.length ? `ORDER BY ${orderByParts.join(', ')}` : '';
+
+    // Build the ORDER BY clause and return
+    const orderByStatements = orderByConditions.map(item => `${item.sortColumn} ${item.sortDirection}`);
+
+    return orderByStatements.length ? `ORDER BY ${orderByStatements.join(', ')}` : '';
 }
 
 

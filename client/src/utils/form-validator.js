@@ -27,6 +27,8 @@ const STATION_LON_MIN = -180;
 const STATION_LON_MAX = 180;
 const STATION_CONFIDENCE_MIN_VALUE = 1;
 const STATION_CONFIDENCE_MAX_VALUE = 100;
+const STATION_MIN_STORAGE_PERCENT = 50;
+const STATION_MAX_STORAGE_PERCENT = 90;
 
 // Validation schema for user registration and login forms
 export function loginRegisterSchema(isRegister) {
@@ -103,6 +105,29 @@ export function stationSettingsSchema() {
             .required('Minimum confidence is required')
             .min(STATION_CONFIDENCE_MIN_VALUE, `Minimum confidence must be between ${STATION_CONFIDENCE_MIN_VALUE} and ${STATION_CONFIDENCE_MAX_VALUE}`)
             .max(STATION_CONFIDENCE_MAX_VALUE, `Minimum confidence must be between ${STATION_CONFIDENCE_MIN_VALUE} and ${STATION_CONFIDENCE_MAX_VALUE}`),
+        maxStoragePercent: Yup.number()
+            .required('Maximum storage percent is required')
+            .min(STATION_MIN_STORAGE_PERCENT, `Maximum storage percent must be between ${STATION_MIN_STORAGE_PERCENT} and ${STATION_MAX_STORAGE_PERCENT}`)
+            .max(STATION_MAX_STORAGE_PERCENT, `Maximum storage percent must be between ${STATION_MIN_STORAGE_PERCENT} and ${STATION_MAX_STORAGE_PERCENT}`)
+    });
+}
+
+// Validation schema for UserPreferences form
+export function userPreferencesSchema() {
+    return Yup.object().shape({
+        dailySummaryEmail: Yup.boolean(),
+        newDetectionInApp: Yup.boolean(),
+        newDetectionInAppThreshold: Yup.number()
+            .min(0, "Minimum confidence must be at least 0")
+            .max(100, "Maximum confidence must be at most 100"),
+        newDetectionEmail: Yup.boolean(),
+        newDetectionEmailThreshold: Yup.number()
+            .min(0, "Minimum confidence must be at least 0")
+            .max(100, "Maximum confidence must be at most 100"),
+        lowStorageEmail: Yup.boolean(),
+        lowStorageEmailThreshold: Yup.number()
+            .min(0, "Minimum storage alert must be at least 0")
+            .max(95, "Maximum storage alert must be at most 95"),
     });
 }
 

@@ -18,7 +18,10 @@ export function generateDefaultStationConfig(stationName, stationId, stationApiK
             min_confidence: 0.5,
             species_ignore_list: []
         },
-        storage_policy: "Delete oldest first"
+        storage_manager: {
+            storage_policy: "Default",
+            max_storage_usage_percent: 90
+        }
     };
 }
 
@@ -40,6 +43,9 @@ export function generateCustomUserConfig(stationId, apiKey, configData) {
             min_confidence: (configData.minConfidence/100) || 0.25,
             species_ignore_list: configData.speciesIgnoreList || []
         },
-        storage_policy: "Delete oldest first"
+        storage_manager: {
+            storage_policy: "Default",
+            max_storage_usage_percent: configData.maxStoragePercent || 90
+        }
     };
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import { Form, Button, Alert, Spinner, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ComponentCard from '../common/ComponentCard';
@@ -10,6 +11,7 @@ RegisterStationForm component - form for registering a new station
 Wrapped in Formik for validation via Yup and rendering any validation errors
 */
 export default function RegisterStationForm({ onSubmit, loading, generalError, initialValues }) {
+    const navigate = useNavigate();
 
     // Tooltips
     const stationIdFormat = (
@@ -93,6 +95,13 @@ export default function RegisterStationForm({ onSubmit, loading, generalError, i
                                     {isSubmitting ? 
                                         <Spinner animation="border" size="sm" /> : 'Register Station'
                                     }
+                                </Button>
+                                <Button
+                                        variant="secondary"
+                                        type="button"
+                                        onClick={() => navigate('/dashboard')}
+                                    >
+                                        Cancel
                                 </Button>
                             </div>
                         </Form>

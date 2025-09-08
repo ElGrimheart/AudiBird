@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Col, Row } from "react-bootstrap";
+import { BoxArrowUpRight } from "react-bootstrap-icons";
 import ChartFilterBar from "./ChartFilterBar.jsx";
 import SelectedStationContext from "../../contexts/SelectedStationContext.jsx";
 import useSpeciesSummary from "../../hooks/useSpeciesSummary.jsx";
@@ -7,6 +8,7 @@ import SkeletonComponent from "../common/SkeletonPlaceholder.jsx";
 import ComponentCard from "../common/ComponentCard.jsx";
 import * as externalLink from '../../constants/external-links.js';
 import { formatStringToDate } from "../../utils/date-formatter.js";
+
 
 /*
 SpeciesStats component to display detailed statistics for a specific species
@@ -17,8 +19,9 @@ export default function SpeciesStats({ filters, setFilters }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { speciesSummary, loading, error } = useSpeciesSummary(selectedStation, { filters });
 
-    const image_url = speciesSummary.find(stat => stat.key.toLowerCase() === "image url")?.value || "bird_avatar_placeholder.png";
-    const image_rights = speciesSummary.find(stat => stat.key.toLowerCase() === "image rights")?.value || "Unknown";
+    const imageUrl = speciesSummary.find(stat => stat.key.toLowerCase() === "image url")?.value || "bird_avatar_placeholder.png";
+    const imageRights = speciesSummary.find(stat => stat.key.toLowerCase() === "image rights")?.value || "Unknown";
+    const speciesCode = speciesSummary.find(stat => stat.key.toLowerCase() === "species code")?.value || "Unknown";
 
     return (
         <ComponentCard>
@@ -31,23 +34,31 @@ export default function SpeciesStats({ filters, setFilters }) {
 
             {/* Error handling and loading state */}
             {error && <div className="text-danger">{error.message}</div>}
-            {loading ? <SkeletonComponent height={200} /> : (
+            {loading ? <SkeletonComponent height={400} /> : (
                 speciesSummary && speciesSummary.length > 0 ? (
 
                     /* Display species summary data */
                     <div>
                         <Row>
-                            <Col md={4} className="mx-5">
+                            <Col md={5} className="mx-5">
                                 <img 
-                                    src={image_url} 
-                                    alt={image_rights} 
-                                    title={`${filters.speciesName} by ${image_rights}; ${externalLink.EXTERNAL_MEDIA_NAME}`}
+                                    src={imageUrl} 
+                                    alt={imageRights} 
+                                    title={`${filters.speciesName} by ${imageRights}; ${externalLink.EXTERNAL_MEDIA_NAME}`}
                                     className="img-fluid mt-3" 
                                 />
                             </Col>
-                            <Col md={6} className="mt-4 mx-5">
+                            <Col md={5} className="mt-4 mx-5">
+                                <h3>
+                                    {filters.speciesName}{" "}
+                                    <a 
+                                        href={`${externalLink.EXTERNAL_SPECIES_URL}/${speciesCode}`} target="_blank" rel="noopener noreferrer">
+                                        <BoxArrowUpRight size={16} aria-label="external link" title="External link" style={{ marginLeft: 4 }} />
+                                    </a>
+                                </h3>
                                 <table className="table table-striped">
                                     <tbody>
+                                        {/* Map species summary data to table rows */}
                                         {speciesSummary.map((stat, idx) => {
                                             let value = stat.value;
                                             let label = stat.key;
@@ -66,6 +77,10 @@ export default function SpeciesStats({ filters, setFilters }) {
                                         }
 
                                         if (label.toLowerCase().includes("image")) {
+                                            return null;
+                                        }
+
+                                        if (label.toLowerCase().includes("code")) {
                                             return null;
                                         }
                                     

@@ -1,11 +1,12 @@
 import app from './app.js';
 import http from 'http';
 import { Server } from "socket.io";
-//import stationStreamHandler from './sockets/station-stream-handler.js';
 
 
 // Create HTTP server
 const server = http.createServer(app);
+
+// Create Socket.IO server
 export const io = new Server(server, { 
     cors: { 
         origin: process.env.FRONTEND_URL,
@@ -34,14 +35,10 @@ io.on('connection', (socket) => {
 });
 
 
-// Station mic stream handler
-// stationStreamHandler(io);
-
-
 // Start server
 server.listen(process.env.PORT, '0.0.0.0', (error) => {
     if (error) {
         return console.log(`Error starting server: ${error.message}`);
     }
-    console.log(`Server is running on ${process.env.BACKEND_URL}:${process.env.PORT}`);
+    console.log(`Server is running on port ${process.env.PORT}`);
 });

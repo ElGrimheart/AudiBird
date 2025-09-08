@@ -7,12 +7,12 @@ newUserQueue.process(async (job) => {
     const { userEmail, newUser } = job.data;
     console.log("Processing new user for email:", userEmail);
 
-    const subject = `Welcome to AudiBird!`;
+    const subject = `Welcome to Audibird!`;
     const html = `
-        <h1>Welcome to AudiBird!</h1>
+        <h1>Welcome to Audibird!</h1>
         <p>Hi ${newUser.name},</p>
-        <p>Thank you for choosing AudiBird, we're excited to have you on board!</p>
-        <p>Login to the <a href="https://${process.env.FRONTEND_URL}.com">AudiBird website</a> to get started.</p>
+        <p>Thank you for choosing Audibird, we're excited to have you on board!</p>
+        <p>Login to the <a href="${process.env.FRONTEND_URL}">Audibird webapp</a> to get started.</p>
         <p>Happy birding!</p>
     `;
 

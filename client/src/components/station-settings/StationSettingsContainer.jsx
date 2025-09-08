@@ -5,7 +5,7 @@ import StationSettingsForm from './StationSettingsForm';
 import SelectedStationContext from '../../contexts/SelectedStationContext';
 import UserStationsContext from '../../contexts/UserStationsContext';
 import useStationSettings from '../../hooks/useStationSettings';
-import { STATION_USER_TYPES } from '../../constants/user-types';
+import { STATION_USER_TYPES } from '../../constants/type-ids';
 
 /*
 StationSettingsContainer component. Manages the state and logic for the StationSettingsForm.
@@ -25,7 +25,8 @@ export default function StationSettingsContainer() {
         lon: stationSettings ? stationSettings.station.location.lon : '0',
         locationDesc: stationSettings ? stationSettings.station.location.desc : '',
         minConfidence: (stationSettings ? stationSettings.detection_config.min_confidence * 100 : 0).toFixed(0),
-        storagePolicy: stationSettings ? stationSettings.storage_policy : 'Select a storage policy'
+        storagePolicy: stationSettings ? stationSettings.storage_manager.storage_policy : 'Default',
+        maxStoragePercent: (stationSettings ? stationSettings.storage_manager.max_storage_usage_percent : 90),
     };
 
     // Check if user has edit permissions

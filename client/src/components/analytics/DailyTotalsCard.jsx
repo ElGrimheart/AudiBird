@@ -7,7 +7,7 @@ import DailyTotalsChart from "./DailyTotalsChart";
 
 /*
 Component to display daily totals charts for the selected station.
-Allows adding multiple charts with independent filters.
+Multiple charts with independent filters can be created.
 */
 export default function DailyTotalsCard() {
     const { selectedStation } = useContext(SelectedStationContext);

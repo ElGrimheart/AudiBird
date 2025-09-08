@@ -41,7 +41,6 @@ export const validateDetectionId = [
 ];
 
 
-
 // Authenticates user supplied JWT token. Ensures user is registered and logged in
 // Adds user info to request object if valid.
 export const authenticateJWT = (req, res, next) => {

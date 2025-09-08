@@ -26,14 +26,6 @@ stationRouter.get('/metadata/:stationId',
     stationController.getStationMetadataById
 );
 
-stationRouter.get('/:stationId',
-    validateStationId,
-    authenticateJWT, 
-    authenticateAccessPermission,
-    stationController.getStationById
-);
-
-
 
 stationRouter.post('/announce', stationController.createStation);
 
@@ -41,14 +33,6 @@ stationRouter.post('/register',
     authenticateJWT,
     validateRegisterStation,
     stationController.registerStation
-);
-
-stationRouter.post('/config/:stationId', 
-    validateStationId,
-    authenticateJWT,
-    authenticateWritePermission,
-    validateStationSettings,
-    stationController.updateStationConfigByStationId
 );
 
 stationRouter.post('/status/:stationId',
@@ -70,6 +54,15 @@ stationRouter.post('/stop/:stationId',
     authenticateJWT,
     authenticateWritePermission,
     stationController.stopStationRecording
+);
+
+
+stationRouter.patch('/config/:stationId', 
+    validateStationId,
+    authenticateJWT,
+    authenticateWritePermission,
+    validateStationSettings,
+    stationController.updateStationConfigByStationId
 );
 
 export default stationRouter;

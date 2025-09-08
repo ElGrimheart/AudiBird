@@ -10,3 +10,6 @@ station:
     lon: -5.926437
   state: configured
   station_name: Development Station
+storage_manager:
+  max_storage_usage_percent: '56'
+  storage_policy: Default

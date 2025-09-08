@@ -22,6 +22,10 @@ const STATION_LNG_MAX_VALUE = 180;
 const STATION_CONFIDENCE_MIN_VALUE = 1;
 const STATION_CONFIDENCE_MAX_VALUE = 100;
 
+const USER_PREFERENCES_MIN_ALERT_THRESHOLD = 0;
+const USER_PREFERENCES_MAX_ALERT_THRESHOLD = 1.0;
+const USER_PREFERENCES_MAX_STORAGE_ALERT_THRESHOLD = 0.95;
+
 // Validates login form
 export const validateLoginForm = [
     body('email')
@@ -283,6 +287,41 @@ export const validateStationSettings = [
         .withMessage("Minimum confidence is required")
         .isFloat({ min: STATION_CONFIDENCE_MIN_VALUE, max: STATION_CONFIDENCE_MAX_VALUE })
         .withMessage(`Minimum confidence must be between ${STATION_CONFIDENCE_MIN_VALUE} and ${STATION_CONFIDENCE_MAX_VALUE}`),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                status: "failure",
+                errors: errors.array(),
+            });
+        }
+        next();
+    },
+];
+
+// Validates user preferences form
+export const validateUserPreferences = [
+    body('dailySummaryEmail')
+        .optional()
+        .isBoolean().withMessage('Daily summary email must be a boolean'),
+    body('newDetectionInApp')
+        .optional()
+        .isBoolean().withMessage('New detection in-app must be a boolean'),
+    body('newDetectionInAppThreshold')
+        .optional()
+        .isFloat({ min: USER_PREFERENCES_MIN_ALERT_THRESHOLD, max: USER_PREFERENCES_MAX_ALERT_THRESHOLD }).withMessage(`New detection in-app threshold must be between ${USER_PREFERENCES_MIN_ALERT_THRESHOLD} and ${USER_PREFERENCES_MAX_ALERT_THRESHOLD}`),
+    body('newDetectionEmail')
+        .optional()
+        .isBoolean().withMessage('New detection email must be a boolean'),
+    body('newDetectionEmailThreshold')
+        .optional()
+        .isFloat({ min: USER_PREFERENCES_MIN_ALERT_THRESHOLD, max: USER_PREFERENCES_MAX_ALERT_THRESHOLD }).withMessage(`New detection email threshold must be between ${USER_PREFERENCES_MIN_ALERT_THRESHOLD} and ${USER_PREFERENCES_MAX_ALERT_THRESHOLD}`),
+    body('lowStorageEmail')
+        .optional()
+        .isBoolean().withMessage('Low storage email must be a boolean'),
+    body('lowStorageEmailThreshold')
+        .optional()
+        .isFloat({ min: USER_PREFERENCES_MIN_ALERT_THRESHOLD, max: USER_PREFERENCES_MAX_STORAGE_ALERT_THRESHOLD }).withMessage(`Low storage email threshold must be between ${USER_PREFERENCES_MIN_ALERT_THRESHOLD} and ${USER_PREFERENCES_MAX_STORAGE_ALERT_THRESHOLD}`),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

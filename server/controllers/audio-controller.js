@@ -33,3 +33,63 @@ export const getAudioById = async (req, res) => {
         });
     }
 };
+
+
+// GET /api/audio/protected/:stationId route - retrieves protected audio filenames for a given station
+export const getProtectedAudioByStationId = async (req, res) => {
+    const { stationId } = req.params;
+
+    logAction("Retrieving protected audio by station ID", { stationId });
+
+    try {
+        const protectedAudio = await audioService.getProtectedAudioByStationId(stationId);
+
+        if (protectedAudio) {
+            res.json({
+                status: "success",
+                result: protectedAudio
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: "No protected audio found for this station"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error retrieving protected audio for station ID: ${stationId}`,
+            error: error.message
+        });
+    }
+};
+
+
+export const protectAudioById = async (req, res) => {
+    const { audioId } = req.params;
+    const { protectAudio } = req.body;
+
+    logAction("Protecting audio by ID", { audioId });
+
+    try {
+        const result = await audioService.protectAudioById(audioId, protectAudio);
+
+        if (result.rowCount > 0) {
+            res.json({
+                status: "success",
+                message: "Audio protected successfully"
+            });
+        } else {
+            res.status(404).json({
+                status: "failure",
+                message: "Audio not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: `Error protecting audio ID: ${audioId}`,
+            error: error.message
+        });
+    }
+};

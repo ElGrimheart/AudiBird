@@ -19,34 +19,13 @@ export default function App() {
 
             {/* Private routes - require login */}
             <Route element={<AuthenticatedLayout />}>
-                <Route
-                    path="/dashboard"
-                    element={<PrivateRoute><Dashboard /></PrivateRoute>}
-                />
-                <Route
-                    path="/detections"
-                    element={<PrivateRoute><Detections /></PrivateRoute>}
-                />
-                <Route
-                    path="/analytics"
-                    element={<PrivateRoute><Analytics /></PrivateRoute>}
-                />
-                <Route
-                    path="/register-station"
-                    element={<PrivateRoute><RegisterStation /></PrivateRoute>}
-                />
-                <Route
-                    path="/station-settings"
-                    element={<PrivateRoute><StationSettings /></PrivateRoute>}
-                />
-                <Route
-                    path="/preferences"
-                    element={<PrivateRoute><UserPreferences /></PrivateRoute>}
-                />
-                <Route
-                    path="*"
-                    element={<PrivateRoute><PageNotFound /></PrivateRoute>}
-                />
+                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+                <Route path="/detections" element={<PrivateRoute><Detections /></PrivateRoute>} />
+                <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
+                <Route path="/register-station" element={<PrivateRoute><RegisterStation /></PrivateRoute>} />
+                <Route path="/station-settings" element={<PrivateRoute><StationSettings /></PrivateRoute>} />
+                <Route path="/preferences" element={<PrivateRoute><UserPreferences /></PrivateRoute>} />
+                <Route path="*" element={<PrivateRoute><PageNotFound /></PrivateRoute>} />
             </Route>
         </Routes>
     );

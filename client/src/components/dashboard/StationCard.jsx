@@ -7,9 +7,12 @@ import useStartStopStation from "../../hooks/useStartStopStation.jsx";
 import ComponentCard from "../common/ComponentCard";
 import SkeletonComponent from "../common/SkeletonPlaceholder";
 
-// StationCard component to display the status of a specific station.
-// Includes functionality for starting/stopping the recording and field variants to highlight any abnormal states
-export default function StationCard({ stationStatus, loading, error }) {
+/*
+StationCard component to display the status of a specific station.
+Includes functionality for starting/stopping the recording and field variants to highlight 
+any abnormal states
+*/
+export default function StationCard({ stationStatus, loading, error, stationSettings }) {
     const { selectedStation } = useContext(SelectedStationContext);
     const { startStopRecording, loading: recordingLoading } = useStartStopStation();
 
@@ -19,9 +22,10 @@ export default function StationCard({ stationStatus, loading, error }) {
 
     return (
         <ComponentCard title="Station Status">
+
             {/* Error handling and loading state */}
             {error && <div className="text-danger">Error: {error.message}</div>}
-            {loading ? <SkeletonComponent height={200} /> : (
+            {loading ? <SkeletonComponent height={250} /> : (
                 stationStatus ? (
 
                     /* Station information */
@@ -34,7 +38,7 @@ export default function StationCard({ stationStatus, loading, error }) {
                                 <Col className="d-flex justify-content-center">
                                     {(stationStatus.is_recording===true) ? (
                                         <Button 
-                                            variant="primary" 
+                                            variant="secondary" 
                                             onClick={() => handleStartStop(true)}
                                             disabled={recordingLoading}
                                         >
@@ -48,7 +52,7 @@ export default function StationCard({ stationStatus, loading, error }) {
                                                     className="me-2"
                                                 />
                                             ) : (
-                                                <i className="bi bi-record-circle-fill me-2"></i>
+                                                <i className="bi bi-square-fill me-2"></i>
                                             )}
                                             Stop Recording
                                         </Button>
@@ -105,7 +109,7 @@ export default function StationCard({ stationStatus, loading, error }) {
                                 <ProgressBar 
                                     now={stationStatus.disk_usage_percent} 
                                     label={`${stationStatus.disk_usage_percent}%`} 
-                                    variant={stationStatus.disk_usage_percent > 80 ? "danger" : "info"}
+                                    variant={stationStatus.disk_usage_percent > (stationSettings?.storage_manager.max_storage_usage_percent * 0.9) ? "danger" : "info"}
                                 />
                             </div>
                         </div>

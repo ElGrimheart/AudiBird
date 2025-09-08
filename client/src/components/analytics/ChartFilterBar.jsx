@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import StationMetadataContext from '../../contexts/StationMetadataContext';
-import { formatHtmlInputToDate } from '../../utils/date-formatter';
 import { Formik } from 'formik';
 import { analyticsFiltersSchema } from '../../utils/form-validator';
+import { formatHtmlInputToDate } from '../../utils/date-formatter';
 
 /*
 Filter bar component for analytics charts, allowing users to set date range, species, and confidence filters
@@ -28,7 +28,7 @@ export default function ChartFilterBar({
             onSubmit={(values, { setSubmitting }) => {
                 setFilters(values);
                 if (onApplyFilters) 
-                    onApplyFilters(values);     // Call parent handler to apply filters
+                    onApplyFilters(values);     // Call to parent handler to apply filters
                 setSubmitting(false);
                 }}
             enableReinitialize
@@ -44,6 +44,7 @@ export default function ChartFilterBar({
             }) => (   
                 <Form onSubmit={handleSubmit} className="p-3 border rounded bg-light mb-3 shadow-sm">
                     <Row className="mb-3">
+                        
                         {/* General error message display */}
                         {errors.general && (
                             <div className="alert alert-danger">{errors.general}</div>
@@ -119,8 +120,8 @@ export default function ChartFilterBar({
                                     ))}
                                 </Form.Select>
                                 <Form.Control.Feedback type="invalid">
-                                        {errors.speciesName}
-                                    </Form.Control.Feedback>
+                                    {errors.speciesName}
+                                </Form.Control.Feedback>
                             </Col>
                         )}
 

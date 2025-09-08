@@ -7,7 +7,7 @@ import CompositionChart from "./CompositionChart";
 
 /* 
 Component to display composition trends charts for the selected station.
-Allows adding multiple charts with independent filters. 
+Multiple charts with independent filters can be created.
 */
 export default function CompositionCard() {
     const { selectedStation } = useContext(SelectedStationContext);
