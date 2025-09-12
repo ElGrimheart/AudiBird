@@ -134,7 +134,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+#public
 
 # Storybook build outputs
 .out
@@ -163,9 +163,9 @@ public
 .env.*.local
 
 # Configuration files with sensitive data
-config/production.json
-config/local.json
-config/secrets.json
+#config/production.json
+#config/local.json
+#config/secrets.json
 
 # API keys and credentials
 *.key
@@ -177,16 +177,16 @@ secrets/
 credentials/
 
 # Station configuration files
-station_config.json
-station_auth.json
+#station_config.json
+#station_auth.json
 
 # =============================================================================
 # Audio Files & Processing
 # =============================================================================
 # Audio recordings (except samples for testing)
 audio_recordings/
-recordings/
-*.wav
+#recordings/
+#*.wav
 *.mp3
 *.flac
 *.ogg
@@ -211,11 +211,11 @@ processing_queue/
 # =============================================================================
 # Logs & Monitoring
 # =============================================================================
-logs/
-*.log
-log/
-*.log.*
-log-*.txt
+#logs/
+#*.log
+#log/
+#*.log.*
+#log-*.txt
 
 # Error tracking
 error_logs/
@@ -301,7 +301,7 @@ $RECYCLE.BIN/
 # =============================================================================
 # Hardware-specific configuration
 pi_config/
-hardware_config.json
+#hardware_config.json
 
 # GPIO and hardware testing
 gpio_test/
@@ -332,7 +332,7 @@ docs/build/
 test-results/
 test_results/
 .coverage
-coverage.json
+#coverage.json
 
 # Screenshot testing
 screenshots/
@@ -442,9 +442,9 @@ frontend/public/service-worker.js.map
 frontend/public/precache-manifest.*.js
 
 # Raspberry Pi configuration
-raspberry-pi/config.json
-raspberry-pi/station_config.py
-raspberry-pi/.env
+#raspberry-pi/config.json
+#raspberry-pi/station_config.py
+#raspberry-pi/.env
 
 # Deployment secrets
 deployment/secrets/
