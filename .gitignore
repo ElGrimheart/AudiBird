@@ -180,21 +180,7 @@ credentials/
 station_config.json
 station_auth.json
 
-# =============================================================================
-# Audio Files & Processing
-# =============================================================================
-# Audio recordings (except samples for testing)
-audio_recordings/
-recordings/
-*.wav
-*.mp3
-*.flac
-*.ogg
-*.m4a
-*.aac
-# Keep sample files for testing
-!samples/
-!test_audio/
+
 
 # BirdNet model files (large files)
 models/
