@@ -67,7 +67,7 @@ To check, use the sidebar to expand database_name->Schemas->public->Tables.
 ###### Staged Reconstruction Step 2 - Restore database data
 - Right click the database name, select "Restore..." from the menu
 - Select format: "Plain"
-- Using the provided file explorer, select the `server/sql/audibird_plain_data` file
+- Using the provided file explorer, select the `server/sql/plain_data` file
 - Click "Restore"
 
 This should re-populate the data within the database. 
