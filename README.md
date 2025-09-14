@@ -24,7 +24,7 @@
 
 ### 1. Database (PostgreSQL)
 
-#### Due to difficulties encounted during database migration, the database may need to be re-constructed in stages.####
+#### Due to difficulties encounted during database migration, the database may need to be re-constructed in stages.
 
 
 - (Optional) Create a Login Role and password for PostgreSQL. 
