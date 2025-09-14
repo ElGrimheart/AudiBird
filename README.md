@@ -24,7 +24,7 @@
 
 ### 1. Database (PostgreSQL)
 
-#### Due to difficulties encounted during database migration, the database may need to be re-constructed in stages. This also resulted in limited demonstration data being packaged within the submission. To view a more detailed and interesting dataset, please download and import the updated dataset from server/sql folder of the above GitHub repository.
+#### Due to difficulties encounted during database migration, the database may need to be re-constructed in stages.####
 
 
 - (Optional) Create a Login Role and password for PostgreSQL. 
@@ -161,6 +161,7 @@ e.g. pip 23.0.1 from /home/pibird/audibird/station/.venv/lib/python3.11/site-pac
 - Login details for existing user accounts and registered stations can be found within `server/sql/user-credentials.txt`
 - For demonstration purposes use login credentials for "cforeman01@qub.ac.uk"
 - For demonstration purposes, station is pre-loaded with "Development Station" configuration. See detailed user guide on GitHub repo for details on how to swap between pre-set station configurations or process for creating and registering a new station.
+- To reduce the file size of the submission, only a small sample of detection audio recordings are included. The full set of audio recordings for the demonstration data can be downloaded from the `station/data/recordings` folder of the GitHub repository. Copy these to the `station/data/recordings` folder on the Pi.
 
 
 ## Environment Variables
